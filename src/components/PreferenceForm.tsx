@@ -102,12 +102,8 @@ export function PreferenceForm({ round, existing, onSaved }: PreferenceFormProps
         <h2 className="text-lg font-semibold text-slate-900">{round.name}</h2>
         <p className="mt-1 text-sm text-slate-600">
           Submit exactly three distinct department choices in ranked order.
+          Submissions stay open until an administrator closes the round.
         </p>
-        {round.submission_deadline && (
-          <p className="mt-1 text-sm text-slate-500">
-            Deadline: {new Date(round.submission_deadline).toLocaleString()}
-          </p>
-        )}
       </div>
 
       <DepartmentPicker

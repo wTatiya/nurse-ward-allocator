@@ -5,6 +5,7 @@
  *   SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... node scripts/seed-staff.mjs
  */
 import { createClient } from '@supabase/supabase-js'
+import ws from 'ws'
 import { readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -53,6 +54,7 @@ async function main() {
 
   const supabase = createClient(url, serviceKey, {
     auth: { autoRefreshToken: false, persistSession: false },
+    realtime: { transport: ws },
   })
 
   const seedPath = join(__dirname, 'data', 'staff-seed.json')

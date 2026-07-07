@@ -14,7 +14,6 @@ const statuses: RoundStatus[] = [
 export function AdminRoundsPage() {
   const [rounds, setRounds] = useState<AssignmentRound[]>([])
   const [name, setName] = useState('')
-  const [deadline, setDeadline] = useState('')
   const [message, setMessage] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [runningId, setRunningId] = useState<string | null>(null)
@@ -40,7 +39,6 @@ export function AdminRoundsPage() {
       .from('assignment_rounds')
       .insert({
         name: name.trim(),
-        submission_deadline: deadline ? new Date(deadline).toISOString() : null,
         status: 'draft',
       })
 
@@ -50,7 +48,6 @@ export function AdminRoundsPage() {
     }
 
     setName('')
-    setDeadline('')
     setMessage('Round created.')
     await loadRounds()
   }
@@ -106,15 +103,16 @@ export function AdminRoundsPage() {
       <div>
         <h1 className="text-2xl font-semibold text-slate-900">Rounds</h1>
         <p className="mt-1 text-sm text-slate-600">
-          Open preference submissions, close the round, then run assignment.
+          Create a round, open it when nurses may submit, close it when ready,
+          then run assignment.
         </p>
       </div>
 
       <form
         onSubmit={createRound}
-        className="grid gap-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm md:grid-cols-3"
+        className="flex flex-wrap items-end gap-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
       >
-        <label className="block md:col-span-1">
+        <label className="block min-w-[16rem] flex-1">
           <span className="mb-1 block text-sm font-medium text-slate-700">
             Round name
           </span>
@@ -125,25 +123,12 @@ export function AdminRoundsPage() {
             className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
           />
         </label>
-        <label className="block md:col-span-1">
-          <span className="mb-1 block text-sm font-medium text-slate-700">
-            Submission deadline
-          </span>
-          <input
-            type="datetime-local"
-            value={deadline}
-            onChange={(event) => setDeadline(event.target.value)}
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
-          />
-        </label>
-        <div className="flex items-end">
-          <button
-            type="submit"
-            className="rounded-lg bg-teal-700 px-4 py-2 text-sm font-medium text-white hover:bg-teal-800"
-          >
-            Create round
-          </button>
-        </div>
+        <button
+          type="submit"
+          className="rounded-lg bg-teal-700 px-4 py-2 text-sm font-medium text-white hover:bg-teal-800"
+        >
+          Create round
+        </button>
       </form>
 
       {message && (
@@ -171,12 +156,6 @@ export function AdminRoundsPage() {
                 <p className="text-sm capitalize text-slate-600">
                   Status: {round.status}
                 </p>
-                {round.submission_deadline && (
-                  <p className="text-sm text-slate-500">
-                    Deadline:{' '}
-                    {new Date(round.submission_deadline).toLocaleString()}
-                  </p>
-                )}
               </div>
               <div className="flex flex-wrap gap-2">
                 {round.status === 'draft' && (

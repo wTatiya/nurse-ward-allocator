@@ -54,7 +54,9 @@ export function AdminResultsPage() {
   )
 
   const departmentFill = useMemo(() => {
-    return departments.map((department) => {
+    return departments
+      .filter((department) => department.is_active)
+      .map((department) => {
       const count = assignments.filter(
         (item) => item.department_id === department.id,
       ).length
