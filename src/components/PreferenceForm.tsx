@@ -60,7 +60,7 @@ export function PreferenceForm({ round, existing, onSaved }: PreferenceFormProps
     } = await supabase.auth.getUser()
 
     if (!user) {
-      setError('You must be signed in to submit preferences.')
+      setError('กรุณาเข้าสู่ระบบก่อนส่งความประสงค์')
       setSaving(false)
       return
     }
@@ -90,8 +90,8 @@ export function PreferenceForm({ round, existing, onSaved }: PreferenceFormProps
 
     setSuccess(
       existing
-        ? 'Preferences updated. You can edit again until the round closes.'
-        : 'Preferences submitted. You can edit until the round closes.',
+        ? 'อัปเดตความประสงค์แล้ว สามารถแก้ไขได้จนกว่ารอบจะปิดรับ'
+        : 'ส่งความประสงค์แล้ว สามารถแก้ไขได้จนกว่ารอบจะปิดรับ',
     )
     onSaved()
   }
@@ -101,13 +101,12 @@ export function PreferenceForm({ round, existing, onSaved }: PreferenceFormProps
       <div>
         <h2 className="text-lg font-semibold text-slate-900">{round.name}</h2>
         <p className="mt-1 text-sm text-slate-600">
-          Submit exactly three distinct department choices in ranked order.
-          Submissions stay open until an administrator closes the round.
+          กรุณาเลือกแผนก 3 อันดับที่ไม่ซ้ำกัน การส่งความประสงค์จะเปิดอยู่จนกว่าผู้ดูแลระบบจะปิดรอบ
         </p>
       </div>
 
       <DepartmentPicker
-        label="1st choice"
+        label="อันดับ 1"
         departments={departments}
         value={choice1}
         onChange={setChoice1}
@@ -115,7 +114,7 @@ export function PreferenceForm({ round, existing, onSaved }: PreferenceFormProps
         exclude={[choice2, choice3]}
       />
       <DepartmentPicker
-        label="2nd choice"
+        label="อันดับ 2"
         departments={departments}
         value={choice2}
         onChange={setChoice2}
@@ -123,7 +122,7 @@ export function PreferenceForm({ round, existing, onSaved }: PreferenceFormProps
         exclude={[choice1, choice3]}
       />
       <DepartmentPicker
-        label="3rd choice"
+        label="อันดับ 3"
         departments={departments}
         value={choice3}
         onChange={setChoice3}
@@ -147,12 +146,16 @@ export function PreferenceForm({ round, existing, onSaved }: PreferenceFormProps
         disabled={!isOpen || saving}
         className="rounded-lg bg-teal-700 px-4 py-2 text-sm font-medium text-white hover:bg-teal-800 disabled:cursor-not-allowed disabled:bg-slate-300"
       >
-        {saving ? 'Saving...' : existing ? 'Update preferences' : 'Submit preferences'}
+        {saving
+          ? 'กำลังบันทึก...'
+          : existing
+            ? 'อัปเดตความประสงค์'
+            : 'ส่งความประสงค์'}
       </button>
 
       {!isOpen && (
         <p className="text-sm text-amber-700">
-          This round is not open for submissions.
+          รอบนี้ยังไม่มีตึกที่เปิดรับ
         </p>
       )}
     </form>

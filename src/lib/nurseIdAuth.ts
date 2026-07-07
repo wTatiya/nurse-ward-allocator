@@ -14,20 +14,20 @@ export function nurseIdToAuthEmail(nurseId: string): string {
 export function validateNurseIdInput(nurseId: string): string | null {
   const trimmed = nurseId.trim()
   if (!trimmed) {
-    return 'Enter your 7-digit nurse ID.'
+    return 'กรุณากรอกรหัสพยาบาล 7 หลัก'
   }
   if (!isValidNurseId(trimmed)) {
-    return 'Nurse ID must be exactly 7 digits (numbers only).'
+    return 'รหัสพยาบาลต้องเป็นตัวเลข 7 หลักเท่านั้น'
   }
   return null
 }
 
 export function validatePasswordInput(password: string): string | null {
   if (!password) {
-    return 'Enter your password.'
+    return 'กรุณากรอกรหัสผ่าน'
   }
   if (password.length < 7) {
-    return 'Password must be at least 7 characters.'
+    return 'รหัสผ่านต้องมีอย่างน้อย 7 ตัวอักษร'
   }
   return null
 }

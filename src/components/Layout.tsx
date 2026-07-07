@@ -3,16 +3,16 @@ import { useAuth } from '../hooks/useAuth'
 import { formatRoleLabel, isAdmin, isParticipant, isStaffViewer } from '../lib/roles'
 
 const participantLinks = [
-  { to: '/preferences', label: 'Preferences' },
-  { to: '/my-result', label: 'My Result' },
+  { to: '/preferences', label: 'เลือกตึก' },
+  { to: '/my-result', label: 'ผลการจัดสรร' },
 ]
 
-const staffLinks = [{ to: '/dashboard', label: 'Dashboard' }]
+const staffLinks = [{ to: '/dashboard', label: 'ภาพรวม' }]
 
 const adminLinks = [
-  { to: '/admin/departments', label: 'Departments' },
-  { to: '/admin/rounds', label: 'Rounds' },
-  { to: '/admin/results', label: 'Results' },
+  { to: '/admin/departments', label: 'แผนก' },
+  { to: '/admin/rounds', label: 'รอบจัดสรร' },
+  { to: '/admin/results', label: 'ผลลัพธ์' },
 ]
 
 export function Layout() {
@@ -33,12 +33,12 @@ export function Layout() {
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4">
           <div>
             <p className="text-sm font-medium text-teal-700">
-              Nurse Ward Allocator
+              ระบบจัดสรรหอผู้ป่วย
             </p>
             <p className="text-xs text-slate-500">
               {profile?.nurse_id
-                ? `ID ${profile.nurse_id} · ${profile.full_name}`
-                : (profile?.full_name ?? 'Signed in')}
+                ? `รหัส ${profile.nurse_id} · ${profile.full_name}`
+                : (profile?.full_name ?? 'เข้าสู่ระบบแล้ว')}
               {role ? ` · ${formatRoleLabel(role)}` : ''}
             </p>
           </div>
@@ -61,7 +61,7 @@ export function Layout() {
               onClick={() => void signOut()}
               className="rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100"
             >
-              Sign out
+              ออกจากระบบ
             </button>
           </nav>
         </div>

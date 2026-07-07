@@ -79,12 +79,12 @@ export function LoginPage() {
     <div className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-4">
       <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
         <h1 className="text-2xl font-semibold text-slate-900">
-          Nurse Ward Allocator
+          ระบบจัดสรรหอผู้ป่วย
         </h1>
         <p className="mt-2 text-sm text-slate-600">
           {mode === 'staff'
-            ? 'Hospital staff: sign in with your 7-digit nurse ID.'
-            : 'Participants: choose your full name from the list.'}
+            ? 'เจ้าหน้าที่: เข้าสู่ระบบด้วยรหัสพยาบาล 7 หลัก'
+            : 'ผู้เข้ารับการจัดสรร: เลือกชื่อ-นามสกุลของคุณจากรายการ'}
         </p>
 
         <div className="mt-6 flex rounded-lg border border-slate-200 p-1">
@@ -100,7 +100,7 @@ export function LoginPage() {
                 : 'text-slate-600 hover:bg-slate-50'
             }`}
           >
-            Participant
+            ผู้เข้ารับการจัดสรร
           </button>
           <button
             type="button"
@@ -114,7 +114,7 @@ export function LoginPage() {
                 : 'text-slate-600 hover:bg-slate-50'
             }`}
           >
-            Staff
+            เจ้าหน้าที่
           </button>
         </div>
 
@@ -122,7 +122,7 @@ export function LoginPage() {
           <form onSubmit={handleStaffSubmit} className="mt-6 space-y-4">
             <label className="block">
               <span className="mb-1 block text-sm font-medium text-slate-700">
-                Nurse ID
+                รหัสพยาบาล
               </span>
               <input
                 type="text"
@@ -142,7 +142,7 @@ export function LoginPage() {
 
             <label className="block">
               <span className="mb-1 block text-sm font-medium text-slate-700">
-                Password
+                รหัสผ่าน
               </span>
               <input
                 type="password"
@@ -153,7 +153,7 @@ export function LoginPage() {
                 className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
               />
               <span className="mt-1 block text-xs text-slate-500">
-                For most staff, your password is the same as your nurse ID.
+                สำหรับเจ้าหน้าที่ส่วนใหญ่ รหัสผ่านจะเหมือนกับรหัสพยาบาล
               </span>
             </label>
 
@@ -168,14 +168,14 @@ export function LoginPage() {
               disabled={staffDisabled}
               className="w-full rounded-lg bg-teal-700 px-4 py-2 text-sm font-medium text-white hover:bg-teal-800 disabled:bg-slate-300"
             >
-              {loading ? 'Please wait...' : 'Sign in'}
+              {loading ? 'กรุณารอสักครู่...' : 'เข้าสู่ระบบ'}
             </button>
           </form>
         ) : (
           <form onSubmit={handleParticipantSubmit} className="mt-6 space-y-4">
             <label className="block">
               <span className="mb-1 block text-sm font-medium text-slate-700">
-                Full name
+                ชื่อ-นามสกุล
               </span>
               <select
                 required
@@ -185,9 +185,9 @@ export function LoginPage() {
                 className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
               >
                 {optionsLoading ? (
-                  <option value="">Loading names...</option>
+                  <option value="">กำลังโหลดรายชื่อ...</option>
                 ) : participantOptions.length === 0 ? (
-                  <option value="">No participant accounts yet</option>
+                  <option value="">ยังไม่มีบัญชีผู้เข้ารับการจัดสรร</option>
                 ) : (
                   participantOptions.map((option) => (
                     <option key={option.login_slug} value={option.login_slug}>
@@ -197,13 +197,13 @@ export function LoginPage() {
                 )}
               </select>
               <span className="mt-1 block text-xs text-slate-500">
-                Pick the name that matches yours exactly.
+                เลือกชื่อที่ตรงกับของคุณ
               </span>
             </label>
 
             <label className="block">
               <span className="mb-1 block text-sm font-medium text-slate-700">
-                Password
+                รหัสผ่าน
               </span>
               <input
                 type="password"
@@ -214,13 +214,13 @@ export function LoginPage() {
                 className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
               />
               <span className="mt-1 block text-xs text-slate-500">
-                Use the temporary password shared by your coordinator.
+                ใช้รหัสผ่านชั่วคราวที่ผู้ประสานงานแจ้งให้
               </span>
             </label>
 
             {optionsError && (
               <p className="rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800">
-                Could not load names: {optionsError}
+                โหลดรายชื่อไม่สำเร็จ: {optionsError}
               </p>
             )}
             {error && (
@@ -234,15 +234,15 @@ export function LoginPage() {
               disabled={participantDisabled}
               className="w-full rounded-lg bg-teal-700 px-4 py-2 text-sm font-medium text-white hover:bg-teal-800 disabled:bg-slate-300"
             >
-              {loading ? 'Please wait...' : 'Sign in'}
+              {loading ? 'กรุณารอสักครู่...' : 'เข้าสู่ระบบ'}
             </button>
           </form>
         )}
 
         <p className="mt-6 text-center text-xs text-slate-500">
           {mode === 'participant'
-            ? '7-digit nurse IDs are not required for participants yet.'
-            : 'Staff accounts are pre-provisioned by hospital administration.'}
+            ? 'ผู้เข้ารับการจัดสรรไม่ต้องใช้รหัสพยาบาล 7 หลัก'
+            : 'บัญชีเจ้าหน้าที่ถูกสร้างไว้ล่วงหน้าโดยฝ่ายบริหาร'}
         </p>
       </div>
     </div>

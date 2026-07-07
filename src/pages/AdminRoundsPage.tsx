@@ -48,7 +48,7 @@ export function AdminRoundsPage() {
     }
 
     setName('')
-    setMessage('Round created.')
+    setMessage('สร้างรอบจัดสรรแล้ว')
     await loadRounds()
   }
 
@@ -66,7 +66,7 @@ export function AdminRoundsPage() {
       return
     }
 
-    setMessage(`Round "${round.name}" set to ${formatRoundStatus(status)}.`)
+    setMessage(`รอบ "${round.name}" เปลี่ยนเป็น ${formatRoundStatus(status)}`)
     await loadRounds()
   }
 
@@ -93,7 +93,7 @@ export function AdminRoundsPage() {
     }
 
     setMessage(
-      `Assignment complete: ${data.assigned} assigned, ${data.waitlisted} waitlisted, ${data.lotteries} lotteries run.`,
+      `จัดสรรเสร็จสิ้น: ได้รับจัดสรร ${data.assigned} คน, รายการรอ ${data.waitlisted} คน, จับสลาก ${data.lotteries} ครั้ง`,
     )
     await loadRounds()
   }
@@ -101,10 +101,9 @@ export function AdminRoundsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold text-slate-900">Rounds</h1>
+        <h1 className="text-2xl font-semibold text-slate-900">รอบจัดสรร</h1>
         <p className="mt-1 text-sm text-slate-600">
-          Create a round, open it when nurses may submit, close it when ready,
-          then run assignment.
+          สร้างรอบ เปิดรับการเลือกตึกเมื่อพร้อม ปิดรับเมื่อครบ แล้วรันการจัดสรร
         </p>
       </div>
 
@@ -114,7 +113,7 @@ export function AdminRoundsPage() {
       >
         <label className="block min-w-[16rem] flex-1">
           <span className="mb-1 block text-sm font-medium text-slate-700">
-            Round name
+            ชื่อรอบ
           </span>
           <input
             value={name}
@@ -127,7 +126,7 @@ export function AdminRoundsPage() {
           type="submit"
           className="rounded-lg bg-teal-700 px-4 py-2 text-sm font-medium text-white hover:bg-teal-800"
         >
-          Create round
+          สร้างรอบ
         </button>
       </form>
 
@@ -153,8 +152,8 @@ export function AdminRoundsPage() {
                 <h2 className="text-lg font-semibold text-slate-900">
                   {round.name}
                 </h2>
-                <p className="text-sm capitalize text-slate-600">
-                  Status: {round.status}
+                <p className="text-sm text-slate-600">
+                  สถานะ: {formatRoundStatus(round.status)}
                 </p>
               </div>
               <div className="flex flex-wrap gap-2">
@@ -164,7 +163,7 @@ export function AdminRoundsPage() {
                     onClick={() => void updateStatus(round, 'open')}
                     className="rounded-lg bg-teal-700 px-3 py-2 text-sm text-white"
                   >
-                    Open submissions
+                    ตึกที่เปิดรับ
                   </button>
                 )}
                 {round.status === 'open' && (
@@ -173,7 +172,7 @@ export function AdminRoundsPage() {
                     onClick={() => void updateStatus(round, 'closed')}
                     className="rounded-lg bg-slate-800 px-3 py-2 text-sm text-white"
                   >
-                    Close submissions
+                    ปิดรับความประสงค์
                   </button>
                 )}
                 {round.status === 'closed' && (
@@ -184,14 +183,14 @@ export function AdminRoundsPage() {
                     className="rounded-lg bg-amber-600 px-3 py-2 text-sm text-white disabled:bg-slate-300"
                   >
                     {runningId === round.id
-                      ? 'Running assignment...'
-                      : 'Run assignment'}
+                      ? 'กำลังจัดสรร...'
+                      : 'รันการจัดสรร'}
                   </button>
                 )}
               </div>
             </div>
             <p className="mt-3 text-xs text-slate-500">
-              Lifecycle: {statuses.join(' → ')}
+              ขั้นตอน: {statuses.map(formatRoundStatus).join(' → ')}
             </p>
           </div>
         ))}

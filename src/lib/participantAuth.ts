@@ -11,7 +11,7 @@ export function participantSlugToAuthEmail(loginSlug: string): string {
 
 export function validateParticipantSelection(loginSlug: string): string | null {
   if (!loginSlug.trim()) {
-    return 'Select your full name from the list.'
+    return 'กรุณาเลือกชื่อ-นามสกุลของคุณจากรายการ'
   }
   return null
 }

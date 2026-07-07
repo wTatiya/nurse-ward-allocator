@@ -22,7 +22,7 @@ export function ResultsTable({
   if (assignments.length === 0) {
     return (
       <p className="rounded-xl border border-dashed border-slate-300 bg-white p-6 text-sm text-slate-500">
-        No assignments yet.
+        ยังไม่มีผลการจัดสรร
       </p>
     )
   }
@@ -33,13 +33,13 @@ export function ResultsTable({
         <thead className="bg-slate-50">
           <tr>
             <th className="px-4 py-3 text-left font-medium text-slate-600">
-              Nurse
+              พยาบาล
             </th>
             <th className="px-4 py-3 text-left font-medium text-slate-600">
-              Department
+              แผนก
             </th>
             <th className="px-4 py-3 text-left font-medium text-slate-600">
-              Matched tier
+              อันดับที่จัดสรร
             </th>
           </tr>
         </thead>

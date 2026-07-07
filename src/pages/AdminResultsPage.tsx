@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '../lib/supabase'
-import { downloadCsv, formatTier } from '../lib/utils'
+import { downloadCsv, formatRoundStatus, formatTier } from '../lib/utils'
 import { ResultsTable } from '../components/ResultsTable'
 import {
   useRealtimeAssignments,
@@ -71,7 +71,7 @@ export function AdminResultsPage() {
 
   const exportAssignments = () => {
     const rows = [
-      ['Nurse', 'Department', 'Matched Tier', 'Assigned At'],
+      ['พยาบาล', 'แผนก', 'อันดับที่จัดสรร', 'วันที่จัดสรร'],
       ...assignments.map((assignment) => [
         nurseNames[assignment.nurse_id] ?? assignment.nurse_id,
         departments.find((d) => d.id === assignment.department_id)?.code ?? '',
@@ -84,7 +84,7 @@ export function AdminResultsPage() {
 
   const exportWaitlist = () => {
     const rows = [
-      ['Position', 'Nurse'],
+      ['ลำดับ', 'พยาบาล'],
       ...waitlist.map((entry) => [
         String(entry.position),
         nurseNames[entry.nurse_id] ?? entry.nurse_id,
@@ -97,9 +97,9 @@ export function AdminResultsPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold text-slate-900">Results</h1>
+          <h1 className="text-2xl font-semibold text-slate-900">ผลลัพธ์</h1>
           <p className="mt-1 text-sm text-slate-600">
-            Live assignment matrix, lottery audit log, and CSV export.
+            ตารางผลการจัดสรรแบบเรียลไทม์ บันทึกการจับสลาก และส่งออก CSV
           </p>
         </div>
         <div className="flex gap-2">
@@ -108,21 +108,21 @@ export function AdminResultsPage() {
             onClick={exportAssignments}
             className="rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-700"
           >
-            Export assignments
+            ส่งออกผลจัดสรร
           </button>
           <button
             type="button"
             onClick={exportWaitlist}
             className="rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-700"
           >
-            Export waitlist
+            ส่งออกรายการรอ
           </button>
         </div>
       </div>
 
       <label className="block max-w-md">
         <span className="mb-1 block text-sm font-medium text-slate-700">
-          Assignment round
+          รอบจัดสรร
         </span>
         <select
           value={selectedRoundId}
@@ -131,14 +131,14 @@ export function AdminResultsPage() {
         >
           {rounds.map((round) => (
             <option key={round.id} value={round.id}>
-              {round.name} ({round.status})
+              {round.name} ({formatRoundStatus(round.status)})
             </option>
           ))}
         </select>
       </label>
 
       <section className="space-y-3">
-        <h2 className="text-lg font-semibold text-slate-900">Department fill</h2>
+        <h2 className="text-lg font-semibold text-slate-900">ตำแหน่งที่เติมแล้ว</h2>
         <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
           {departmentFill.map((item) => (
             <div
@@ -147,8 +147,8 @@ export function AdminResultsPage() {
             >
               <p className="font-medium text-slate-900">{item.label}</p>
               <p className="mt-1 text-sm text-slate-600">
-                {item.assigned} / {item.capacity} filled ({item.remaining}{' '}
-                remaining)
+                เติมแล้ว {item.assigned} / {item.capacity} ตำแหน่ง (ว่าง{' '}
+                {item.remaining} ตำแหน่ง)
               </p>
             </div>
           ))}
@@ -156,7 +156,7 @@ export function AdminResultsPage() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-lg font-semibold text-slate-900">Assignments</h2>
+        <h2 className="text-lg font-semibold text-slate-900">ผลการจัดสรร</h2>
         <ResultsTable
           assignments={assignments}
           departments={departments}
@@ -165,10 +165,10 @@ export function AdminResultsPage() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-lg font-semibold text-slate-900">Waitlist</h2>
+        <h2 className="text-lg font-semibold text-slate-900">รายการรอ</h2>
         {waitlist.length === 0 ? (
           <p className="rounded-xl border border-dashed border-slate-300 bg-white p-6 text-sm text-slate-500">
-            No nurses on the waitlist.
+            ไม่มีผู้เข้ารับการจัดสรรในรายการรอ
           </p>
         ) : (
           <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
@@ -176,10 +176,10 @@ export function AdminResultsPage() {
               <thead className="bg-slate-50">
                 <tr>
                   <th className="px-4 py-3 text-left font-medium text-slate-600">
-                    Position
+                    ลำดับ
                   </th>
                   <th className="px-4 py-3 text-left font-medium text-slate-600">
-                    Nurse
+                    พยาบาล
                   </th>
                 </tr>
               </thead>
@@ -199,13 +199,17 @@ export function AdminResultsPage() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-lg font-semibold text-slate-900">Lottery audit log</h2>
+        <h2 className="text-lg font-semibold text-slate-900">บันทึกการจับสลาก</h2>
         {lotteryEvents.length === 0 ? (
           <p className="rounded-xl border border-dashed border-slate-300 bg-white p-6 text-sm text-slate-500">
-            No lotteries were required for this round.
+            รอบนี้ไม่ต้องจับสลาก
           </p>
         ) : (
           <div className="space-y-3">
+            <p className="text-sm text-slate-600">
+              แต่ละครั้งที่มีผู้สมัครมากกว่าตำแหน่งว่าง ระบบจะจับสลากแบบสุ่มอย่างเป็นธรรม
+              และเก็บ seed hash ไว้สำหรับตรวจสอบ
+            </p>
             {lotteryEvents.map((event: LotteryEvent) => (
               <div
                 key={event.id}
@@ -217,8 +221,21 @@ export function AdminResultsPage() {
                   — {formatTier(event.tier)}
                 </p>
                 <p className="mt-1 text-slate-600">
-                  Slots: {event.slots} | Applicants: {event.applicant_ids.length}{' '}
-                  | Winners: {event.winner_ids.length}
+                  ตำแหน่ง: {event.slots} | ผู้สมัคร: {event.applicant_ids.length}{' '}
+                  | ได้รับเลือก: {event.winner_ids.length}
+                </p>
+                <p className="mt-2 text-slate-700">
+                  ได้รับเลือก:{' '}
+                  {event.winner_ids
+                    .map((id) => nurseNames[id] ?? id)
+                    .join(', ')}
+                </p>
+                <p className="mt-1 text-slate-700">
+                  ไม่ได้รับเลือก:{' '}
+                  {event.applicant_ids
+                    .filter((id) => !event.winner_ids.includes(id))
+                    .map((id) => nurseNames[id] ?? id)
+                    .join(', ') || '—'}
                 </p>
                 <p className="mt-1 break-all text-xs text-slate-500">
                   Seed hash: {event.seed_hash}

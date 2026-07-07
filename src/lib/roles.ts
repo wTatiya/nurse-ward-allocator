@@ -1,4 +1,5 @@
 import type { UserRole } from '../types/database'
+import { formatRoleLabel as formatRoleLabelTh } from './locale/th'
 
 export const STAFF_VIEWER_ROLES: UserRole[] = [
   'MANAGER',
@@ -28,5 +29,5 @@ export function defaultRouteForRole(role: UserRole | null | undefined): string {
 }
 
 export function formatRoleLabel(role: UserRole): string {
-  return role.replace(/_/g, ' ')
+  return formatRoleLabelTh(role)
 }

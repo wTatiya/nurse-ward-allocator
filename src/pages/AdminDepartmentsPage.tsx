@@ -57,7 +57,7 @@ export function AdminDepartmentsPage() {
       return
     }
 
-    setMessage('Department slots updated.')
+    setMessage('อัปเดตจำนวนตำแหน่งแล้ว')
     resetForm()
     await loadDepartments()
   }
@@ -67,10 +67,9 @@ export function AdminDepartmentsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold text-slate-900">Departments</h1>
+        <h1 className="text-2xl font-semibold text-slate-900">แผนก</h1>
         <p className="mt-1 text-sm text-slate-600">
-          Edit slot capacity and active status for hospital departments. Codes
-          and Thai names are pre-seeded.
+          แก้ไขจำนวนตำแหน่งและสถานะการใช้งานของแผนก รหัสและชื่อภาษาไทยถูกตั้งค่าไว้ล่วงหน้า
         </p>
       </div>
 
@@ -80,7 +79,7 @@ export function AdminDepartmentsPage() {
           className="grid gap-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm md:grid-cols-4"
         >
           <div className="md:col-span-2">
-            <p className="text-sm font-medium text-slate-700">Department</p>
+            <p className="text-sm font-medium text-slate-700">แผนก</p>
             <p className="mt-1 font-mono text-sm text-slate-900">
               {editing.code}
             </p>
@@ -88,7 +87,7 @@ export function AdminDepartmentsPage() {
           </div>
           <label className="block">
             <span className="mb-1 block text-sm font-medium text-slate-700">
-              Capacity
+              จำนวนตำแหน่ง
             </span>
             <input
               type="number"
@@ -104,21 +103,21 @@ export function AdminDepartmentsPage() {
               checked={isActive}
               onChange={(event) => setIsActive(event.target.checked)}
             />
-            Active
+            เปิดใช้งาน
           </label>
           <div className="md:col-span-4 flex gap-2">
             <button
               type="submit"
               className="rounded-lg bg-teal-700 px-4 py-2 text-sm font-medium text-white hover:bg-teal-800"
             >
-              Save slots
+              บันทึก
             </button>
             <button
               type="button"
               onClick={resetForm}
               className="rounded-lg border border-slate-300 px-4 py-2 text-sm text-slate-700"
             >
-              Cancel
+              ยกเลิก
             </button>
           </div>
           {error && (
@@ -138,19 +137,19 @@ export function AdminDepartmentsPage() {
           <thead className="bg-slate-50">
             <tr>
               <th className="px-4 py-3 text-left font-medium text-slate-600">
-                Code
+                รหัส
               </th>
               <th className="px-4 py-3 text-left font-medium text-slate-600">
-                Name (Thai)
+                ชื่อแผนก
               </th>
               <th className="px-4 py-3 text-left font-medium text-slate-600">
-                Capacity
+                จำนวนตำแหน่ง
               </th>
               <th className="px-4 py-3 text-left font-medium text-slate-600">
-                Status
+                สถานะ
               </th>
               <th className="px-4 py-3 text-left font-medium text-slate-600">
-                Actions
+                การดำเนินการ
               </th>
             </tr>
           </thead>
@@ -163,7 +162,7 @@ export function AdminDepartmentsPage() {
                 <td className="px-4 py-3">{department.name_th}</td>
                 <td className="px-4 py-3">{department.capacity}</td>
                 <td className="px-4 py-3">
-                  {department.is_active ? 'Active' : 'Inactive'}
+                  {department.is_active ? 'เปิดใช้งาน' : 'ปิดใช้งาน'}
                 </td>
                 <td className="px-4 py-3">
                   <button
@@ -171,7 +170,7 @@ export function AdminDepartmentsPage() {
                     onClick={() => startEdit(department)}
                     className="text-teal-700 hover:underline"
                   >
-                    Edit slots
+                    แก้ไข
                   </button>
                 </td>
               </tr>

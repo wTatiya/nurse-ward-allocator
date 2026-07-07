@@ -12,7 +12,7 @@ describe('participantAuth', () => {
   })
 
   it('requires a selected name', () => {
-    expect(validateParticipantSelection('')).toMatch(/Select your full name/)
+    expect(validateParticipantSelection('')).toMatch(/ชื่อ/)
     expect(validateParticipantSelection('p-0001')).toBeNull()
   })
 })

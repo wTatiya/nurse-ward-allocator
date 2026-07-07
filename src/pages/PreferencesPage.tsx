@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { PreferenceForm } from '../components/PreferenceForm'
+import { formatRoundStatus } from '../lib/utils'
 import type { AssignmentRound, Preference } from '../types/database'
 
 export function PreferencesPage() {
@@ -56,21 +57,21 @@ export function PreferencesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold text-slate-900">Preferences</h1>
+        <h1 className="text-2xl font-semibold text-slate-900">เลือกตึก</h1>
         <p className="mt-1 text-sm text-slate-600">
-          Rank your top three department choices for the active assignment round.
+          จัดอันดับแผนกที่ต้องการ 3 อันดับสำหรับรอบจัดสรรที่เปิดอยู่
         </p>
       </div>
 
       {rounds.length === 0 ? (
         <p className="rounded-xl border border-dashed border-slate-300 bg-white p-6 text-sm text-slate-500">
-          No open assignment rounds yet. Check back when an admin opens submissions.
+          ยังไม่มีรอบจัดสรรที่เปิดรับ กรุณากลับมาตรวจสอบเมื่อมีตึกที่เปิดรับ
         </p>
       ) : (
         <>
           <label className="block max-w-md">
             <span className="mb-1 block text-sm font-medium text-slate-700">
-              Assignment round
+              รอบจัดสรร
             </span>
             <select
               value={selectedRoundId}
@@ -79,7 +80,7 @@ export function PreferencesPage() {
             >
               {rounds.map((round) => (
                 <option key={round.id} value={round.id}>
-                  {round.name} ({round.status})
+                  {round.name} ({formatRoundStatus(round.status)})
                 </option>
               ))}
             </select>

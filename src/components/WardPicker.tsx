@@ -33,11 +33,11 @@ export function DepartmentPicker({
         onChange={(event) => onChange(event.target.value)}
         className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-200 disabled:bg-slate-100"
       >
-        <option value="">Select a department</option>
+        <option value="">เลือกแผนก</option>
         {options.map((department) => (
           <option key={department.id} value={department.id}>
-            {department.code} — {department.name_th} (capacity{' '}
-            {department.capacity})
+            {department.code} — {department.name_th} (จำนวน{' '}
+            {department.capacity} ตำแหน่ง)
           </option>
         ))}
       </select>

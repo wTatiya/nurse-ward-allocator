@@ -1,4 +1,7 @@
 import type { PreferenceFormData } from '../types/database'
+import { formatRoundStatus, formatTier } from './locale/th'
+
+export { formatRoundStatus, formatTier }
 
 export function validatePreferences(
   data: PreferenceFormData,
@@ -6,26 +9,17 @@ export function validatePreferences(
   const { choice1, choice2, choice3 } = data
 
   if (!choice1 || !choice2 || !choice3) {
-    return 'All three department choices are required.'
+    return 'กรุณาเลือกแผนกครบทั้ง 3 อันดับ'
   }
 
   const choices = [choice1, choice2, choice3]
   const unique = new Set(choices)
 
   if (unique.size !== 3) {
-    return 'Each department choice must be distinct.'
+    return 'แต่ละอันดับต้องเป็นแผนกที่ไม่ซ้ำกัน'
   }
 
   return null
-}
-
-export function formatTier(tier: 1 | 2 | 3): string {
-  const labels = { 1: '1st choice', 2: '2nd choice', 3: '3rd choice' }
-  return labels[tier]
-}
-
-export function formatRoundStatus(status: string): string {
-  return status.charAt(0).toUpperCase() + status.slice(1)
 }
 
 export function downloadCsv(filename: string, rows: string[][]): void {

@@ -23,12 +23,12 @@ export function ProtectedRoute({ kind }: { kind?: RouteKind }) {
     return (
       <div className="mx-auto max-w-lg p-8 text-center">
         <h1 className="text-xl font-semibold text-slate-900">
-          Supabase not configured
+          ยังไม่ได้ตั้งค่า Supabase
         </h1>
         <p className="mt-2 text-slate-600">
-          Copy <code className="rounded bg-slate-200 px-1">.env.example</code> to{' '}
-          <code className="rounded bg-slate-200 px-1">.env</code> and add your
-          Supabase project credentials.
+          คัดลอก <code className="rounded bg-slate-200 px-1">.env.example</code>{' '}
+          เป็น <code className="rounded bg-slate-200 px-1">.env</code>{' '}
+          แล้วใส่ข้อมูลโปรเจกต์ Supabase ของคุณ
         </p>
       </div>
     )
@@ -37,7 +37,7 @@ export function ProtectedRoute({ kind }: { kind?: RouteKind }) {
   if (loading) {
     return (
       <div className="flex min-h-[40vh] items-center justify-center text-slate-500">
-        Loading...
+        กำลังโหลด...
       </div>
     )
   }

@@ -76,28 +76,28 @@ export function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="text-sm text-slate-500">Loading dashboard...</div>
+      <div className="text-sm text-slate-500">กำลังโหลดภาพรวม...</div>
     )
   }
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold text-slate-900">Dashboard</h1>
+        <h1 className="text-2xl font-semibold text-slate-900">ภาพรวม</h1>
         <p className="mt-1 text-sm text-slate-600">
-          Read-only allocation overview for your visible departments.
+          ภาพรวมการจัดสรรแบบอ่านอย่างเดียวสำหรับแผนกที่คุณดูได้
         </p>
       </div>
 
       {rounds.length === 0 ? (
         <p className="rounded-xl border border-dashed border-slate-300 bg-white p-6 text-sm text-slate-500">
-          No assignment rounds yet.
+          ยังไม่มีรอบจัดสรร
         </p>
       ) : (
         <>
           <label className="block max-w-md">
             <span className="mb-1 block text-sm font-medium text-slate-700">
-              Assignment round
+              รอบจัดสรร
             </span>
             <select
               value={selectedRoundId}
@@ -106,7 +106,7 @@ export function DashboardPage() {
             >
               {rounds.map((round) => (
                 <option key={round.id} value={round.id}>
-                  {round.name} ({round.status})
+                  {round.name} ({formatRoundStatus(round.status)})
                 </option>
               ))}
             </select>
@@ -114,7 +114,7 @@ export function DashboardPage() {
 
           {selectedRound && (
             <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-              <p className="text-sm text-slate-500">Round status</p>
+              <p className="text-sm text-slate-500">สถานะรอบ</p>
               <p className="mt-1 text-lg font-medium text-slate-900">
                 {formatRoundStatus(selectedRound.status)}
               </p>
@@ -123,25 +123,25 @@ export function DashboardPage() {
 
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-              <p className="text-xs text-slate-500">Departments visible</p>
+              <p className="text-xs text-slate-500">แผนกที่มองเห็น</p>
               <p className="mt-1 text-2xl font-semibold text-slate-900">
                 {stats.length}
               </p>
             </div>
             <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-              <p className="text-xs text-slate-500">Slots filled</p>
+              <p className="text-xs text-slate-500">ตำแหน่งที่เติมแล้ว</p>
               <p className="mt-1 text-2xl font-semibold text-slate-900">
                 {totals.assigned} / {totals.capacity}
               </p>
             </div>
             <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-              <p className="text-xs text-slate-500">Preference mentions</p>
+              <p className="text-xs text-slate-500">จำนวนความประสงค์</p>
               <p className="mt-1 text-2xl font-semibold text-slate-900">
                 {totals.preferences}
               </p>
             </div>
             <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-              <p className="text-xs text-slate-500">Lottery events</p>
+              <p className="text-xs text-slate-500">ครั้งที่จับสลาก</p>
               <p className="mt-1 text-2xl font-semibold text-slate-900">
                 {totals.lotteries}
               </p>
@@ -156,7 +156,7 @@ export function DashboardPage() {
 
           {stats.length === 0 ? (
             <p className="rounded-xl border border-dashed border-slate-300 bg-white p-6 text-sm text-slate-500">
-              No departments in your scope for this round.
+              ไม่มีแผนกในขอบเขตของคุณสำหรับรอบนี้
             </p>
           ) : (
             <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
@@ -164,22 +164,22 @@ export function DashboardPage() {
                 <thead className="bg-slate-50">
                   <tr>
                     <th className="px-4 py-3 text-left font-medium text-slate-600">
-                      Code
+                      รหัส
                     </th>
                     <th className="px-4 py-3 text-left font-medium text-slate-600">
-                      Department
+                      แผนก
                     </th>
                     <th className="px-4 py-3 text-left font-medium text-slate-600">
-                      Capacity
+                      จำนวนตำแหน่ง
                     </th>
                     <th className="px-4 py-3 text-left font-medium text-slate-600">
-                      Assigned
+                      จัดสรรแล้ว
                     </th>
                     <th className="px-4 py-3 text-left font-medium text-slate-600">
-                      Preferences
+                      ความประสงค์
                     </th>
                     <th className="px-4 py-3 text-left font-medium text-slate-600">
-                      Lotteries
+                      จับสลาก
                     </th>
                   </tr>
                 </thead>

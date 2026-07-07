@@ -20,6 +20,7 @@ import {
   validateParticipantSelection,
   type ParticipantLoginOption,
 } from '../lib/participantAuth'
+import { translateAuthError } from '../lib/locale/th'
 
 interface AuthContextValue {
   session: Session | null
@@ -106,7 +107,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       email: nurseIdToAuthEmail(id),
       password,
     })
-    return error?.message ?? null
+    return error?.message ? translateAuthError(error.message) : null
   }
 
   const signInParticipant = async (loginSlug: string, password: string) => {
@@ -120,7 +121,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       email: participantSlugToAuthEmail(loginSlug),
       password,
     })
-    return error?.message ?? null
+    return error?.message ? translateAuthError(error.message) : null
   }
 
   const loadParticipantOptions = useCallback(async () => {

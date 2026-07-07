@@ -26,14 +26,14 @@ describe('nurseIdAuth', () => {
   })
 
   it('validates nurse ID input', () => {
-    expect(validateNurseIdInput('')).toMatch(/7-digit/)
-    expect(validateNurseIdInput('123')).toMatch(/exactly 7/)
+    expect(validateNurseIdInput('')).toMatch(/7/)
+    expect(validateNurseIdInput('123')).toMatch(/7/)
     expect(validateNurseIdInput('1234567')).toBeNull()
   })
 
   it('validates password input', () => {
-    expect(validatePasswordInput('')).toMatch(/password/)
-    expect(validatePasswordInput('123456')).toMatch(/at least 7/)
+    expect(validatePasswordInput('')).toMatch(/รหัสผ่าน/)
+    expect(validatePasswordInput('123456')).toMatch(/7/)
     expect(validatePasswordInput('1234567')).toBeNull()
     expect(validatePasswordInput('1102002871008')).toBeNull()
   })

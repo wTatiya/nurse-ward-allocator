@@ -1,26 +1,35 @@
 import { useEffect, useState } from 'react'
+import { OutcomeExplanation } from '../components/OutcomeExplanation'
 import { supabase } from '../lib/supabase'
-import { formatTier } from '../lib/utils'
+import { formatRoundStatus, formatTier } from '../lib/utils'
 import {
   useRealtimeAssignments,
+  useRealtimeLotteryEvents,
   useRealtimeRound,
   useRealtimeWaitlist,
 } from '../hooks/useRealtimeAssignments'
-import type { AssignmentRound, Department } from '../types/database'
+import type {
+  Assignment,
+  AssignmentRound,
+  Department,
+  Preference,
+  WaitlistEntry,
+} from '../types/database'
 
 export function MyResultPage() {
   const [rounds, setRounds] = useState<AssignmentRound[]>([])
   const [selectedRoundId, setSelectedRoundId] = useState('')
   const [departments, setDepartments] = useState<Department[]>([])
-  const [myAssignment, setMyAssignment] = useState<{
-    departmentLabel: string
-    tier: 1 | 2 | 3
-  } | null>(null)
-  const [waitlistPosition, setWaitlistPosition] = useState<number | null>(null)
+  const [userId, setUserId] = useState<string | null>(null)
+  const [preference, setPreference] = useState<Preference | null>(null)
+  const [myAssignment, setMyAssignment] = useState<Assignment | null>(null)
+  const [waitlistEntry, setWaitlistEntry] = useState<WaitlistEntry | null>(null)
+  const [nurseNames, setNurseNames] = useState<Record<string, string>>({})
 
   const round = useRealtimeRound(selectedRoundId || null)
   const assignments = useRealtimeAssignments(selectedRoundId || null)
   const waitlist = useRealtimeWaitlist(selectedRoundId || null)
+  const lotteryEvents = useRealtimeLotteryEvents(selectedRoundId || null)
 
   useEffect(() => {
     const load = async () => {
@@ -45,57 +54,74 @@ export function MyResultPage() {
   }, [selectedRoundId])
 
   useEffect(() => {
+    const loadNames = async () => {
+      const { data } = await supabase.from('profiles').select('id, full_name')
+      const profiles = data ?? []
+      setNurseNames(
+        Object.fromEntries(profiles.map((p) => [p.id, p.full_name])),
+      )
+    }
+
+    void loadNames()
+  }, [])
+
+  useEffect(() => {
     const resolve = async () => {
       const {
         data: { user },
       } = await supabase.auth.getUser()
+
       if (!user || !selectedRoundId) {
+        setUserId(null)
+        setPreference(null)
         setMyAssignment(null)
-        setWaitlistPosition(null)
+        setWaitlistEntry(null)
         return
       }
 
-      const assignment = assignments.find((item) => item.nurse_id === user.id)
-      if (assignment) {
-        const department = departments.find(
-          (d) => d.id === assignment.department_id,
-        )
-        setMyAssignment({
-          departmentLabel: department
-            ? `${department.code} — ${department.name_th}`
-            : 'Unknown department',
-          tier: assignment.matched_tier,
-        })
-        setWaitlistPosition(null)
-        return
-      }
+      setUserId(user.id)
 
-      const entry = waitlist.find((item) => item.nurse_id === user.id)
-      setMyAssignment(null)
-      setWaitlistPosition(entry?.position ?? null)
+      const { data: preferenceData } = await supabase
+        .from('preferences')
+        .select('*')
+        .eq('round_id', selectedRoundId)
+        .eq('nurse_id', user.id)
+        .maybeSingle()
+
+      setPreference((preferenceData as Preference) ?? null)
+      setMyAssignment(
+        assignments.find((item) => item.nurse_id === user.id) ?? null,
+      )
+      setWaitlistEntry(
+        waitlist.find((item) => item.nurse_id === user.id) ?? null,
+      )
     }
 
     void resolve()
-  }, [assignments, waitlist, departments, selectedRoundId])
+  }, [assignments, waitlist, selectedRoundId])
+
+  const assignedDepartment = myAssignment
+    ? departments.find((d) => d.id === myAssignment.department_id)
+    : undefined
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold text-slate-900">My Result</h1>
+        <h1 className="text-2xl font-semibold text-slate-900">ผลการจัดสรร</h1>
         <p className="mt-1 text-sm text-slate-600">
-          Results update live when an admin runs assignment for a round.
+          ดูผลการจัดสรรและคำอธิบายทีละขั้นตอนว่าการจับสลากทำงานอย่างไรสำหรับความประสงค์ของคุณ
         </p>
       </div>
 
       {rounds.length === 0 ? (
         <p className="rounded-xl border border-dashed border-slate-300 bg-white p-6 text-sm text-slate-500">
-          No completed or in-progress rounds yet.
+          ยังไม่มีรอบจัดสรรที่เสร็จสิ้นหรือกำลังดำเนินการ
         </p>
       ) : (
         <>
           <label className="block max-w-md">
             <span className="mb-1 block text-sm font-medium text-slate-700">
-              Assignment round
+              รอบจัดสรร
             </span>
             <select
               value={selectedRoundId}
@@ -104,43 +130,60 @@ export function MyResultPage() {
             >
               {rounds.map((item) => (
                 <option key={item.id} value={item.id}>
-                  {item.name} ({item.status})
+                  {item.name} ({formatRoundStatus(item.status)})
                 </option>
               ))}
             </select>
           </label>
 
           <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-            <p className="text-sm text-slate-500">Round status</p>
-            <p className="mt-1 text-lg font-medium capitalize text-slate-900">
-              {round?.status ?? 'Loading...'}
+            <p className="text-sm text-slate-500">สถานะรอบ</p>
+            <p className="mt-1 text-lg font-medium text-slate-900">
+              {round?.status
+                ? formatRoundStatus(round.status)
+                : 'กำลังโหลด...'}
             </p>
 
             {myAssignment ? (
               <div className="mt-4 rounded-lg bg-teal-50 p-4">
-                <p className="text-sm text-teal-800">You were assigned to</p>
+                <p className="text-sm text-teal-800">คุณได้รับจัดสรรไปที่</p>
                 <p className="text-xl font-semibold text-teal-900">
-                  {myAssignment.departmentLabel}
+                  {assignedDepartment
+                    ? `${assignedDepartment.code} — ${assignedDepartment.name_th}`
+                    : 'ไม่ทราบแผนก'}
                 </p>
                 <p className="mt-1 text-sm text-teal-700">
-                  Matched via {formatTier(myAssignment.tier)}
+                  จัดสรรผ่าน{formatTier(myAssignment.matched_tier)}
                 </p>
               </div>
-            ) : waitlistPosition ? (
+            ) : waitlistEntry ? (
               <div className="mt-4 rounded-lg bg-amber-50 p-4">
                 <p className="text-sm text-amber-800">
-                  You are on the general waitlist
+                  คุณอยู่ในรายการรอ
                 </p>
                 <p className="text-xl font-semibold text-amber-900">
-                  Position #{waitlistPosition}
+                  ลำดับที่ #{waitlistEntry.position}
                 </p>
               </div>
             ) : (
               <p className="mt-4 text-sm text-slate-600">
                 {round?.status === 'completed'
-                  ? 'No assignment recorded for you in this round.'
-                  : 'Assignment has not been published yet.'}
+                  ? 'ไม่พบผลการจัดสรรของคุณในรอบนี้'
+                  : 'ยังไม่ประกาศผลการจัดสรร'}
               </p>
+            )}
+
+            {userId && (
+              <OutcomeExplanation
+                userId={userId}
+                round={round}
+                preference={preference}
+                assignment={myAssignment}
+                waitlistEntry={waitlistEntry}
+                lotteryEvents={lotteryEvents}
+                departments={departments}
+                nurseNames={nurseNames}
+              />
             )}
           </div>
         </>
