@@ -1,0 +1,37 @@
+registry: https://github.com/HoangNguyen0403/agent-skills-standard
+# nurse-ward-allocator agent config — consolidated 2026-07-07
+#
+# `ags sync` overwrites ONLY: common/, react/, typescript/ (from registry refs below).
+# Project-only skills (never overwritten): contextual-skill-router, vite-manual-chunks,
+#   web-performance-optimization, webapp-testing, common/cursor-inventory,
+#   common/common-skills-audit, common/vibe-code-auditor
+# Agent index: AGENTS.md | Rules: .cursor/rules/**/*.mdc | Orchestrator: .cursor/agents/contextual-orchestrator.md
+# Baseline after consolidation: 46 skills | 18 subagents | 21 rules | 3 slash commands
+agents:
+  - cursor
+skills:
+  react:
+    ref: react-v1.3.6
+    exclude:
+      - react-state-management
+  typescript:
+    ref: typescript-v1.3.3
+  common:
+    ref: common-v2.2.1
+    exclude:
+      - common-observability
+      - common-mobile-animation
+      - common-mobile-ux-core
+      - common-mobile-visual-testing
+      - common-ui-design
+      - common-dast-tooling
+      - common-pentest-methodology
+      - common-exploit-verification
+      - common-store-changelog
+      - common-llm-security
+custom_overrides: []
+workflows: false
+mcp:
+  enabled: false
+  scope: disabled
+  prompted: false

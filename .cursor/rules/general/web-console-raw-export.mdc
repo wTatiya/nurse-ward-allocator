@@ -1,0 +1,23 @@
+---
+description: When user asks to read web console, always export and read raw console (collapsible rows hide content)
+alwaysApply: true
+---
+
+# Web Console Reading Rule
+
+When the user asks you to **read the web console**, **export and read the raw web console output**.
+
+## Why
+
+Web console UIs use collapsible rows. Collapsed content is invisible in normal views, so you will miss errors, stack traces, or nested objects. Raw export shows everything.
+
+## What to Do
+
+1. **Export the raw console** (right-click → "Save as..." or use the browser's export/save console feature).
+2. **Read the exported file**—do not rely on in-UI copy/paste or screenshots of the console.
+3. Use the full raw output for debugging and analysis.
+
+## Do NOT
+
+- Assume you can see everything from the collapsed UI.
+- Rely on manually expanded rows—you may miss collapsed entries.

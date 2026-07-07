@@ -1,0 +1,10 @@
+---
+description: "Debugging protocol — root-cause investigation, error workflow, backend-first stack trace; load common/common-debugging skill."
+alwaysApply: true
+---
+
+# Debugging protocol
+
+For errors, bugs, test failures, unexpected behavior, or `PERMISSION_DENIED` / data mismatches: follow **`.cursor/skills/common/common-debugging/SKILL.md`** (`[common/common-debugging]` in `AGENTS.md`).
+
+Do not ship speculative code fixes until **Phase 1 — root cause investigation** in that skill is complete, unless the user explicitly requests **UI-only** changes.

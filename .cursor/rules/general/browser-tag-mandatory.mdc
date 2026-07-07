@@ -1,0 +1,27 @@
+---
+description: Require browser tool usage whenever @Browser is mentioned
+alwaysApply: true
+---
+
+# @Browser Mandatory Execution
+
+When the user message includes `@Browser` (case-insensitive), you must use the browser tooling in this turn.
+
+## Required behavior
+
+- Treat `@Browser` as an explicit instruction to perform browser-based interaction.
+- Do not skip browser actions and do not answer from assumptions or memory.
+- First, call `browser_tabs` with `action: "list"` to identify existing tabs.
+- If the user says "current tab", "this tab", or similar, use the active/focused tab from the tab list first.
+- If a browser tab already exists, lock before interactions.
+- If no tab exists, navigate first, then lock, then interact.
+- Before any conclusion about page content, call `browser_snapshot` on the selected tab.
+- Before clicks/types, capture a snapshot and use it to target elements.
+- Never infer sheet/tab names unless they are visible in browser snapshot output.
+- If browser interaction fails, report the failure and what browser steps were attempted.
+
+## Prohibited behavior
+
+- Do not complete `@Browser` requests without any browser tool call.
+- Do not replace requested browser validation with code-only reasoning.
+- Do not claim what is in the current tab without both `browser_tabs list` and `browser_snapshot` evidence.

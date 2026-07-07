@@ -1,0 +1,80 @@
+---
+description: Remove AI writing patterns from prose. Enforces direct, human-sounding text.
+globs: ["**/*.md", "**/*.mdx", "**/*.txt", "**/*.json"]
+---
+# Stop Slop: Prose and Documentation Standard
+
+Eliminate predictable AI writing patterns from prose. Apply these constraints when drafting, editing, or reviewing text (READMEs, component documentation, commit messages).
+
+## Core Rules
+
+1. **Cut filler phrases:** Remove throat-clearing openers, emphasis crutches, and all adverbs.
+2. **Break formulaic structures:** Avoid binary contrasts, negative listings, dramatic fragmentation, rhetorical setups, false agency.
+3. **Use active voice:** Every sentence needs a human subject doing something. No passive constructions. No inanimate objects performing human actions ("the complaint becomes a fix").
+4. **Be specific:** No vague declaratives ("The reasons are structural"). Name the specific thing. No lazy extremes ("every," "always," "never") doing vague work.
+5. **Put the reader in the room:** No narrator-from-a-distance voice. "You" beats "People." Specifics beat abstractions.
+6. **Vary rhythm:** Mix sentence lengths. Two items beat three. End paragraphs differently. No em dashes.
+7. **Trust readers:** State facts directly. Skip softening, justification, hand-holding.
+8. **Cut quotables:** If it sounds like a pull-quote, rewrite it.
+
+## Phrases to Remove
+
+**Throat-Clearing Openers (State the point directly):**
+- "Here's the thing:", "Here's what/this/that", "Here's why", "The uncomfortable truth is", "It turns out", "The real [X] is", "Let me be clear", "The truth is,", "I'll say it again:", "I'm going to be honest", "Can we talk about", "Here's what I find interesting", "Here's the problem though"
+
+**Emphasis Crutches (Delete entirely):**
+- "Full stop.", "Period.", "Let that sink in.", "This matters because", "Make no mistake", "Here's why that matters"
+
+**Adverbs (Kill all -ly words, softeners, intensifiers, hedges):**
+- really, just, literally, genuinely, honestly, simply, actually, deeply, truly, fundamentally, inherently, inevitably, interestingly, importantly, crucially
+
+**Business Jargon (Use plain language):**
+- Navigate -> Handle
+- Unpack -> Explain
+- Lean into -> Accept
+- Landscape -> Situation
+- Game-changer -> Significant
+- Double down -> Commit
+- Deep dive -> Analysis
+
+**Meta-Commentary & Vague Declaratives (Remove):**
+- "Hint:", "Plot twist:", "The rest of this essay explains...", "The implications are significant", "The stakes are high"
+
+## Structures to Avoid
+
+**Binary Contrasts:**
+- Avoid: "Not because X. Because Y.", "It's not this. It's that.", "stops being X and starts being Y".
+- Fix: State Y directly.
+
+**Negative Listing:**
+- Avoid: "Not a X... Not a Y... A Z."
+- Fix: State Z immediately.
+
+**Dramatic Fragmentation:**
+- Avoid: "[Noun]. That's it. That's the [thing]."
+- Fix: Use complete sentences.
+
+**Rhetorical Setups:**
+- Avoid: "What if I told you...", "Here's what I mean:", "Think about it:"
+
+**False Agency & Passive Voice:**
+- Avoid: "the decision emerges", "a complaint becomes a fix", "X was created"
+- Fix: Name the human actor. "The team fixed it."
+
+## Quick Evaluation Checks
+
+Before outputting prose:
+- Any adverbs? Kill them.
+- Any passive voice? Find the actor, make them the subject.
+- Inanimate thing doing a human verb? Name the person.
+- Sentence starts with a Wh- word? Restructure it.
+- Any "here's what/this/that" throat-clearing? Cut to the point.
+- Any "not X, it's Y" contrasts? State Y directly.
+- Em-dash anywhere? Remove it.
+
+## Scoring (Target: >35/50)
+1. **Directness (1-10):** Statements or announcements?
+2. **Rhythm (1-10):** Varied or metronomic?
+3. **Trust (1-10):** Respects reader intelligence?
+4. **Authenticity (1-10):** Sounds human?
+5. **Density (1-10):** Anything cuttable?

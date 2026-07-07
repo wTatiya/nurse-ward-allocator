@@ -1,0 +1,245 @@
+---
+description: Repository coding — React/Vite/TS/Firebase patterns and safe changes; debugging defers to debugging-protocol-pointer + common/common-debugging skill
+alwaysApply: true
+---
+
+# Repository Coding + Debugging Best Practices
+
+Purpose: Ensure code written for this project follows safe, maintainable
+patterns for a React + Vite + TypeScript + Firebase + Firestore application.
+
+This rule applies to all code generation, debugging, and refactoring.
+
+---
+
+# Understanding the Stack
+
+This repository uses:
+
+- React
+- Vite
+- TypeScript
+- Firebase / Firestore
+- Cloud Functions
+- Vitest (unit testing)
+- Playwright (end-to-end tests)
+
+When modifying code, the AI must respect the patterns already used in the repo.
+
+Never introduce new frameworks or libraries unless absolutely necessary.
+
+---
+
+# Coding Best Practices
+
+## Prefer Small, Safe Changes
+
+Always modify the **smallest amount of code necessary**.
+
+Avoid:
+
+- large refactors
+- renaming many files
+- reorganizing directories
+
+unless the user explicitly requests it.
+
+---
+
+## Follow Existing Patterns
+
+Before writing code:
+
+1. Search the repository for similar code.
+2. Identify the pattern already used.
+3. Copy the pattern instead of inventing a new one.
+
+Examples:
+
+- use existing Firestore helpers
+- follow existing React component patterns
+- reuse utility functions when possible
+
+---
+
+## React Component Guidelines
+
+React components should:
+
+- remain small and readable
+- avoid complex logic inside JSX
+- move logic to helper functions when possible
+
+Bad:
+
+```tsx
+return condition ? <A /> : (otherCondition ? <B /> : <C />)
+```
+
+Better:
+
+```tsx
+const component = chooseComponent()
+return component
+```
+
+---
+
+## TypeScript Rules
+
+Type safety is required.
+
+Prefer:
+
+- explicit types for function inputs
+- interfaces or types for data models
+
+Avoid:
+
+```ts
+any
+```
+
+unless no other option exists.
+
+---
+
+# Firestore Best Practices
+
+Firestore mistakes can break production data.
+
+Always follow these rules.
+
+## Never Change Schema Without Confirmation
+
+Before modifying:
+
+- document structure
+- field names
+- Firestore rules
+- indexes
+
+STOP and ask the user to confirm.
+
+---
+
+## Avoid Excessive Queries
+
+Firestore costs money and has performance limits.
+
+Avoid:
+
+- repeated queries inside loops
+- unnecessary document reads
+
+Prefer:
+
+- batch reads
+- caching results when possible
+
+---
+
+# Debugging workflow (full protocol)
+
+When fixing bugs, follow **`.cursor/skills/common/common-debugging/SKILL.md`** (`[common/common-debugging]` in `AGENTS.md`) and the always-on **`.cursor/rules/general/debugging-protocol-pointer.mdc`**. Do not skip Phase 1 root-cause investigation.
+
+---
+
+# Testing Rules
+
+This repository already contains testing tools.
+
+Prefer existing scripts.
+
+## Unit Tests
+
+If changing logic:
+
+```
+npm run test
+```
+
+If the user cannot run commands, explain how to verify the behavior manually.
+
+---
+
+## Firestore Rules Tests
+
+If modifying Firestore rules:
+
+```
+npm run test:rules
+```
+
+---
+
+## End-to-End Tests
+
+For UI flows:
+
+```
+npm run test:e2e
+```
+
+---
+
+# Logging (temporary diagnostics)
+
+Temporary logging while investigating is allowed but must be safe.
+
+Prefer:
+
+```
+console.log("User data:", user)
+```
+
+Avoid logging:
+
+- authentication tokens
+- API keys
+- secrets
+
+Remove temporary debug logs unless the user asks to keep them.
+
+---
+
+# Performance Awareness
+
+React + Firestore apps can slow down easily.
+
+Avoid:
+
+- unnecessary re-renders
+- repeated Firestore reads
+- heavy computations in components
+
+Prefer:
+
+- memoization
+- caching
+- derived state
+
+---
+
+# Safety Rules
+
+Before modifying these systems, ask the user to confirm:
+
+- authentication
+- Firestore rules
+- Cloud Functions
+- deployment configuration
+
+Never delete files or large code blocks without explicit permission.
+
+---
+
+# AI Behavior Expectations
+
+Before implementing a change, the AI must:
+
+1. Identify the relevant files
+2. Explain the plan briefly
+3. Implement the minimal fix
+4. Show file paths for all edits
+5. Provide copy/paste-ready code

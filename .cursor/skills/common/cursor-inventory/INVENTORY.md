@@ -1,0 +1,92 @@
+# Cursor skills and subagents inventory
+
+> Generated 2026-07-07 from `.cursor/`
+
+## Skills
+
+| ID | Path | Description |
+| --- | --- | --- |
+| /common-accessibility | .cursor/skills/common/common-accessibility/SKILL.md | Enforce WCAG 2.2 AA compliance with semantic HTML, ARIA roles, keyboard navigation, and color contrast standards for web UIs. Use when building interactive components, adding form labels, fixing focu… |
+| /common-api-design | .cursor/skills/common/common-api-design/SKILL.md | Apply REST API conventions — HTTP semantics, status codes, versioning, pagination, and OpenAPI standards for any framework. Use when designing endpoints, choosing HTTP methods, implementing paginatio… |
+| /common-architecture-audit | .cursor/skills/common/common-architecture-audit/SKILL.md | Audit structural debt, logic leakage, and monolithic components across Web, Mobile, and Backend codebases. Use when reviewing architecture, assessing tech debt, detecting logic in wrong layers, or id… |
+| /common-architecture-diagramming | .cursor/skills/common/common-architecture-diagramming/SKILL.md | Standards for creating clear, audience-appropriate C4 and UML architecture diagrams with Mermaid. Use when producing system context diagrams, container views, sequence diagrams, or updating ARCHITECT… |
+| /common-best-practices | .cursor/skills/common/common-best-practices/SKILL.md | Enforce SOLID principles, guard-clause style, function size limits, and intention-revealing naming across all languages. Use when refactoring for readability, applying clean-code patterns, reviewing… |
+| /common-business-requirements | .cursor/skills/common/common-business-requirements/SKILL.md | Standardize BRD and BRD-lite discovery for business goals, stakeholder impact, current-to-future state, and measurable value outcomes. Use when creating BRD, business case, project justification, ROI… |
+| /common-code-review | .cursor/skills/common/common-code-review/SKILL.md | Conduct high-quality, persona-driven code reviews. Use when reviewing PRs, critiquing code quality, or analyzing changes for team feedback. |
+| /common-context-optimization | .cursor/skills/common/common-context-optimization/SKILL.md | Maximize context window efficiency, reduce latency, and prevent lost-in-middle issues through strategic masking and compaction. Use when token budgets are tight, tool outputs flood the context, conve… |
+| /common-debugging | .cursor/skills/common/common-debugging/SKILL.md | Troubleshoot systematically using the Scientific Method. Use when debugging crashes, tracing errors, diagnosing unexpected behavior, or investigating exceptions. |
+| /common-documentation | .cursor/skills/common/common-documentation/SKILL.md | Write effective code comments, READMEs, and technical documentation following intent-first principles. Use when adding comments, writing docstrings, creating READMEs, or updating any documentation. |
+| /common-error-handling | .cursor/skills/common/common-error-handling/SKILL.md | Cross-cutting standards for error design, response shapes, error codes, and boundary placement across API, domain, and infrastructure layers. Use when defining error hierarchies, wrapping exceptions,… |
+| /common-feedback-reporter | .cursor/skills/common/common-feedback-reporter/SKILL.md | Pre-write skill violation audit. Checks planned code against loaded skill anti-patterns before any file write. Use when writing Flutter/Dart code, editing SKILL.md files, or generating any code where… |
+| /common-git-collaboration | .cursor/skills/common/common-git-collaboration/SKILL.md | Enforce version control best practices for commits, branching, pull requests, and repository security. Use when writing commits, creating branches, merging, or opening pull requests. |
+| /common-learning-log | .cursor/skills/common/common-learning-log/SKILL.md | Append a structured learning entry to AGENTS_LEARNING.md whenever an AI agent makes a mistake. Auto-activates as a composite skill when: a pre-write skill violation is detected and auto-fixed, or whe… |
+| /common-owasp | .cursor/skills/common/common-owasp/SKILL.md | OWASP Top 10 audit checklists for Web Applications (2021), APIs (2023), and Mobile (2024). Use when performing any security review, PR review, or codebase audit touching web, mobile, or API code. |
+| /common-performance-engineering | .cursor/skills/common/common-performance-engineering/SKILL.md | Enforce universal standards for high-performance development. Use when profiling bottlenecks, reducing latency, fixing memory leaks, improving throughput, or optimizing algorithm complexity in any la… |
+| /common-product-requirements | .cursor/skills/common/common-product-requirements/SKILL.md | Standardize PRD discovery and drafting for product scope, user outcomes, requirement IDs, and acceptance criteria. Use when creating PRD, product requirements, feature specification, or acceptance cr… |
+| /common-protocol-enforcement | .cursor/skills/common/common-protocol-enforcement/SKILL.md | Enforce Red-Team verification and adversarial protocol audit. Use when verifying tasks, performing self-scans, or checking for protocol violations. Load as composite for all sessions. |
+| /common-security-audit | .cursor/skills/common/common-security-audit/SKILL.md | Probe for hardcoded secrets, injection surfaces, unguarded routes, business logic flaws, and platform-specific weaknesses across backend (Node, Go, Java, Python, Rust), frontend (React, Angular, Vue)… |
+| /common-security-standards | .cursor/skills/common/common-security-standards/SKILL.md | Enforce universal security protocols for safe, resilient software. Use when implementing authentication, encryption, authorization, input validation, secret management, or any security-sensitive feat… |
+| /common-session-retrospective | .cursor/skills/common/common-session-retrospective/SKILL.md | Analyze conversation corrections to detect skill gaps and auto-improve the skills library. Use after any session with user corrections, rework, or retrospective requests. After finding correction loo… |
+| /common-skill-creator | .cursor/skills/common/common-skill-creator/SKILL.md | Standardizes the creation and evaluation of high-density Agent Skills (Claude, Cursor, Windsurf). Ensures skills achieve high Activation (specificity/completeness) and Implementation (conciseness/act… |
+| /common-skills-audit | .cursor/skills/common/common-skills-audit/SKILL.md | Audits .cursor/ skills, rules, subagents, and AGENTS.md for redundancy, broken references, sync drift, and routing gaps. Use when consolidating agent config, after adding skills/rules/subagents, or w… |
+| /common-software-requirements | .cursor/skills/common/common-software-requirements/SKILL.md | Standardize SRS and FRS specifications for technical behavior, interfaces, data contracts, quality constraints, and verification mapping. Use when writing SRS, functional specification, system behavi… |
+| /common-system-design | .cursor/skills/common/common-system-design/SKILL.md | Enforce separation of concerns, dependency inversion, and resilience patterns across layered and distributed architectures. Use when designing new features, evaluating module boundaries, selecting ar… |
+| /common-tdd | .cursor/skills/common/common-tdd/SKILL.md | Implements a strict Red-Green-Refactor loop to ensure zero production code is written without a prior failing test. Use when: creating new features, fixing bugs, or expanding test coverage. |
+| /common-telemetry | .cursor/skills/common/common-telemetry/SKILL.md | Enforce tracking of token usage, execution metadata, and cost at the end of agent workflows. Use when a workflow concludes, before generating the final handoff or task.md artifact. |
+| /common-web-visual-testing | .cursor/skills/common/common-web-visual-testing/SKILL.md | Standardizes visual audits, responsive design, and behavioral testing for web apps. |
+| /common-workflow-writing | .cursor/skills/common/common-workflow-writing/SKILL.md | Rules for writing concise, token-efficient workflow and skill files. Prevents over-building that requires costly optimization passes. Use when creating or editing workflow files, SKILL.md files, or n… |
+| /contextual-skill-router | .cursor/skills/contextual-skill-router/SKILL.md | Routes every new request to correct project skills and subagents using AGENTS index, file context, and task intent. Use when starting any request (Phase 0 orchestration) before domain execution. |
+| /cursor-inventory | .cursor/skills/common/cursor-inventory/SKILL.md | Scans the entire .cursor directory and outputs markdown tables of skills, slash commands, and subagents with IDs and brief descriptions. Use when the user asks for a skills catalog, subagent list, sl… |
+| /react-component-patterns | .cursor/skills/react/react-component-patterns/SKILL.md | Build modern React component architecture with composition patterns. Use when designing reusable React components, applying composition patterns, or structuring component hierarchies. |
+| /react-hooks | .cursor/skills/react/react-hooks/SKILL.md | Write React hooks with clean effect boundaries and measured memoization. Use when working with `useEffect`, custom hooks, refs, transitions, or hook dependency problems in React. |
+| /react-performance | .cursor/skills/react/react-performance/SKILL.md | Optimize React rendering, bundle size, and data flow with profiler-led decisions. Use when reducing re-renders, fixing waterfalls, or deciding whether memoization is warranted in React. |
+| /react-security | .cursor/skills/react/react-security/SKILL.md | Prevent XSS, secure auth flows, and harden React client-side applications. Use when preventing XSS, securing auth flows, or auditing third-party dependencies in React. |
+| /react-testing | .cursor/skills/react/react-testing/SKILL.md | Test React components with RTL and Jest/Vitest. Use when writing React component tests with React Testing Library, Jest, or Vitest. |
+| /react-tooling | .cursor/skills/react/react-tooling/SKILL.md | Configure debugging, bundle analysis, and ecosystem tools for React applications. Use when setting up Vite/webpack build tooling, analyzing bundle size, debugging re-renders with React DevTools, or c… |
+| /react-typescript | .cursor/skills/react/react-typescript/SKILL.md | Type React components and hooks with TypeScript patterns. Use when typing React props, hooks, event handlers, or component generics in TypeScript. |
+| /typescript-best-practices | .cursor/skills/typescript/typescript-best-practices/SKILL.md | Write idiomatic TypeScript patterns for clean, maintainable code. Use when writing or refactoring TypeScript classes, functions, modules, or async logic. |
+| /typescript-language | .cursor/skills/typescript/typescript-language/SKILL.md | Apply modern TypeScript standards for type safety and maintainability. Use when working with types, interfaces, generics, enums, unions, or tsconfig settings. |
+| /typescript-security | .cursor/skills/typescript/typescript-security/SKILL.md | Validate input, secure auth tokens, and prevent injection attacks in TypeScript. Use when validating input, handling auth tokens, sanitizing data, or managing secrets and sensitive configuration. |
+| /typescript-tooling | .cursor/skills/typescript/typescript-tooling/SKILL.md | Development tools, linting, and build config for TypeScript. Use when configuring ESLint, Prettier, Jest, Vitest, tsconfig, or any TS build tooling. |
+| /vibe-code-auditor | .cursor/skills/common/vibe-code-auditor/SKILL.md | Audits AI-generated, prototype, or vibe-coded software for production readiness — security, architecture, robustness, and technical debt. Evidence-backed report with score. Use when user runs /vibe-c… |
+| /vite-manual-chunks | .cursor/skills/vite-manual-chunks/SKILL.md | Tunes Vite/Rollup bundle chunks via output.manualChunks and chunkSizeWarningLimit without masking bloat. Use when fixing "chunks are larger than 600 kB", adjusting vite.config.ts manualChunks, or spl… |
+| /webapp-testing | .cursor/skills/webapp-testing/SKILL.md | Tests local web applications using native Python Playwright scripts (Chromium headless) with a reconnaissance-then-action workflow. Use when the user asks to test a web app locally, write E2E/UI auto… |
+| /web-performance-optimization | .cursor/skills/web-performance-optimization/SKILL.md | Systematically measures and improves web performance (Core Web Vitals, Lighthouse, runtime, network, bundle size, caching). Use when a site loads slowly, optimizing LCP/INP/CLS, or debugging runtime… |
+
+## Slash commands
+
+| ID | Path | Description | Linked skill |
+| --- | --- | --- | --- |
+| /common-skills-audit | .cursor/commands/common-skills-audit.md | Audit .cursor/ skills, rules, subagents, and AGENTS.md for redundancy, broken references, and sync drift. Evidence-backed report with consolidation plan. | common-skills-audit |
+| /cursor-inventory | .cursor/commands/cursor-inventory.md | List all Cursor skills, slash commands, and subagents under .cursor/ as markdown tables with IDs and brief descriptions. | cursor-inventory |
+| /vibe-code-auditor | .cursor/commands/vibe-code-auditor.md | Audit AI-generated, prototype, or vibe-coded software for production readiness — security, architecture, robustness, and technical debt. Evidence-backed report with score. | vibe-code-auditor |
+
+## Subagents
+
+| ID | Path | Description | Invoke via |
+| --- | --- | --- | --- |
+| api-integration-specialist | .cursor/agents/api-integration-specialist.md | Expert API integration specialist for third-party services, authentication, webhooks, rate limits, and production-ready client patterns. Use proactively whenever integrating or modifying external API… | Task `subagent_type` |
+| architecture-guard | .cursor/agents/specialist-architecture-guard.mdc | Audits PR diffs for architecture boundary violations, design simplicity, dependency drift, and established-pattern mismatches. Use during code review when architecture, layering, or framework convent… | Task `subagent_type` |
+| codebase-scout | .cursor/agents/specialist-codebase-scout.mdc | Explores codebase structure, affected files, blast radius, related tests, and local conventions for a focused topic. Use when review or planning needs structural lookup without bloating main context. | Task `subagent_type` |
+| contextual-orchestrator | .cursor/agents/contextual-orchestrator.md | Master orchestrator and skill router for nurse-ward-allocator. Use proactively to translate intent, route skills/subagents, and synthesize safe final output. | Task `subagent_type` |
+| database-architect | .cursor/agents/database-architect.md | Database architecture specialist for data modeling, scalability, and technology selection. Use proactively for any database design, migration, or performance architecture decision. | Task `subagent_type` |
+| frontend-developer | .cursor/agents/frontend-developer.md | Senior frontend specialist for React, Vue, and Angular. Use proactively for any UI implementation, refactor, or review, always starting by requesting project context from the context-manager. | Task `subagent_type` |
+| fullstack-developer | .cursor/agents/fullstack-developer.md | Senior fullstack development specialist. Use proactively for end-to-end feature planning, implementation, and delivery across database, API, frontend, authentication, testing, and deployment. | Task `subagent_type` |
+| integration-test-generator | .cursor/agents/specialist-integration-test-generator.mdc | Generates one integration/E2E test from an approved test case spec using existing project patterns. Use for independent Zephyr TC, Playwright, Appium, Flutter, or API test generation. | Task `subagent_type` |
+| pr-reviewer | .cursor/agents/specialist-pr-reviewer.mdc | Summarizes GitHub PR, GitLab MR, or Azure DevOps PR metadata, review threads, changed files, and template completeness. Use during review-ticket or code-review workflows when PR/MR context exists. | Task `subagent_type` |
+| rewind-engineer | .cursor/agents/rewind-engineer.md | Specialized git history reconnaissance and codebase restoration subagent. Use proactively when the user indicates a desire to "go back," "revert," "undo," or "rewind" to a previous state based on tim… | Task `subagent_type` |
+| root-cause-investigator | .cursor/agents/root-cause-investigator.md | Senior Systems Diagnostician specializing in Root Cause Analysis (RCA). Use proactively when the user reports bugs, failures, or unexpected behavior in the React 19/Firebase stack. | Task `subagent_type` |
+| security-reviewer | .cursor/agents/specialist-security-reviewer.mdc | High-density security audit persona. Enforces OWASP Top 10, Vibe Security, trust gating, and runtime hardening for code and agentic review flows. | Task `subagent_type` |
+| senior-architect | .cursor/agents/senior-architect.md | Senior system and software architect. Use proactively for architecture decisions, system design, tech stack choices, and project-wide refactors and analysis using provided scripts and reference docs. | Task `subagent_type` |
+| senior-backend | .cursor/agents/senior-backend.md | Senior backend engineering copilot. Use proactively for API design, scaffolding, database migrations, performance/load testing, and backend security reviews using the provided scripts and reference d… | Task `subagent_type` |
+| senior-qa | .cursor/agents/senior-qa.md | Senior QA engineering toolkit. Use proactively for test strategy, suite design, coverage analysis, and E2E scaffolding across this codebase. | Task `subagent_type` |
+| tdd-implementer | .cursor/agents/specialist-tdd-implementer.mdc | Strict TDD specialist. Enforces RED -> GREEN -> REFACTOR loop, minimal implementation, and zero-noise test conventions. | Task `subagent_type` |
+| trust-error-recovery | .cursor/agents/trust-error-recovery.md | Trust and error-recovery specialist for anxious novice users. Use proactively to design forgiving actions, undo-first workflows, clear confirmations, and low-risk form behavior. | Task `subagent_type` |
+| typescript-pro-agents | .cursor/agents/typescript-pro-agents.md | Senior TypeScript 5+ specialist for advanced type system design, full-stack type safety, and optimized build/tooling. Use proactively for any TypeScript-related design, implementation, or refactor wo… | Task `subagent_type` |
+
+## Summary
+
+- **Skills:** 46
+- **Slash commands:** 3
+- **Subagents:** 18
+- **Scope:** `.cursor/skills/`, `.cursor/commands/`, `.cursor/agents/`

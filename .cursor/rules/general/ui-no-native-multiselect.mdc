@@ -1,0 +1,30 @@
+---
+description: Avoid native HTML multi-select controls in UI
+globs: ["src/**/*.{ts,tsx,js,jsx}"]
+alwaysApply: false
+---
+
+# UI Rule: No native `<select multiple>`
+
+Do not use native HTML multi-select controls (`<select multiple>`).
+
+## Why
+
+- Poor usability on Windows and mobile
+- Hard to scan selected items
+- Inconsistent keyboard/mouse behavior across browsers
+
+## Use this instead
+
+Use the existing **checkbox dropdown** pattern used by incident dashboards:
+
+- Button showing a summary label (e.g. `ทั้งหมด`, `เลือก N หน่วยงาน`, or the single selected name)
+- Popover panel with a scrollable list of checkboxes
+- Close on outside click and `Escape`
+- Empty selection means **All** (do not store “select all” as a huge explicit array unless needed)
+
+## Examples to copy from
+
+- `src/components/FallIncidentDashboard.tsx` department filter
+- `src/components/MedErrorIncidentDashboard.tsx` department filter
+

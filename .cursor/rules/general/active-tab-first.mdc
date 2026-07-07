@@ -1,0 +1,36 @@
+---
+description: Prioritize the current active tab when the user asks to look at it; check all tabs before switching
+alwaysApply: true
+---
+
+# Active Tab First Rule
+
+When the user asks you to look at the **current active tab**, **this tab**, or **the tab they have open**:
+
+## Required Behavior
+
+1. **Identify the active tab first**
+   - For IDE/files: Use the file marked as "open" or "currently focused" in context (e.g., `open_and_recently_viewed_files`).
+   - For browser MCP: Call `browser_tabs` with action `"list"` to see all tabs; the active/focused tab is the one the user is viewing.
+
+2. **Read or interact with that tab first**
+   - Do not swap to a different tab or file without explicit reason.
+   - If the user said "look at this" or "current active tab", they mean the one they have selected—honor that.
+
+3. **When multiple tabs exist**
+   - Check all tabs to understand context.
+   - Still prioritize the active tab the user referred to.
+   - Do not arbitrarily switch to another tab because it "seems more relevant."
+
+## Avoid
+
+- Ignoring the tab the user pointed to.
+- Opening or focusing a different file/tab by default.
+- Assuming a different tab is "the one they meant" without checking.
+
+## When User Intent Is Unclear
+
+If you cannot determine which tab is active:
+- List available tabs/files.
+- Ask which one to focus on.
+- Do not guess and switch to a random tab.

@@ -1,0 +1,44 @@
+---
+description: Security work routing — points to security skills and subagents; replaces long duplicated OWASP prose in always-on context.
+alwaysApply: true
+---
+
+# Security routing (canonical)
+
+Replaces the always-on `vulnerability-scanner.mdc` prose duplicate. Load skills by task; use subagents for deep review.
+
+## Quick script
+
+```bash
+python scripts/security_scan.py <project_path>
+```
+
+Reference checklists: `checklists.md` (OWASP Top 10, Auth, API, Data protection).
+
+## Skill routing
+
+| Task | Load |
+|------|------|
+| PR/diff security review | `common/common-code-review` + subagent `security-reviewer` |
+| OWASP checklist / web+API review | `common/common-owasp` |
+| Secrets, injection surfaces, audit scan | `common/common-security-audit` |
+| Auth/crypto/input validation standards | `common/common-security-standards` |
+| Full pentest / red-team workflow | `common/common-pentest-methodology` |
+| Dynamic scans (ZAP, nuclei, etc.) | `common/common-dast-tooling` |
+| Validate exploit / filter false positives | `common/common-exploit-verification` |
+| LLM/agent/RAG security | `common/common-llm-security` |
+| TypeScript-specific hardening | `typescript/typescript-security` |
+| React client security | `react/react-security` |
+
+## Subagent routing
+
+- PR/diff: `security-reviewer` (compliance mode for SOC2/ISO/program audits)
+- Business-logic exploits: `logic-hacker`
+- Mobile MASTG: `mobile-reverser`
+- CI SAST/DAST/SCA correlation: `aspm-correlator`
+
+## Core principles (keep in every security task)
+
+- Assume breach; least privilege; fail-closed on auth/authz errors.
+- Map attack surface before scanning; prioritize by exploitability × asset value.
+- No finding without reproduction path and remediation.

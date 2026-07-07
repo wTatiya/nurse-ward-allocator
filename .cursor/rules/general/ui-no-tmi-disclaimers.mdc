@@ -1,0 +1,22 @@
+---
+description: Avoid stacking repetitive “what this is not” / legalistic caveats in product UI.
+globs: ["src/**/*.{tsx,jsx}"]
+alwaysApply: false
+---
+
+# UI: no disclaimer spam / TMI
+
+Dashboards and analytics screens should stay readable for busy clinical and ops users.
+
+## Do not
+
+- Repeat the same caveat in **section captions**, **subheadings**, **tooltips**, **inline alerts**, and **table helper text** (e.g. “not hospital-wide totals”, “loaded/filtered subset only”, “not SPC”, “not clinical probability”, “not mechanistic causation”, “not official DNS rate” on every block).
+- Chain multiple **“ไม่ใช่…” / “ไม่ได้…”** sentences in one place; that reads like defensive boilerplate and confuses more than it protects.
+
+## Do instead
+
+- State **what the number or chart is** in the title or one short line (units, period, definition).
+- Put rare edge cases or methodology in **one** place if needed: a single help/tooltip entry, glossary doc, or release note — not scattered through the page.
+- Prefer **neutral labels** (“ตัวเศษ (IPD D–I)”, “รายเดือน”) over repeated scope lectures.
+
+When adding copy, ask: “Did we already say this two scrolls up?” If yes, **delete the duplicate**.

@@ -1,0 +1,78 @@
+---
+description: Enforces Vite build optimization, chunk size prevention, and dynamic import architecture for React 19 and Firebase.
+globs: ["vite.config.ts", "src/App.tsx", "src/routes/**/*.{ts,tsx}", "src/router/**/*.{ts,tsx}"]
+alwaysApply: false
+---
+
+# Vite Chunking and Build Optimization Protocol
+
+## Context
+
+Stack: React 19, TypeScript, Vite, Tailwind CSS, Firebase.
+Objective: Prevent Rollup warning "Some chunks are larger than 600 kB after minification."
+
+## 1. Preventive Architecture (React 19)
+
+When generating or refactoring React components, routing, or heavy library imports, strictly enforce code-splitting:
+
+- Route-level components MUST be dynamically imported using React 19 `lazy()` and wrapped in `<Suspense>`.
+- Firebase modules (Auth, Firestore, Functions) MUST be imported only where needed, avoiding global synchronous imports of the entire Firebase SDK.
+- Large third-party libraries (e.g., rich text editors, charts, maps) MUST use dynamic `import()` localized to the consuming component.
+
+### Pattern: Route Splitting
+
+```tsx
+import { lazy, Suspense } from 'react';
+
+// Require dynamic imports for routes
+const Dashboard = lazy(() => import('./routes/Dashboard'));
+
+export const AppRouter = () => (
+  <Suspense fallback={<div className="animate-pulse">Loading...</div>}>
+    <Dashboard />
+  </Suspense>
+);
+```
+
+## 2. Vite Configuration Strategy (vite.config.ts)
+
+When modifying Vite build configurations or addressing chunk limits, apply the `manualChunks` function to segregate vendor code.
+
+Implement the following Rollup structure in `vite.config.ts`:
+
+```ts
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+
+export default defineConfig({
+  plugins: [react()],
+  build: {
+    chunkSizeWarningLimit: 600, // Retain strict warning limit for monitoring
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
+              return 'vendor-react';
+            }
+            if (id.includes('firebase')) {
+              return 'vendor-firebase';
+            }
+            if (id.includes('@tailwindcss') || id.includes('postcss')) {
+              return 'vendor-styles';
+            }
+            return 'vendor';
+          }
+        }
+      }
+    }
+  }
+});
+```
+
+## 3. Troubleshooting Flow
+
+- **Assess:** Run `npx vite build --debug` or inspect terminal output to identify the oversized chunk.
+- **Prevent:** Do NOT simply increase `build.chunkSizeWarningLimit`. This is an anti-pattern.
+- **Refactor:** Locate synchronous imports contributing to the oversized chunk and refactor to `import()`.
+- **Update Rollup:** Modify `vite.config.ts` using the `manualChunks` approach above to isolate the offending module.

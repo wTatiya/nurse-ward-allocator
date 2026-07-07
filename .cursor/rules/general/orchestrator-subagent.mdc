@@ -1,0 +1,65 @@
+---
+description: Master orchestrator behavior for non-technical requests. Read rules/skills/subagents, route sequentially, and coordinate subagent handoffs.
+globs: *
+alwaysApply: true
+---
+
+# Contextual Orchestrator Subagent Rule
+
+Canonical full protocol: `.cursor/agents/contextual-orchestrator.md` (this rule stays short; extend there to avoid drift).
+
+Use `contextual-orchestrator` as the default orchestration layer for each new request unless the task is trivial.
+
+## Required behavior
+
+1. Read and initialize context from:
+   - `AGENTS.md`
+   - `.cursor/rules/README.md` + `.cursor/rules/RULES_INVENTORY.md` (domain map), then `.cursor/rules/**/*.mdc` as needed
+   - `.cursor/skills/**/SKILL.md`
+   - `.cursor/agents/*.{md,mdc}` and relevant user-level subagents
+   - Rebuild these inventories on every request; do not reuse stale snapshots
+2. Translate user intent into clear technical scope and constraints.
+3. Route to relevant skills and specialized platform subagents.
+4. Execute subagents sequentially for dependent work and pass handoff context between them.
+5. Apply pre-write audit and post-write self-scan before completion. The post-write self-scan must include a **complete enumerated list** of every skill (`SKILL.md` / AGENTS skill ID) and every subagent (`Task` `subagent_type` or named agent) used during the turn (`None` if unused). Full protocol: `.cursor/agents/contextual-orchestrator.md`.
+
+## PlanOps (always available)
+
+- If the request is about plans/specs/PRDs, auto-enter PlanOps:
+  1. Access target plan(s), preferring `docs/plans/`.
+  2. Assess structure against `.cursor/rules/general/writing-plans.mdc`.
+  3. Analyze completeness, risks, testability, and step quality.
+  4. Edit or create the plan with minimal, clear, actionable updates.
+- For new plans, use `docs/plans/YYYY-MM-DD-<feature-name>.md`.
+- For plan edits, preserve user intent and improve clarity/safety.
+
+## Change-drift handling
+
+- If rules/skills/subagents are added, deleted, renamed, or modified during a task:
+  - Refresh inventories immediately.
+  - Re-evaluate active skills and delegation targets.
+  - Continue execution only after re-routing with fresh context.
+- After edits to `.cursor/rules/*`, `.cursor/skills/**`, or `.cursor/agents/*`, force one extra refresh before final output.
+
+## Delegation policy
+
+- Prefer direct tools only for narrow single-file tasks.
+- Skill routing is Phase 0 inside `contextual-orchestrator` (former `contextual-skill-router` agent merged).
+- For multi-step work, orchestrate with:
+  - `explore` / `codebase-scout` -> discovery
+  - `database-architect` / `firestore-rules-regression-guard` -> schema/rules/data
+  - `senior-backend` / `api-integration-specialist` -> backend/API
+  - `frontend-developer` / `typescript-pro-agents` -> UI and typing
+  - `senior-qa` -> tests, validation, diff test-gap review
+  - `security-reviewer` -> security review (compliance mode when audit requested)
+  - `root-cause-investigator` -> debugging and RCA
+  - `senior-data-platform` / `analytics-engineer` -> data/ML/telemetry
+  - Specialist `specialist-*.mdc` agents for PR/ticket/security red-team workflows (see `.cursor/agents/contextual-orchestrator.md` registry)
+  - `senior-data-platform` for ML/pipelines (not `senior-data-scientist` / `senior-data-engineer`)
+  - `thai-inclusive-uiux-orchestrator` for full Thai UX audits (coordinates four lens agents)
+
+## Safety defaults
+
+- If rules conflict, choose the most restrictive safe path.
+- If user intent is ambiguous, ask one concise clarifying question.
+- Keep user communication in plain English suitable for non-technical users.

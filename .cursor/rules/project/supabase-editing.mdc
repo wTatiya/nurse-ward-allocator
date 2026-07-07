@@ -1,0 +1,31 @@
+---
+description: Supabase schema, RLS, and Edge Function editing discipline for nurse-ward-allocator
+globs: supabase/**/*
+alwaysApply: false
+---
+
+# Supabase Editing Discipline
+
+This project uses **Supabase Postgres + RLS + Edge Functions**, not Firebase/Firestore.
+
+## Before changing migrations or RLS
+
+1. Read the existing migration: `supabase/migrations/20260707120000_initial_schema.sql`
+2. Preserve assignment fairness: lottery seeds, audit logs, and server-side execution in `run-assignment`
+3. Test RLS with both `nurse` and `admin` roles in mind
+4. Prefer new migration files over editing applied migrations in production
+
+## Edge Functions
+
+- `run-assignment` must use service role only for privileged writes after auth checks
+- Keep assignment engine pure in `_shared/assignment-engine.ts` — testable without Deno runtime
+- Do not expose lottery seed generation to the client
+
+## Realtime
+
+Tables with Realtime enabled: `assignment_rounds`, `assignments`, `waitlist`, `lottery_events`. Changing column shapes may require client hook updates in `src/hooks/useRealtimeAssignments.ts`.
+
+## Environment
+
+- Client: `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`
+- Edge Function (hosted): `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`

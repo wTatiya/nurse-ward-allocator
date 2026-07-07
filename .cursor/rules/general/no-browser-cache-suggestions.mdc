@@ -1,0 +1,37 @@
+---
+description: STRICT - Never suggest cache/reload, install, local build, or deploy. User handles these.
+alwaysApply: true
+---
+
+# No Cache / Install / Build / Deploy Hand-Holding — STRICT
+
+**This rule overrides default troubleshooting patterns. Follow it strictly.**
+
+## Prohibited — Do NOT suggest or mention
+
+| Do NOT | Even as "fallback" or "last step" |
+|--------|-----------------------------------|
+| Clear cache, cookies, or browsing history | Never |
+| Hard reload / Ctrl+Shift+R / force refresh | Never |
+| `npm install` / install dependencies | Unless user explicitly asks how to install |
+| **`npm run build` / `vite build` / production build / "rebuild" / "run a build"** | **Unless user asks about builds or is fixing a build failure** |
+| Deploy / `firebase deploy` / `npm run deploy` | Unless user explicitly asks how to deploy |
+| "Try refreshing" / "clear cache first" | Never |
+| "Run the build and deploy" / "build then deploy" at end of a fix | Never |
+| "You may need to redeploy" / "after you deploy" / "rebuild to see changes" | Never |
+| Implying the user forgot to build or deploy before asking for help | Never |
+
+## Why
+
+- User clears cache and hard reloads after deployments as needed. Suggesting it wastes time.
+- User runs builds and deploys on their own schedule. **Assume code help is requested in an already-built, already-deployed context** unless they say otherwise.
+- Do not talk down: skip "reminder" steps they clearly do not need.
+
+## Enforcement
+
+- **Before sending:** If the reply tells the user to cache-clear, reload, refresh, **run a build**, **deploy**, or `npm install` (without them asking) → remove it.
+- **Never** append build/deploy as a verification checklist after a code fix. Focus on the fix, data flow, config, logs, Firestore, rules.
+
+## What to do instead
+
+Focus on the actual fix and how to validate in-repo (tests, logic). Assume deployment and local production builds are handled by the user without narration.

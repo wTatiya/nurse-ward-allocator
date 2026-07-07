@@ -1,0 +1,113 @@
+---
+description: Repository context map - where things live, architecture, and safe editing guidelines
+alwaysApply: true
+---
+
+# Repository Context Map
+
+Purpose: Help the AI understand where things live in this repository
+so it edits the correct files and follows existing architecture.
+
+---
+
+# Project Overview
+
+**Nurse Ward Allocator** — hospital ward assignment app using Serial Priority with Lottery cascade.
+
+Stack:
+
+- React + Vite + TypeScript + Tailwind CSS
+- Supabase (Postgres, Auth, Realtime, Edge Functions)
+- Vitest (unit tests)
+- Hosting: Vercel (SPA)
+
+The AI should respect the repository structure and modify existing files instead of creating new structures unnecessarily.
+
+---
+
+# Frontend Structure
+
+Frontend UI code lives in `src/`:
+
+| Path | Purpose |
+| --- | --- |
+| `src/components/` | Reusable React components |
+| `src/pages/` | Route-level pages (Login, Preferences, Admin, Results) |
+| `src/hooks/` | Custom hooks (`useAuth`, `useRealtimeAssignments`) |
+| `src/lib/` | Shared utilities, Supabase client, assignment engine (client copy) |
+| `src/types/` | TypeScript types (`database.ts`) |
+
+---
+
+# Supabase / Backend Structure
+
+| Path | Purpose |
+| --- | --- |
+| `supabase/migrations/` | Postgres schema, RLS policies |
+| `supabase/functions/run-assignment/` | Edge Function — runs assignment round |
+| `supabase/functions/_shared/` | Pure assignment engine + Vitest tests |
+
+**Critical:** Assignment lottery logic must run server-side in the Edge Function. Never move fair lottery execution to the client.
+
+Never mix frontend React code with Edge Function logic. Shared pure logic belongs in `_shared/`.
+
+---
+
+# Testing Structure
+
+- `supabase/functions/_shared/assignment-engine.test.ts` — assignment engine unit tests
+- `src/**/*.test.ts` — frontend tests (Vitest)
+
+When modifying assignment logic, update tests in `_shared/` first.
+
+```bash
+npm test
+npm run build
+```
+
+---
+
+# Configuration Files
+
+| File | Purpose |
+| --- | --- |
+| `package.json` | Dependencies and scripts |
+| `vite.config.ts` | Vite build config |
+| `tsconfig.json` / `tsconfig.app.json` | TypeScript settings |
+| `supabase/config.toml` | Supabase local config |
+| `vercel.json` | SPA routing for Vercel |
+| `.env` | `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` (never commit) |
+
+---
+
+# Safe Editing Guidelines
+
+Before editing:
+
+1. Identify the correct module.
+2. Check similar existing code.
+3. Follow existing patterns.
+
+Avoid creating duplicate utilities, moving large folders, or renaming many files unless the user explicitly requests it.
+
+---
+
+# Supabase Editing Guidelines
+
+Before editing:
+
+- RLS policies in migrations
+- Database schema
+- Auth role logic (`profiles.role`)
+- Edge Function secrets / service role usage
+
+STOP and confirm with the user when changes could break assignment fairness, auth boundaries, or production data.
+
+---
+
+# AI Navigation Strategy
+
+1. Search the repo for related code.
+2. Identify the smallest responsible module.
+3. Modify minimal code needed.
+4. Avoid touching unrelated files.

@@ -1,0 +1,44 @@
+---
+description: Use the Context7 auto-research skill to fetch up-to-date library and framework documentation during coding sessions.
+alwaysApply: true
+---
+
+# Context Auto Research
+
+Use the **Context7 auto-research** skill to automatically fetch the latest documentation for libraries and frameworks when answering questions or writing code.
+
+## When to Use
+
+- **Up-to-date docs needed**: When you need current documentation for React, Next.js, Prisma, or any other popular library/framework.
+- **Library-specific questions**: When the user asks about APIs, configuration, or best practices for a specific library or framework.
+
+## How to Install (one-time)
+
+Run in the terminal:
+
+```bash
+npx skills add -g BenedictKing/context7-auto-research
+```
+
+After installation, follow the GitHub repository instructions to configure any optional API keys.
+
+## Usage Guidelines
+
+- **Prefer Context7 for docs**: When the question is primarily about library/framework APIs or configuration, use the Context7 auto-research skill rather than relying only on cached or older knowledge.
+- **Natural invocation**: Use the skill naturally in conversations; do not require the user to remember any special commands.
+- **Combine with reasoning**: Fetch documentation via Context7, then interpret and apply it to the user’s specific codebase and problem.
+
+## Best Practices
+
+- **API keys via environment variables**: If API keys are configured, prefer environment variables or secure secrets storage over hardcoding.
+- **Auto-trigger**: Take advantage of the skill’s auto-trigger functionality where available for seamless integration.
+
+## Troubleshooting and References
+
+- For detailed setup, configuration, and troubleshooting steps, refer to the GitHub repository: `https://github.com/BenedictKing/context7-auto-research`.
+- Related skills that may complement this one:
+  - `tavily-web`
+  - `exa-search`
+  - `firecrawl-scraper`
+  - `codex-review`
+

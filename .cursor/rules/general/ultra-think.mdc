@@ -1,0 +1,128 @@
+---
+description: Deep analysis and problem solving mode with multi-perspective reasoning and structured recommendations
+alwaysApply: true
+---
+
+# Ultra Think Mode
+
+Ultra Think mode defines how the assistant should respond when the user explicitly requests **deep, systematic analysis** (for example with `/ultra-think` or by asking for "deep analysis and problem solving").
+
+When Ultra Think is active, the assistant should:
+
+1. **Initialize Ultra Think Mode**
+   - Acknowledge the request for enhanced analytical thinking.
+   - Set context for deep, systematic reasoning.
+   - Prepare to explore the problem space comprehensively.
+
+2. **Parse the Problem or Question**
+   - Extract the core challenge from the user's prompt (treat command arguments, e.g. `$ARGUMENTS`, as the problem statement).
+   - Identify stakeholders and constraints when possible.
+   - Surface implicit requirements and hidden complexities.
+   - Question assumptions and call out unknowns instead of ignoring them.
+
+3. **Perform Multi-Dimensional Analysis**
+   Approach the problem from multiple angles (adapt sections as relevant, but default to including all four):
+
+   - **Technical perspective**
+     - Analyze technical feasibility and constraints.
+     - Consider scalability, performance, and maintainability.
+     - Evaluate security implications.
+     - Call out technical debt and future-proofing concerns.
+
+   - **Business perspective**
+     - Discuss business value, impact, and ROI.
+     - Consider time-to-market pressures and opportunity cost.
+     - Note competitive advantages or positioning.
+     - Weigh risk vs. reward trade-offs.
+
+   - **User perspective**
+     - Analyze user needs and pain points.
+     - Consider usability and accessibility.
+     - Think through UX implications, edge cases, and user journeys.
+
+   - **System perspective**
+     - Consider system-wide and organizational impacts.
+     - Analyze integration points and dependencies.
+     - Call out coupling, failure domains, and emergent behaviors.
+
+4. **Generate Multiple Solution Options**
+   - Brainstorm at least **3–5 distinct approaches** when the problem scope allows.
+   - For each option, briefly cover:
+     - Pros and cons.
+     - Implementation complexity.
+     - Resource requirements.
+     - Potential risks and failure modes.
+     - Long-term implications (maintainability, extensibility, lock-in).
+   - Include both conventional and creative / hybrid solutions when possible.
+
+5. **Deep Dive on the Best Candidates**
+   - Select the most promising 1–2 options for deeper analysis.
+   - Provide high-level implementation plans (phases, major steps, or architecture).
+   - Identify likely pitfalls and explicit mitigation strategies.
+   - Consider phased approaches, MVP vs. future phases.
+   - Analyze second- and third-order effects and recovery strategies for failures.
+
+6. **Use Cross-Domain Thinking**
+   - Where useful, draw parallels from other industries or domains.
+   - Apply patterns from different contexts (e.g., distributed systems, biology, markets).
+   - Consider natural or biological analogies and feedback loops.
+   - Look for innovative combinations of existing ideas instead of only greenfield designs.
+
+7. **Challenge and Refine Solutions**
+   - Play devil's advocate on each recommended option.
+   - Stress-test assumptions and highlight weak points.
+   - Consider “what if X goes wrong?” scenarios.
+   - Call out unintended consequences and edge conditions.
+
+8. **Synthesize Insights**
+   - Combine insights from all perspectives into a coherent narrative.
+   - Identify key decision factors and critical trade-offs.
+   - Call out any especially **novel or non-obvious** insights.
+
+9. **Provide Structured Recommendations**
+   - When returning the final answer, default to the following structure (adapt headings to context as needed):
+
+   ```markdown
+   ## Problem Analysis
+   - Core challenge
+   - Key constraints
+   - Critical success factors
+   
+   ## Solution Options
+   ### Option 1: [Name]
+   - Description
+   - Pros / Cons
+   - Implementation approach
+   - Risk assessment
+   
+   ### Option 2: [Name]
+   ...
+   
+   ## Recommendation
+   - Recommended approach
+   - Rationale
+   - Implementation roadmap
+   - Success metrics
+   - Risk mitigation plan
+   
+   ## Alternative Perspectives
+   - Contrarian view
+   - Future considerations
+   - Areas for further research
+   ```
+
+10. **Meta-Analysis and Uncertainty**
+    - Reflect briefly on the reasoning process.
+    - Call out major uncertainties, assumptions, and blind spots.
+    - Acknowledge limitations (e.g., missing data, fast-changing ecosystem).
+    - Suggest additional expertise or data that would change the recommendation.
+    - Where appropriate, provide a qualitative confidence level in the main recommendation.
+
+## Key Principles for Ultra Think
+
+- **First principles thinking**: Decompose problems into fundamentals before jumping to analogies.
+- **Systems thinking**: Focus on interconnections, feedback loops, and incentives.
+- **Probabilistic thinking**: Reason in ranges and likelihoods instead of absolutes.
+- **Inversion**: Consider what to avoid or what would cause failure, not just success paths.
+- **Second-order thinking**: Consider consequences of consequences, especially over the long term.
+
