@@ -42,6 +42,7 @@ npm install
    - `supabase/migrations/20260707120000_initial_schema.sql`
    - `supabase/migrations/20260707130000_nurse_id_login.sql`
    - `supabase/migrations/20260707140000_hospital_staff_departments.sql`
+   - `supabase/migrations/20260707150000_participant_name_login.sql`
 
 ### 3b. Seed hospital staff (one time)
 
@@ -61,6 +62,18 @@ node scripts/seed-staff.mjs
 Staff data lives in `scripts/data/staff-seed.json`. The script is idempotent — safe to re-run after edits.
 
 In Supabase → **Authentication** → **Providers**, **disable public sign-ups** so only seeded accounts can log in.
+
+### 3c. Seed participants (name-based login)
+
+Until 7-digit nurse IDs are issued, participants sign in by **choosing their full name** from a dropdown.
+
+```bash
+node scripts/seed-participants.mjs
+```
+
+Names live in `scripts/data/participants-seed.json`. Default shared password: `allocate2026` (override with `PARTICIPANT_DEFAULT_PASSWORD`).
+
+Share that temporary password with participants through your coordinator. When real nurse IDs are ready, accounts can be migrated to ID-based login.
 
 ### 3. Deploy the Edge Function
 

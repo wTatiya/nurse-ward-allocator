@@ -18,6 +18,7 @@ export interface Profile {
   id: string
   full_name: string
   nurse_id: string | null
+  login_slug: string | null
   role: UserRole
   created_at: string
 }
