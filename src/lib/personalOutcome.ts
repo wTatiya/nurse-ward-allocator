@@ -215,7 +215,7 @@ export function outcomeStepMessage(step: OutcomeStep): string {
     case 'won_lottery':
       return `คุณชนะการจับสลากสำหรับความประสงค์${tierLabel} (มีผู้สมัคร ${step.lottery?.applicants ?? 0} คน แข่งขัน ${step.lottery?.slots ?? 0} ตำแหน่ง)`
     case 'lost_lottery':
-      return `คุณเข้าร่วมการจับสลากสำหรับความประสงค์${tierLabel} แต่ไม่ได้รับเลือก (มีผู้สมัคร ${step.lottery?.applicants ?? 0} คน แข่งขัน ${step.lottery?.slots ?? 0} ตำแหน่ง)`
+      return `คุณเข้าร่วมการจับสลากสำหรับความประสงค์${tierLabel} แต่จับสลากไม่ได้ (มีผู้สมัคร ${step.lottery?.applicants ?? 0} คน แข่งขัน ${step.lottery?.slots ?? 0} ตำแหน่ง)`
     case 'department_full':
       return `ตำแหน่งครบ ${step.capacity} ตำแหน่งแล้วเมื่อระบบประมวลผลความประสงค์${tierLabel} ของคุณ จึงไม่สามารถจัดสรรได้ที่แผนกนี้`
   }

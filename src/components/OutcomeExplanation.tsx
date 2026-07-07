@@ -43,7 +43,7 @@ function stepBadgeLabel(result: PersonalOutcome['steps'][number]['result']) {
     case 'won_lottery':
       return 'ชนะการจับสลาก'
     case 'lost_lottery':
-      return 'ไม่ได้รับเลือก'
+      return 'จับสลากไม่ได้'
     case 'department_full':
       return 'ตำแหน่งเต็ม'
   }

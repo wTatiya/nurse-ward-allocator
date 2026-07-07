@@ -2,9 +2,13 @@ import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { downloadCsv, formatRoundStatus, formatTier } from '../lib/utils'
 import { ResultsTable } from '../components/ResultsTable'
+import { ResultsDashboard } from '../components/ResultsDashboard'
+import { DepartmentFillCard } from '../components/DepartmentFillCard'
 import {
   useRealtimeAssignments,
   useRealtimeLotteryEvents,
+  useRealtimePreferences,
+  useRealtimeRound,
   useRealtimeWaitlist,
 } from '../hooks/useRealtimeAssignments'
 import type {
@@ -19,10 +23,20 @@ export function AdminResultsPage() {
   const [selectedRoundId, setSelectedRoundId] = useState('')
   const [departments, setDepartments] = useState<Department[]>([])
   const [profiles, setProfiles] = useState<Profile[]>([])
+  const [expandedDepartmentId, setExpandedDepartmentId] = useState<string | null>(
+    null,
+  )
 
   const assignments = useRealtimeAssignments(selectedRoundId || null)
   const waitlist = useRealtimeWaitlist(selectedRoundId || null)
   const lotteryEvents = useRealtimeLotteryEvents(selectedRoundId || null)
+  const preferences = useRealtimePreferences(selectedRoundId || null)
+  const round = useRealtimeRound(selectedRoundId || null)
+
+  const participantTotal = useMemo(
+    () => profiles.filter((p) => p.role === 'PARTICIPANT').length,
+    [profiles],
+  )
 
   useEffect(() => {
     const load = async () => {
@@ -48,26 +62,52 @@ export function AdminResultsPage() {
     void load()
   }, [selectedRoundId])
 
+  useEffect(() => {
+    setExpandedDepartmentId(null)
+  }, [selectedRoundId])
+
   const nurseNames = useMemo(
     () => Object.fromEntries(profiles.map((profile) => [profile.id, profile.full_name])),
     [profiles],
   )
 
   const departmentFill = useMemo(() => {
-    return departments
+    const items = departments
       .filter((department) => department.is_active)
       .map((department) => {
-      const count = assignments.filter(
-        (item) => item.department_id === department.id,
-      ).length
-      return {
-        label: `${department.code} — ${department.name_th}`,
-        assigned: count,
-        capacity: department.capacity,
-        remaining: Math.max(department.capacity - count, 0),
-      }
-    })
-  }, [assignments, departments])
+        const count = assignments.filter(
+          (item) => item.department_id === department.id,
+        ).length
+        const remaining = Math.max(department.capacity - count, 0)
+        const assignedPeople = assignments
+          .filter((item) => item.department_id === department.id)
+          .map((item) => ({
+            id: item.nurse_id,
+            name: nurseNames[item.nurse_id] ?? item.nurse_id,
+          }))
+          .sort((a, b) => a.name.localeCompare(b.name, 'th'))
+        const assignedNames = assignedPeople.map((person) => person.name)
+        return {
+          departmentId: department.id,
+          code: department.code,
+          label: `${department.code} — ${department.name_th}`,
+          assigned: count,
+          capacity: department.capacity,
+          remaining,
+          isFull: remaining === 0,
+          assignedNames,
+          assignedPeople,
+        }
+      })
+
+    const byCode = (a: { code: string }, b: { code: string }) =>
+      a.code.localeCompare(b.code, 'th')
+
+    const notFull = items.filter((item) => !item.isFull).sort(byCode)
+    const full = items.filter((item) => item.isFull).sort(byCode)
+
+    return [...notFull, ...full]
+  }, [assignments, departments, nurseNames])
 
   const exportAssignments = () => {
     const rows = [
@@ -139,21 +179,33 @@ export function AdminResultsPage() {
 
       <section className="space-y-3">
         <h2 className="text-lg font-semibold text-slate-900">ตำแหน่งที่เติมแล้ว</h2>
+        <p className="text-sm text-slate-600">
+          แผนกที่ยังมีที่ว่างอยู่ด้านบน (เรียง A–Z) · แผนกเต็มแล้วอยู่ด้านล่าง (เรียง A–Z)
+        </p>
         <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
           {departmentFill.map((item) => (
-            <div
-              key={item.label}
-              className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
-            >
-              <p className="font-medium text-slate-900">{item.label}</p>
-              <p className="mt-1 text-sm text-slate-600">
-                เติมแล้ว {item.assigned} / {item.capacity} ตำแหน่ง (ว่าง{' '}
-                {item.remaining} ตำแหน่ง)
-              </p>
-            </div>
+            <DepartmentFillCard
+              key={item.code}
+              item={item}
+              expanded={expandedDepartmentId === item.departmentId}
+              onToggle={() =>
+                setExpandedDepartmentId((current) =>
+                  current === item.departmentId ? null : item.departmentId,
+                )
+              }
+            />
           ))}
         </div>
       </section>
+
+      <ResultsDashboard
+        round={round}
+        assignments={assignments}
+        waitlist={waitlist}
+        departments={departments}
+        preferences={preferences}
+        participantTotal={participantTotal}
+      />
 
       <section className="space-y-3">
         <h2 className="text-lg font-semibold text-slate-900">ผลการจัดสรร</h2>
@@ -231,7 +283,7 @@ export function AdminResultsPage() {
                     .join(', ')}
                 </p>
                 <p className="mt-1 text-slate-700">
-                  ไม่ได้รับเลือก:{' '}
+                  จับสลากไม่ได้:{' '}
                   {event.applicant_ids
                     .filter((id) => !event.winner_ids.includes(id))
                     .map((id) => nurseNames[id] ?? id)

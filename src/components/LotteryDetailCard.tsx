@@ -1,9 +1,47 @@
+import { useState } from 'react'
 import { formatTier } from '../lib/utils'
 import {
   LOTTERY_METHOD_STEPS,
   formatParticipantName,
 } from '../lib/lotteryDisplay'
 import type { LotteryEvent } from '../types/database'
+
+function SeedHashCopyRow({ seedHash }: { seedHash: string }) {
+  const [copied, setCopied] = useState(false)
+  const [copyError, setCopyError] = useState<string | null>(null)
+
+  const handleCopy = async () => {
+    setCopyError(null)
+    try {
+      await navigator.clipboard.writeText(seedHash)
+      setCopied(true)
+      window.setTimeout(() => setCopied(false), 2000)
+    } catch {
+      setCopyError('คัดลอกไม่สำเร็จ กรุณาเลือกรหัสด้านล่างด้วยตนเอง')
+    }
+  }
+
+  return (
+    <div className="mt-3 border-t border-slate-200 pt-3">
+      <div className="flex flex-wrap items-center gap-2">
+        <p className="text-xs font-medium text-slate-600">
+          รหัสตรวจสอบ (seed hash)
+        </p>
+        <button
+          type="button"
+          onClick={() => void handleCopy()}
+          className="rounded-md border border-slate-300 bg-white px-2 py-1 text-xs font-medium text-slate-700 hover:bg-slate-100"
+        >
+          {copied ? 'คัดลอกแล้ว' : 'คัดลอกรหัสตรวจสอบ'}
+        </button>
+      </div>
+      <p className="mt-1 break-all font-mono text-xs text-slate-500">{seedHash}</p>
+      {copyError && (
+        <p className="mt-1 text-xs text-amber-700">{copyError}</p>
+      )}
+    </div>
+  )
+}
 
 interface LotteryDetailCardProps {
   event: LotteryEvent
@@ -46,7 +84,7 @@ export function LotteryDetailCard({
 
       <div className="mt-3">
         <p className="font-medium text-amber-800">
-          ไม่ได้รับเลือก ({notSelectedCount})
+          จับสลากไม่ได้ ({notSelectedCount})
         </p>
         <ul className="mt-1 list-inside list-disc text-slate-700">
           {event.applicant_ids
@@ -59,9 +97,7 @@ export function LotteryDetailCard({
         </ul>
       </div>
 
-      <p className="mt-3 break-all text-xs text-slate-500">
-        รหัสตรวจสอบ (seed hash): {event.seed_hash}
-      </p>
+      <SeedHashCopyRow seedHash={event.seed_hash} />
     </div>
   )
 }

@@ -4,6 +4,7 @@ import type {
   Assignment,
   AssignmentRound,
   LotteryEvent,
+  Preference,
   WaitlistEntry,
 } from '../types/database'
 
@@ -181,4 +182,48 @@ export function useRealtimeLotteryEvents(roundId: string | null) {
   }, [roundId])
 
   return events
+}
+
+export function useRealtimePreferences(roundId: string | null) {
+  const [preferences, setPreferences] = useState<Preference[]>([])
+
+  useEffect(() => {
+    if (!roundId) {
+      setPreferences([])
+      return
+    }
+
+    const load = async () => {
+      const { data } = await supabase
+        .from('preferences')
+        .select('*')
+        .eq('round_id', roundId)
+        .order('submitted_at')
+      setPreferences((data as Preference[]) ?? [])
+    }
+
+    void load()
+
+    const channel = supabase
+      .channel(`preferences-${roundId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'preferences',
+          filter: `round_id=eq.${roundId}`,
+        },
+        () => {
+          void load()
+        },
+      )
+      .subscribe()
+
+    return () => {
+      void supabase.removeChannel(channel)
+    }
+  }, [roundId])
+
+  return preferences
 }

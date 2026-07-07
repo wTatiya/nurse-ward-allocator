@@ -11,6 +11,7 @@ import { MyResultPage } from './pages/MyResultPage'
 import { AdminDepartmentsPage } from './pages/AdminDepartmentsPage'
 import { AdminRoundsPage } from './pages/AdminRoundsPage'
 import { AdminResultsPage } from './pages/AdminResultsPage'
+import { AdminPeoplePage } from './pages/AdminPeoplePage'
 
 function HomeRedirect() {
   const { role, loading } = useAuth()
@@ -47,6 +48,7 @@ function App() {
                 />
                 <Route path="admin/rounds" element={<AdminRoundsPage />} />
                 <Route path="admin/results" element={<AdminResultsPage />} />
+                <Route path="admin/people" element={<AdminPeoplePage />} />
                 <Route
                   path="admin/wards"
                   element={<Navigate to="/admin/departments" replace />}
