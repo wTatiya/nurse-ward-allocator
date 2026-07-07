@@ -6,14 +6,14 @@ export function validatePreferences(
   const { choice1, choice2, choice3 } = data
 
   if (!choice1 || !choice2 || !choice3) {
-    return 'All three ward choices are required.'
+    return 'All three department choices are required.'
   }
 
   const choices = [choice1, choice2, choice3]
   const unique = new Set(choices)
 
   if (unique.size !== 3) {
-    return 'Each ward choice must be distinct.'
+    return 'Each department choice must be distinct.'
   }
 
   return null

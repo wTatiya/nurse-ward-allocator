@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { validatePreferences } from '../lib/utils'
-import type { AssignmentRound, Preference, Ward } from '../types/database'
-import { WardPicker } from './WardPicker'
+import type { AssignmentRound, Department, Preference } from '../types/database'
+import { DepartmentPicker } from './WardPicker'
 
 interface PreferenceFormProps {
   round: AssignmentRound
@@ -11,7 +11,7 @@ interface PreferenceFormProps {
 }
 
 export function PreferenceForm({ round, existing, onSaved }: PreferenceFormProps) {
-  const [wards, setWards] = useState<Ward[]>([])
+  const [departments, setDepartments] = useState<Department[]>([])
   const [choice1, setChoice1] = useState(existing?.choice_1 ?? '')
   const [choice2, setChoice2] = useState(existing?.choice_2 ?? '')
   const [choice3, setChoice3] = useState(existing?.choice_3 ?? '')
@@ -22,16 +22,16 @@ export function PreferenceForm({ round, existing, onSaved }: PreferenceFormProps
   const isOpen = round.status === 'open'
 
   useEffect(() => {
-    const loadWards = async () => {
+    const loadDepartments = async () => {
       const { data } = await supabase
-        .from('wards')
+        .from('departments')
         .select('*')
         .eq('is_active', true)
-        .order('name')
-      setWards((data as Ward[]) ?? [])
+        .order('code')
+      setDepartments((data as Department[]) ?? [])
     }
 
-    void loadWards()
+    void loadDepartments()
   }, [])
 
   useEffect(() => {
@@ -101,7 +101,7 @@ export function PreferenceForm({ round, existing, onSaved }: PreferenceFormProps
       <div>
         <h2 className="text-lg font-semibold text-slate-900">{round.name}</h2>
         <p className="mt-1 text-sm text-slate-600">
-          Submit exactly three distinct ward choices in ranked order.
+          Submit exactly three distinct department choices in ranked order.
         </p>
         {round.submission_deadline && (
           <p className="mt-1 text-sm text-slate-500">
@@ -110,25 +110,25 @@ export function PreferenceForm({ round, existing, onSaved }: PreferenceFormProps
         )}
       </div>
 
-      <WardPicker
+      <DepartmentPicker
         label="1st choice"
-        wards={wards}
+        departments={departments}
         value={choice1}
         onChange={setChoice1}
         disabled={!isOpen}
         exclude={[choice2, choice3]}
       />
-      <WardPicker
+      <DepartmentPicker
         label="2nd choice"
-        wards={wards}
+        departments={departments}
         value={choice2}
         onChange={setChoice2}
         disabled={!isOpen}
         exclude={[choice1, choice3]}
       />
-      <WardPicker
+      <DepartmentPicker
         label="3rd choice"
-        wards={wards}
+        departments={departments}
         value={choice3}
         onChange={setChoice3}
         disabled={!isOpen}

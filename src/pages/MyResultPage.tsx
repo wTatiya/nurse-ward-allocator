@@ -6,14 +6,14 @@ import {
   useRealtimeRound,
   useRealtimeWaitlist,
 } from '../hooks/useRealtimeAssignments'
-import type { AssignmentRound, Ward } from '../types/database'
+import type { AssignmentRound, Department } from '../types/database'
 
 export function MyResultPage() {
   const [rounds, setRounds] = useState<AssignmentRound[]>([])
   const [selectedRoundId, setSelectedRoundId] = useState('')
-  const [wards, setWards] = useState<Ward[]>([])
+  const [departments, setDepartments] = useState<Department[]>([])
   const [myAssignment, setMyAssignment] = useState<{
-    wardName: string
+    departmentLabel: string
     tier: 1 | 2 | 3
   } | null>(null)
   const [waitlistPosition, setWaitlistPosition] = useState<number | null>(null)
@@ -24,18 +24,18 @@ export function MyResultPage() {
 
   useEffect(() => {
     const load = async () => {
-      const [{ data: roundData }, { data: wardData }] = await Promise.all([
+      const [{ data: roundData }, { data: departmentData }] = await Promise.all([
         supabase
           .from('assignment_rounds')
           .select('*')
           .in('status', ['closed', 'running', 'completed'])
           .order('created_at', { ascending: false }),
-        supabase.from('wards').select('*').order('name'),
+        supabase.from('departments').select('*').order('code'),
       ])
 
       const nextRounds = (roundData as AssignmentRound[]) ?? []
       setRounds(nextRounds)
-      setWards((wardData as Ward[]) ?? [])
+      setDepartments((departmentData as Department[]) ?? [])
       if (!selectedRoundId && nextRounds[0]) {
         setSelectedRoundId(nextRounds[0].id)
       }
@@ -57,9 +57,13 @@ export function MyResultPage() {
 
       const assignment = assignments.find((item) => item.nurse_id === user.id)
       if (assignment) {
-        const ward = wards.find((w) => w.id === assignment.ward_id)
+        const department = departments.find(
+          (d) => d.id === assignment.department_id,
+        )
         setMyAssignment({
-          wardName: ward?.name ?? 'Unknown ward',
+          departmentLabel: department
+            ? `${department.code} — ${department.name_th}`
+            : 'Unknown department',
           tier: assignment.matched_tier,
         })
         setWaitlistPosition(null)
@@ -72,7 +76,7 @@ export function MyResultPage() {
     }
 
     void resolve()
-  }, [assignments, waitlist, wards, selectedRoundId])
+  }, [assignments, waitlist, departments, selectedRoundId])
 
   return (
     <div className="space-y-6">
@@ -116,7 +120,7 @@ export function MyResultPage() {
               <div className="mt-4 rounded-lg bg-teal-50 p-4">
                 <p className="text-sm text-teal-800">You were assigned to</p>
                 <p className="text-xl font-semibold text-teal-900">
-                  {myAssignment.wardName}
+                  {myAssignment.departmentLabel}
                 </p>
                 <p className="mt-1 text-sm text-teal-700">
                   Matched via {formatTier(myAssignment.tier)}

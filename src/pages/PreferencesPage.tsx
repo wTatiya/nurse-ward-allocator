@@ -58,7 +58,7 @@ export function PreferencesPage() {
       <div>
         <h1 className="text-2xl font-semibold text-slate-900">Preferences</h1>
         <p className="mt-1 text-sm text-slate-600">
-          Rank your top three ward choices for the active assignment round.
+          Rank your top three department choices for the active assignment round.
         </p>
       </div>
 

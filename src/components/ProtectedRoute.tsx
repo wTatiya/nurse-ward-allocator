@@ -1,8 +1,22 @@
 import { Navigate, Outlet } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
+import { defaultRouteForRole, isAdmin, isParticipant, isStaffViewer } from '../lib/roles'
 import type { UserRole } from '../types/database'
 
-export function ProtectedRoute({ roles }: { roles?: UserRole[] }) {
+type RouteKind = 'admin' | 'staff' | 'participant'
+
+function matchesRouteKind(role: UserRole, kind: RouteKind): boolean {
+  switch (kind) {
+    case 'admin':
+      return isAdmin(role)
+    case 'staff':
+      return isStaffViewer(role)
+    case 'participant':
+      return isParticipant(role)
+  }
+}
+
+export function ProtectedRoute({ kind }: { kind?: RouteKind }) {
   const { user, role, loading, configured } = useAuth()
 
   if (!configured) {
@@ -32,8 +46,8 @@ export function ProtectedRoute({ roles }: { roles?: UserRole[] }) {
     return <Navigate to="/login" replace />
   }
 
-  if (roles && role && !roles.includes(role)) {
-    return <Navigate to={role === 'admin' ? '/admin/rounds' : '/preferences'} replace />
+  if (kind && role && !matchesRouteKind(role, kind)) {
+    return <Navigate to={defaultRouteForRole(role)} replace />
   }
 
   return <Outlet />

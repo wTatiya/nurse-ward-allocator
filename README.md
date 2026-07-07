@@ -1,6 +1,6 @@
 # Nurse Ward Allocator
 
-Hospital ward assignment app using **Serial Priority with Lottery cascade**. Nurses submit three ranked ward preferences; admins manage capacities and run assignment rounds with server-side lottery tie-breakers.
+Hospital ward assignment app using **Serial Priority with Lottery cascade**. Staff view department allocation dashboards; admins manage department slot capacities and run assignment rounds with server-side lottery tie-breakers.
 
 ## Stack
 
@@ -11,8 +11,11 @@ Hospital ward assignment app using **Serial Priority with Lottery cascade**. Nur
 
 ## Features
 
-- Nurses submit exactly three distinct ranked ward choices
-- Admins manage wards, capacities, and assignment round lifecycle
+- Hospital staff roles (ADMIN, managers, supervisors, head ward nurses) with department / LOF-scoped dashboard
+- Pre-seeded staff accounts (no public registration)
+- Login with **7-digit nurse ID + password** (most staff: password equals ID)
+- Admins edit department slot capacities and run assignment rounds
+- Participants (future) submit three ranked department preferences
 - Server-side assignment engine with tier cascade (1st → 2nd → 3rd)
 - Uniform random lottery when demand exceeds capacity
 - Real-time result updates via Supabase Realtime
@@ -35,9 +38,29 @@ npm install
 2. Copy `.env.example` to `.env` and fill in:
    - `VITE_SUPABASE_URL`
    - `VITE_SUPABASE_ANON_KEY`
-3. Run the migration in the Supabase SQL editor:
-   - Open `supabase/migrations/20260707120000_initial_schema.sql`
-   - Paste and execute in **SQL Editor**
+3. Run migrations in the Supabase SQL editor (in order):
+   - `supabase/migrations/20260707120000_initial_schema.sql`
+   - `supabase/migrations/20260707130000_nurse_id_login.sql`
+   - `supabase/migrations/20260707140000_hospital_staff_departments.sql`
+
+### 3b. Seed hospital staff (one time)
+
+Set service-role credentials locally (never commit these):
+
+```env
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+```
+
+Then run:
+
+```bash
+node scripts/seed-staff.mjs
+```
+
+Staff data lives in `scripts/data/staff-seed.json`. The script is idempotent — safe to re-run after edits.
+
+In Supabase → **Authentication** → **Providers**, **disable public sign-ups** so only seeded accounts can log in.
 
 ### 3. Deploy the Edge Function
 
@@ -60,19 +83,25 @@ In Supabase Dashboard → **Database** → **Replication**, enable Realtime for:
 - `waitlist`
 - `lottery_events`
 
-### 5. Promote your first admin
+### 5. Admin account
 
-Sign up once through the app, then run in SQL Editor:
+After seeding, sign in as nurse ID `5650414` with the admin password from your staff list. Admins land on **Rounds** and can edit **Departments** slot capacities.
+
+To promote another admin manually:
 
 ```sql
 UPDATE public.profiles
-SET role = 'admin'
-WHERE id = (
-  SELECT id FROM auth.users WHERE email = 'your@email.com'
-);
+SET role = 'ADMIN'
+WHERE nurse_id = '1234567';
 ```
 
-### 6. Run locally
+### 6. Auth: nurse ID + password
+
+- Staff sign in with a **7-digit nurse ID** and **password**.
+- For most staff, the password is the same as the nurse ID.
+- Accounts are created by `scripts/seed-staff.mjs`, not through the app UI.
+
+### 7. Run locally
 
 ```bash
 npm run dev
@@ -82,11 +111,12 @@ Open `http://localhost:5173`.
 
 ## Assignment workflow
 
-1. **Admin** creates a round (status: `draft`)
-2. **Admin** opens submissions (`open`) — nurses can submit/edit preferences
-3. **Admin** closes submissions (`closed`)
-4. **Admin** clicks **Run assignment** — Edge Function executes cascade + lotteries
-5. Round becomes `completed`; nurses see results live on **My Result**
+1. **Admin** edits department slot capacities on **Departments**
+2. **Admin** creates a round (status: `draft`)
+3. **Admin** opens submissions (`open`) — participants submit/edit preferences (when enabled)
+4. **Admin** closes submissions (`closed`)
+5. **Admin** clicks **Run assignment** — Edge Function executes cascade + lotteries
+6. Round becomes `completed`; staff see scoped stats on **Dashboard**; participants see **My Result**
 
 ## Deploy to Vercel
 

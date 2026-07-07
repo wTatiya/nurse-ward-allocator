@@ -1,13 +1,16 @@
 import { Link, Outlet, useLocation } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
+import { formatRoleLabel, isAdmin, isParticipant, isStaffViewer } from '../lib/roles'
 
-const nurseLinks = [
+const participantLinks = [
   { to: '/preferences', label: 'Preferences' },
   { to: '/my-result', label: 'My Result' },
 ]
 
+const staffLinks = [{ to: '/dashboard', label: 'Dashboard' }]
+
 const adminLinks = [
-  { to: '/admin/wards', label: 'Wards' },
+  { to: '/admin/departments', label: 'Departments' },
   { to: '/admin/rounds', label: 'Rounds' },
   { to: '/admin/results', label: 'Results' },
 ]
@@ -15,7 +18,14 @@ const adminLinks = [
 export function Layout() {
   const { profile, role, signOut } = useAuth()
   const location = useLocation()
-  const links = role === 'admin' ? adminLinks : nurseLinks
+
+  const links = isAdmin(role)
+    ? adminLinks
+    : isStaffViewer(role)
+      ? staffLinks
+      : isParticipant(role)
+        ? participantLinks
+        : []
 
   return (
     <div className="min-h-screen">
@@ -26,7 +36,10 @@ export function Layout() {
               Nurse Ward Allocator
             </p>
             <p className="text-xs text-slate-500">
-              {profile?.full_name ?? 'Signed in'}
+              {profile?.nurse_id
+                ? `ID ${profile.nurse_id} · ${profile.full_name}`
+                : (profile?.full_name ?? 'Signed in')}
+              {role ? ` · ${formatRoleLabel(role)}` : ''}
             </p>
           </div>
           <nav className="flex flex-wrap items-center gap-2">

@@ -9,15 +9,15 @@ import {
 } from '../hooks/useRealtimeAssignments'
 import type {
   AssignmentRound,
+  Department,
   LotteryEvent,
   Profile,
-  Ward,
 } from '../types/database'
 
 export function AdminResultsPage() {
   const [rounds, setRounds] = useState<AssignmentRound[]>([])
   const [selectedRoundId, setSelectedRoundId] = useState('')
-  const [wards, setWards] = useState<Ward[]>([])
+  const [departments, setDepartments] = useState<Department[]>([])
   const [profiles, setProfiles] = useState<Profile[]>([])
 
   const assignments = useRealtimeAssignments(selectedRoundId || null)
@@ -26,19 +26,19 @@ export function AdminResultsPage() {
 
   useEffect(() => {
     const load = async () => {
-      const [{ data: roundData }, { data: wardData }, { data: profileData }] =
+      const [{ data: roundData }, { data: departmentData }, { data: profileData }] =
         await Promise.all([
           supabase
             .from('assignment_rounds')
             .select('*')
             .order('created_at', { ascending: false }),
-          supabase.from('wards').select('*').order('name'),
+          supabase.from('departments').select('*').order('code'),
           supabase.from('profiles').select('*'),
         ])
 
       const nextRounds = (roundData as AssignmentRound[]) ?? []
       setRounds(nextRounds)
-      setWards((wardData as Ward[]) ?? [])
+      setDepartments((departmentData as Department[]) ?? [])
       setProfiles((profileData as Profile[]) ?? [])
       if (!selectedRoundId && nextRounds[0]) {
         setSelectedRoundId(nextRounds[0].id)
@@ -53,24 +53,26 @@ export function AdminResultsPage() {
     [profiles],
   )
 
-  const wardFill = useMemo(() => {
-    return wards.map((ward) => {
-      const count = assignments.filter((item) => item.ward_id === ward.id).length
+  const departmentFill = useMemo(() => {
+    return departments.map((department) => {
+      const count = assignments.filter(
+        (item) => item.department_id === department.id,
+      ).length
       return {
-        ward: ward.name,
+        label: `${department.code} — ${department.name_th}`,
         assigned: count,
-        capacity: ward.capacity,
-        remaining: Math.max(ward.capacity - count, 0),
+        capacity: department.capacity,
+        remaining: Math.max(department.capacity - count, 0),
       }
     })
-  }, [assignments, wards])
+  }, [assignments, departments])
 
   const exportAssignments = () => {
     const rows = [
-      ['Nurse', 'Ward', 'Matched Tier', 'Assigned At'],
+      ['Nurse', 'Department', 'Matched Tier', 'Assigned At'],
       ...assignments.map((assignment) => [
         nurseNames[assignment.nurse_id] ?? assignment.nurse_id,
-        wards.find((ward) => ward.id === assignment.ward_id)?.name ?? '',
+        departments.find((d) => d.id === assignment.department_id)?.code ?? '',
         formatTier(assignment.matched_tier),
         assignment.assigned_at,
       ]),
@@ -134,14 +136,14 @@ export function AdminResultsPage() {
       </label>
 
       <section className="space-y-3">
-        <h2 className="text-lg font-semibold text-slate-900">Ward fill</h2>
+        <h2 className="text-lg font-semibold text-slate-900">Department fill</h2>
         <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-          {wardFill.map((item) => (
+          {departmentFill.map((item) => (
             <div
-              key={item.ward}
+              key={item.label}
               className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
             >
-              <p className="font-medium text-slate-900">{item.ward}</p>
+              <p className="font-medium text-slate-900">{item.label}</p>
               <p className="mt-1 text-sm text-slate-600">
                 {item.assigned} / {item.capacity} filled ({item.remaining}{' '}
                 remaining)
@@ -155,7 +157,7 @@ export function AdminResultsPage() {
         <h2 className="text-lg font-semibold text-slate-900">Assignments</h2>
         <ResultsTable
           assignments={assignments}
-          wards={wards}
+          departments={departments}
           nurseNames={nurseNames}
         />
       </section>
@@ -208,8 +210,8 @@ export function AdminResultsPage() {
                 className="rounded-xl border border-slate-200 bg-white p-4 text-sm shadow-sm"
               >
                 <p className="font-medium text-slate-900">
-                  {wards.find((ward) => ward.id === event.ward_id)?.name ??
-                    event.ward_id}{' '}
+                  {departments.find((d) => d.id === event.department_id)?.code ??
+                    event.department_id}{' '}
                   — {formatTier(event.tier)}
                 </p>
                 <p className="mt-1 text-slate-600">

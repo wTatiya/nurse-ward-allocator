@@ -1,18 +1,23 @@
-import type { Assignment, Ward } from '../types/database'
+import type { Assignment, Department } from '../types/database'
 import { formatTier } from '../lib/utils'
 
 interface ResultsTableProps {
   assignments: Assignment[]
-  wards: Ward[]
+  departments: Department[]
   nurseNames?: Record<string, string>
 }
 
 export function ResultsTable({
   assignments,
-  wards,
+  departments,
   nurseNames = {},
 }: ResultsTableProps) {
-  const wardMap = Object.fromEntries(wards.map((ward) => [ward.id, ward.name]))
+  const departmentMap = Object.fromEntries(
+    departments.map((department) => [
+      department.id,
+      `${department.code} — ${department.name_th}`,
+    ]),
+  )
 
   if (assignments.length === 0) {
     return (
@@ -31,7 +36,7 @@ export function ResultsTable({
               Nurse
             </th>
             <th className="px-4 py-3 text-left font-medium text-slate-600">
-              Ward
+              Department
             </th>
             <th className="px-4 py-3 text-left font-medium text-slate-600">
               Matched tier
@@ -45,7 +50,8 @@ export function ResultsTable({
                 {nurseNames[assignment.nurse_id] ?? assignment.nurse_id}
               </td>
               <td className="px-4 py-3">
-                {wardMap[assignment.ward_id] ?? assignment.ward_id}
+                {departmentMap[assignment.department_id] ??
+                  assignment.department_id}
               </td>
               <td className="px-4 py-3">{formatTier(assignment.matched_tier)}</td>
             </tr>

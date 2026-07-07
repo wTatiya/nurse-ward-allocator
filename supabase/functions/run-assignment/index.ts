@@ -71,7 +71,7 @@ Deno.serve(async (req) => {
       .eq("id", user.id)
       .single();
 
-    if (profile?.role !== "admin") {
+    if (profile?.role !== "ADMIN") {
       return new Response(JSON.stringify({ error: "Admin access required" }), {
         status: 403,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -127,8 +127,11 @@ Deno.serve(async (req) => {
 
     lockedRoundId = roundId;
 
-    const [{ data: wards }, { data: preferences }] = await Promise.all([
-      adminClient.from("wards").select("id, capacity").eq("is_active", true),
+    const [{ data: departments }, { data: preferences }] = await Promise.all([
+      adminClient
+        .from("departments")
+        .select("id, capacity")
+        .eq("is_active", true),
       adminClient
         .from("preferences")
         .select("nurse_id, choice_1, choice_2, choice_3, submitted_at")
@@ -141,7 +144,7 @@ Deno.serve(async (req) => {
 
     const random = createSecureRandom();
     const result = runAssignmentEngine(
-      (wards ?? []).map((w) => ({ id: w.id, capacity: w.capacity })),
+      (departments ?? []).map((d) => ({ id: d.id, capacity: d.capacity })),
       (preferences ?? []).map((p) => ({
         nurseId: p.nurse_id,
         choice1: p.choice_1,
@@ -159,7 +162,7 @@ Deno.serve(async (req) => {
           result.assignments.map((a) => ({
             round_id: roundId,
             nurse_id: a.nurseId,
-            ward_id: a.wardId,
+            department_id: a.wardId,
             matched_tier: a.matchedTier,
           })),
         );
@@ -192,7 +195,7 @@ Deno.serve(async (req) => {
         .from("lottery_events")
         .insert({
           round_id: roundId,
-          ward_id: event.wardId,
+          department_id: event.wardId,
           tier: event.tier,
           applicant_ids: event.applicantIds,
           winner_ids: event.winnerIds,

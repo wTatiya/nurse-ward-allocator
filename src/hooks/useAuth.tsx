@@ -10,6 +10,11 @@ import {
 import type { Session, User } from '@supabase/supabase-js'
 import { isSupabaseConfigured, supabase } from '../lib/supabase'
 import type { Profile, UserRole } from '../types/database'
+import {
+  nurseIdToAuthEmail,
+  validateNurseIdInput,
+  validatePasswordInput,
+} from '../lib/nurseIdAuth'
 
 interface AuthContextValue {
   session: Session | null
@@ -18,12 +23,7 @@ interface AuthContextValue {
   role: UserRole | null
   loading: boolean
   configured: boolean
-  signIn: (email: string, password: string) => Promise<string | null>
-  signUp: (
-    email: string,
-    password: string,
-    fullName: string,
-  ) => Promise<string | null>
+  signIn: (nurseId: string, password: string) => Promise<string | null>
   signOut: () => Promise<void>
   refreshProfile: () => Promise<void>
 }
@@ -84,16 +84,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [session, refreshProfile])
 
-  const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
-    return error?.message ?? null
-  }
+  const signIn = async (nurseId: string, password: string) => {
+    const idError = validateNurseIdInput(nurseId)
+    if (idError) return idError
 
-  const signUp = async (email: string, password: string, fullName: string) => {
-    const { error } = await supabase.auth.signUp({
-      email,
+    const passwordError = validatePasswordInput(password)
+    if (passwordError) return passwordError
+
+    const id = nurseId.trim()
+    const { error } = await supabase.auth.signInWithPassword({
+      email: nurseIdToAuthEmail(id),
       password,
-      options: { data: { full_name: fullName } },
     })
     return error?.message ?? null
   }
@@ -112,7 +113,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       loading,
       configured: isSupabaseConfigured,
       signIn,
-      signUp,
       signOut,
       refreshProfile,
     }),
