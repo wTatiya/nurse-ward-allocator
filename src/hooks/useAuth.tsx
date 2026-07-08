@@ -15,11 +15,6 @@ import {
   validateNurseIdInput,
   validatePasswordInput,
 } from '../lib/nurseIdAuth'
-import {
-  participantSlugToAuthEmail,
-  validateParticipantSelection,
-  type ParticipantLoginOption,
-} from '../lib/participantAuth'
 import { translateAuthError } from '../lib/locale/th'
 
 interface AuthContextValue {
@@ -30,11 +25,6 @@ interface AuthContextValue {
   loading: boolean
   configured: boolean
   signIn: (nurseId: string, password: string) => Promise<string | null>
-  signInParticipant: (
-    loginSlug: string,
-    password: string,
-  ) => Promise<string | null>
-  loadParticipantOptions: () => Promise<ParticipantLoginOption[]>
   signOut: () => Promise<void>
   refreshProfile: () => Promise<void>
 }
@@ -110,28 +100,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return error?.message ? translateAuthError(error.message) : null
   }
 
-  const signInParticipant = async (loginSlug: string, password: string) => {
-    const selectionError = validateParticipantSelection(loginSlug)
-    if (selectionError) return selectionError
-
-    const passwordError = validatePasswordInput(password)
-    if (passwordError) return passwordError
-
-    const { error } = await supabase.auth.signInWithPassword({
-      email: participantSlugToAuthEmail(loginSlug),
-      password,
-    })
-    return error?.message ? translateAuthError(error.message) : null
-  }
-
-  const loadParticipantOptions = useCallback(async () => {
-    const { data, error } = await supabase.rpc('list_participant_login_options')
-    if (error) {
-      throw new Error(error.message)
-    }
-    return (data as ParticipantLoginOption[]) ?? []
-  }, [])
-
   const signOut = async () => {
     await supabase.auth.signOut()
     setProfile(null)
@@ -146,8 +114,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       loading,
       configured: isSupabaseConfigured,
       signIn,
-      signInParticipant,
-      loadParticipantOptions,
       signOut,
       refreshProfile,
     }),

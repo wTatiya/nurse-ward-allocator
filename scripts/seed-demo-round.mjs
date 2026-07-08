@@ -113,9 +113,9 @@ async function main() {
 
   const { data: participants, error: participantError } = await supabase
     .from('profiles')
-    .select('id, full_name, login_slug')
+    .select('id, full_name, nurse_id')
     .eq('role', 'PARTICIPANT')
-    .not('login_slug', 'is', null)
+    .not('nurse_id', 'is', null)
     .order('full_name')
     .limit(sampleCount)
 

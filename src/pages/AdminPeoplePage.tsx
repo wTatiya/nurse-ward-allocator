@@ -54,8 +54,8 @@ export function AdminPeoplePage() {
 
   const exportNotSubmitted = () => {
     const rows = [
-      ['ชื่อ-นามสกุล', 'รหัสเข้าสู่ระบบ'],
-      ...notSubmitted.map((p) => [p.full_name, p.login_slug ?? '']),
+      ['ชื่อ-นามสกุล', 'รหัส 7 หลัก'],
+      ...notSubmitted.map((p) => [p.full_name, p.nurse_id ?? '']),
     ]
     downloadCsv('not-submitted.csv', rows)
   }
@@ -149,7 +149,7 @@ export function AdminPeoplePage() {
                   ชื่อ-นามสกุล
                 </th>
                 <th className="px-4 py-3 text-left font-medium text-slate-600">
-                  รหัสเข้าสู่ระบบ
+                  รหัส 7 หลัก
                 </th>
               </tr>
             </thead>
@@ -161,7 +161,7 @@ export function AdminPeoplePage() {
                     {person.full_name}
                   </td>
                   <td className="px-4 py-3 font-mono text-xs text-slate-600">
-                    {person.login_slug ?? '—'}
+                    {person.nurse_id ?? '—'}
                   </td>
                 </tr>
               ))}

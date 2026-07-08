@@ -1,11 +1,8 @@
 /**
- * Seed participant accounts (name-based login until 7-digit IDs are issued).
+ * Seed participant accounts with 7-digit nurse IDs (username = password = nurse_id).
  *
  * Usage:
  *   SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... node scripts/seed-participants.mjs
- *
- * Optional:
- *   PARTICIPANT_DEFAULT_PASSWORD=allocate2026
  */
 import { createClient } from '@supabase/supabase-js'
 import ws from 'ws'
@@ -16,12 +13,8 @@ import { fileURLToPath } from 'node:url'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const AUTH_DOMAIN = 'nurse.ward-allocator.local'
 
-function slugToEmail(slug) {
-  return `${slug}@${AUTH_DOMAIN}`
-}
-
-function participantSlug(index) {
-  return `p-${String(index + 1).padStart(4, '0')}`
+function nurseIdToEmail(nurseId) {
+  return `${nurseId}@${AUTH_DOMAIN}`
 }
 
 async function main() {
@@ -37,11 +30,10 @@ async function main() {
 
   const seedPath = join(__dirname, 'data', 'participants-seed.json')
   const seed = JSON.parse(readFileSync(seedPath, 'utf8'))
-  const password =
-    process.env.PARTICIPANT_DEFAULT_PASSWORD ?? seed.defaultPassword
+  const participants = seed.participants ?? []
 
-  if (!password || password.length < 7) {
-    console.error('Participant password must be at least 7 characters.')
+  if (participants.length === 0) {
+    console.error('No participants in seed file.')
     process.exit(1)
   }
 
@@ -69,10 +61,18 @@ async function main() {
   let created = 0
   let updated = 0
 
-  for (const [index, fullName] of seed.participants.entries()) {
-    const loginSlug = participantSlug(index)
-    const email = slugToEmail(loginSlug)
-    console.log(`\n${loginSlug} — ${fullName}`)
+  for (const entry of participants) {
+    const nurseId = String(entry.nurse_id).trim()
+    const fullName = String(entry.full_name).trim()
+    const email = nurseIdToEmail(nurseId)
+    const password = nurseId
+
+    if (!/^\d{7}$/.test(nurseId)) {
+      console.error(`  Skip invalid nurse_id: ${nurseId}`)
+      continue
+    }
+
+    console.log(`\n${nurseId} — ${fullName}`)
 
     let userId = emailToUserId.get(email)
 
@@ -85,7 +85,7 @@ async function main() {
           user_metadata: {
             full_name: fullName,
             staff_role: 'PARTICIPANT',
-            login_slug: loginSlug,
+            nurse_id: nurseId,
           },
         })
 
@@ -106,7 +106,7 @@ async function main() {
           user_metadata: {
             full_name: fullName,
             staff_role: 'PARTICIPANT',
-            login_slug: loginSlug,
+            nurse_id: nurseId,
           },
         },
       )
@@ -114,7 +114,7 @@ async function main() {
       if (metaError) {
         console.warn(`  Auth update warning: ${metaError.message}`)
       }
-      console.log('  Auth user exists — updated profile')
+      console.log('  Auth user exists — updated password and metadata')
     }
 
     const { error: profileError } = await supabase.from('profiles').upsert(
@@ -122,8 +122,8 @@ async function main() {
         id: userId,
         full_name: fullName,
         role: 'PARTICIPANT',
-        nurse_id: null,
-        login_slug: loginSlug,
+        nurse_id: nurseId,
+        login_slug: null,
       },
       { onConflict: 'id' },
     )
@@ -139,7 +139,7 @@ async function main() {
   console.log(
     `\nDone. Auth created: ${created}, profiles upserted: ${updated}.`,
   )
-  console.log(`Shared participant password: ${password}`)
+  console.log('Login: 7-digit ID as both username and password.')
 }
 
 main().catch((err) => {

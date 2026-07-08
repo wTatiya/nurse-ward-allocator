@@ -14,10 +14,10 @@ export function nurseIdToAuthEmail(nurseId: string): string {
 export function validateNurseIdInput(nurseId: string): string | null {
   const trimmed = nurseId.trim()
   if (!trimmed) {
-    return 'กรุณากรอกรหัสพยาบาล 7 หลัก'
+    return 'กรุณากรอกรหัส 7 หลัก'
   }
   if (!isValidNurseId(trimmed)) {
-    return 'รหัสพยาบาลต้องเป็นตัวเลข 7 หลักเท่านั้น'
+    return 'รหัสต้องเป็นตัวเลข 7 หลักเท่านั้น'
   }
   return null
 }
