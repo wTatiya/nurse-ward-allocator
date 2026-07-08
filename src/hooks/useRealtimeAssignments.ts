@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import type {
   Assignment,
@@ -11,22 +11,24 @@ import type {
 export function useRealtimeRound(roundId: string | null) {
   const [round, setRound] = useState<AssignmentRound | null>(null)
 
-  useEffect(() => {
+  const load = useCallback(async () => {
     if (!roundId) {
       setRound(null)
       return
     }
 
-    const load = async () => {
-      const { data } = await supabase
-        .from('assignment_rounds')
-        .select('*')
-        .eq('id', roundId)
-        .single()
-      setRound((data as AssignmentRound) ?? null)
-    }
+    const { data } = await supabase
+      .from('assignment_rounds')
+      .select('*')
+      .eq('id', roundId)
+      .single()
+    setRound((data as AssignmentRound) ?? null)
+  }, [roundId])
 
+  useEffect(() => {
     void load()
+
+    if (!roundId) return
 
     const channel = supabase
       .channel(`round-${roundId}`)
@@ -38,8 +40,8 @@ export function useRealtimeRound(roundId: string | null) {
           table: 'assignment_rounds',
           filter: `id=eq.${roundId}`,
         },
-        (payload) => {
-          setRound(payload.new as AssignmentRound)
+        () => {
+          void load()
         },
       )
       .subscribe()
@@ -47,7 +49,7 @@ export function useRealtimeRound(roundId: string | null) {
     return () => {
       void supabase.removeChannel(channel)
     }
-  }, [roundId])
+  }, [roundId, load])
 
   return round
 }
@@ -55,22 +57,24 @@ export function useRealtimeRound(roundId: string | null) {
 export function useRealtimeAssignments(roundId: string | null) {
   const [assignments, setAssignments] = useState<Assignment[]>([])
 
-  useEffect(() => {
+  const refetch = useCallback(async () => {
     if (!roundId) {
       setAssignments([])
       return
     }
 
-    const load = async () => {
-      const { data } = await supabase
-        .from('assignments')
-        .select('*')
-        .eq('round_id', roundId)
-        .order('assigned_at')
-      setAssignments((data as Assignment[]) ?? [])
-    }
+    const { data } = await supabase
+      .from('assignments')
+      .select('*')
+      .eq('round_id', roundId)
+      .order('assigned_at')
+    setAssignments((data as Assignment[]) ?? [])
+  }, [roundId])
 
-    void load()
+  useEffect(() => {
+    void refetch()
+
+    if (!roundId) return
 
     const channel = supabase
       .channel(`assignments-${roundId}`)
@@ -83,7 +87,7 @@ export function useRealtimeAssignments(roundId: string | null) {
           filter: `round_id=eq.${roundId}`,
         },
         () => {
-          void load()
+          void refetch()
         },
       )
       .subscribe()
@@ -91,30 +95,32 @@ export function useRealtimeAssignments(roundId: string | null) {
     return () => {
       void supabase.removeChannel(channel)
     }
-  }, [roundId])
+  }, [roundId, refetch])
 
-  return assignments
+  return { assignments, refetch }
 }
 
 export function useRealtimeWaitlist(roundId: string | null) {
   const [waitlist, setWaitlist] = useState<WaitlistEntry[]>([])
 
-  useEffect(() => {
+  const refetch = useCallback(async () => {
     if (!roundId) {
       setWaitlist([])
       return
     }
 
-    const load = async () => {
-      const { data } = await supabase
-        .from('waitlist')
-        .select('*')
-        .eq('round_id', roundId)
-        .order('position')
-      setWaitlist((data as WaitlistEntry[]) ?? [])
-    }
+    const { data } = await supabase
+      .from('waitlist')
+      .select('*')
+      .eq('round_id', roundId)
+      .order('position')
+    setWaitlist((data as WaitlistEntry[]) ?? [])
+  }, [roundId])
 
-    void load()
+  useEffect(() => {
+    void refetch()
+
+    if (!roundId) return
 
     const channel = supabase
       .channel(`waitlist-${roundId}`)
@@ -127,7 +133,7 @@ export function useRealtimeWaitlist(roundId: string | null) {
           filter: `round_id=eq.${roundId}`,
         },
         () => {
-          void load()
+          void refetch()
         },
       )
       .subscribe()
@@ -135,30 +141,32 @@ export function useRealtimeWaitlist(roundId: string | null) {
     return () => {
       void supabase.removeChannel(channel)
     }
-  }, [roundId])
+  }, [roundId, refetch])
 
-  return waitlist
+  return { waitlist, refetch }
 }
 
 export function useRealtimeLotteryEvents(roundId: string | null) {
   const [events, setEvents] = useState<LotteryEvent[]>([])
 
-  useEffect(() => {
+  const refetch = useCallback(async () => {
     if (!roundId) {
       setEvents([])
       return
     }
 
-    const load = async () => {
-      const { data } = await supabase
-        .from('lottery_events')
-        .select('*')
-        .eq('round_id', roundId)
-        .order('created_at')
-      setEvents((data as LotteryEvent[]) ?? [])
-    }
+    const { data } = await supabase
+      .from('lottery_events')
+      .select('*')
+      .eq('round_id', roundId)
+      .order('created_at')
+    setEvents((data as LotteryEvent[]) ?? [])
+  }, [roundId])
 
-    void load()
+  useEffect(() => {
+    void refetch()
+
+    if (!roundId) return
 
     const channel = supabase
       .channel(`lottery-${roundId}`)
@@ -171,7 +179,7 @@ export function useRealtimeLotteryEvents(roundId: string | null) {
           filter: `round_id=eq.${roundId}`,
         },
         () => {
-          void load()
+          void refetch()
         },
       )
       .subscribe()
@@ -179,7 +187,7 @@ export function useRealtimeLotteryEvents(roundId: string | null) {
     return () => {
       void supabase.removeChannel(channel)
     }
-  }, [roundId])
+  }, [roundId, refetch])
 
   return events
 }
@@ -187,22 +195,24 @@ export function useRealtimeLotteryEvents(roundId: string | null) {
 export function useRealtimePreferences(roundId: string | null) {
   const [preferences, setPreferences] = useState<Preference[]>([])
 
-  useEffect(() => {
+  const refetch = useCallback(async () => {
     if (!roundId) {
       setPreferences([])
       return
     }
 
-    const load = async () => {
-      const { data } = await supabase
-        .from('preferences')
-        .select('*')
-        .eq('round_id', roundId)
-        .order('submitted_at')
-      setPreferences((data as Preference[]) ?? [])
-    }
+    const { data } = await supabase
+      .from('preferences')
+      .select('*')
+      .eq('round_id', roundId)
+      .order('submitted_at')
+    setPreferences((data as Preference[]) ?? [])
+  }, [roundId])
 
-    void load()
+  useEffect(() => {
+    void refetch()
+
+    if (!roundId) return
 
     const channel = supabase
       .channel(`preferences-${roundId}`)
@@ -215,7 +225,7 @@ export function useRealtimePreferences(roundId: string | null) {
           filter: `round_id=eq.${roundId}`,
         },
         () => {
-          void load()
+          void refetch()
         },
       )
       .subscribe()
@@ -223,7 +233,7 @@ export function useRealtimePreferences(roundId: string | null) {
     return () => {
       void supabase.removeChannel(channel)
     }
-  }, [roundId])
+  }, [roundId, refetch])
 
   return preferences
 }

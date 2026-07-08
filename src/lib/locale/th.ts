@@ -9,7 +9,7 @@ const ROUND_STATUS_LABELS: Record<RoundStatus, string> = {
   draft: 'ร่าง',
   open: 'ตึกที่เปิดรับ',
   closed: 'ปิดรับความประสงค์',
-  running: 'กำลังจัดสรร',
+  running: 'กำลังเลือกตึกแล้ว',
   completed: 'เสร็จสิ้น',
 }
 
@@ -24,7 +24,7 @@ const ROLE_LABELS: Record<UserRole, string> = {
   VICE_HEAD_NURSE: 'รองหัวหน้าพยาบาล',
   SUPERVISOR_NURSE: 'พยาบาลควบคุม',
   HEAD_WARD_NURSE: 'หัวหน้าหอผู้ป่วย',
-  PARTICIPANT: 'ผู้เข้ารับการจัดสรร',
+  PARTICIPANT: 'ผู้เข้ารับการเลือกตึกแล้ว',
 }
 
 export function formatRoleLabel(role: UserRole): string {

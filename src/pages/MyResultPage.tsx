@@ -27,8 +27,8 @@ export function MyResultPage() {
   const [nurseNames, setNurseNames] = useState<Record<string, string>>({})
 
   const round = useRealtimeRound(selectedRoundId || null)
-  const assignments = useRealtimeAssignments(selectedRoundId || null)
-  const waitlist = useRealtimeWaitlist(selectedRoundId || null)
+  const { assignments } = useRealtimeAssignments(selectedRoundId || null)
+  const { waitlist } = useRealtimeWaitlist(selectedRoundId || null)
   const lotteryEvents = useRealtimeLotteryEvents(selectedRoundId || null)
 
   useEffect(() => {
@@ -107,21 +107,21 @@ export function MyResultPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold text-slate-900">ผลการจัดสรร</h1>
+        <h1 className="text-2xl font-semibold text-slate-900">ผลการเลือกตึกแล้ว</h1>
         <p className="mt-1 text-sm text-slate-600">
-          ดูผลการจัดสรรและคำอธิบายทีละขั้นตอนว่าการจับสลากทำงานอย่างไรสำหรับความประสงค์ของคุณ
+          ดูผลการเลือกตึกแล้วและคำอธิบายทีละขั้นตอนว่าการจับสลากทำงานอย่างไรสำหรับความประสงค์ของคุณ
         </p>
       </div>
 
       {rounds.length === 0 ? (
         <p className="rounded-xl border border-dashed border-slate-300 bg-white p-6 text-sm text-slate-500">
-          ยังไม่มีรอบจัดสรรที่เสร็จสิ้นหรือกำลังดำเนินการ
+          ยังไม่มีรอบเลือกตึกที่เสร็จสิ้นหรือกำลังดำเนินการ
         </p>
       ) : (
         <>
           <label className="block max-w-md">
             <span className="mb-1 block text-sm font-medium text-slate-700">
-              รอบจัดสรร
+              รอบเลือกตึก
             </span>
             <select
               value={selectedRoundId}
@@ -146,14 +146,14 @@ export function MyResultPage() {
 
             {myAssignment ? (
               <div className="mt-4 rounded-lg bg-teal-50 p-4">
-                <p className="text-sm text-teal-800">คุณได้รับจัดสรรไปที่</p>
+                <p className="text-sm text-teal-800">คุณเลือกตึกแล้วที่</p>
                 <p className="text-xl font-semibold text-teal-900">
                   {assignedDepartment
                     ? `${assignedDepartment.code} — ${assignedDepartment.name_th}`
-                    : 'ไม่ทราบแผนก'}
+                    : 'ไม่ทราบตึก'}
                 </p>
                 <p className="mt-1 text-sm text-teal-700">
-                  จัดสรรผ่าน{formatTier(myAssignment.matched_tier)}
+                  เลือกตึกแล้วผ่าน{formatTier(myAssignment.matched_tier)}
                 </p>
               </div>
             ) : waitlistEntry ? (
@@ -168,8 +168,8 @@ export function MyResultPage() {
             ) : (
               <p className="mt-4 text-sm text-slate-600">
                 {round?.status === 'completed'
-                  ? 'ไม่พบผลการจัดสรรของคุณในรอบนี้'
-                  : 'ยังไม่ประกาศผลการจัดสรร'}
+                  ? 'ไม่พบผลการเลือกตึกแล้วของคุณในรอบนี้'
+                  : 'ยังไม่ประกาศผลการเลือกตึกแล้ว'}
               </p>
             )}
 

@@ -74,7 +74,7 @@ export function AdminPeoplePage() {
             ผู้ที่ยังไม่เลือกตึก
           </h1>
           <p className="mt-1 text-sm text-slate-600">
-            รายชื่อผู้เข้ารับการจัดสรรที่ยังไม่ส่งความประสงค์ในรอบที่เลือก
+            รายชื่อผู้เข้ารับการเลือกตึกแล้วที่ยังไม่ส่งความประสงค์ในรอบที่เลือก
             (อัปเดตแบบเรียลไทม์)
           </p>
         </div>
@@ -90,7 +90,7 @@ export function AdminPeoplePage() {
 
       <label className="block max-w-md">
         <span className="mb-1 block text-sm font-medium text-slate-700">
-          รอบจัดสรร
+          รอบเลือกตึก
         </span>
         <select
           value={selectedRoundId}
@@ -108,7 +108,7 @@ export function AdminPeoplePage() {
       {selectedRound && (
         <div className="grid gap-3 sm:grid-cols-3">
           <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-            <p className="text-xs text-slate-500">ผู้เข้ารับการจัดสรรทั้งหมด</p>
+            <p className="text-xs text-slate-500">ผู้เข้ารับการเลือกตึกแล้วทั้งหมด</p>
             <p className="mt-1 text-2xl font-semibold text-slate-900">
               {participants.length}
             </p>
@@ -131,7 +131,7 @@ export function AdminPeoplePage() {
 
       {participants.length === 0 ? (
         <p className="rounded-xl border border-dashed border-slate-300 bg-white p-6 text-sm text-slate-500">
-          ยังไม่มีบัญชีผู้เข้ารับการจัดสรร
+          ยังไม่มีบัญชีผู้เข้ารับการเลือกตึกแล้ว
         </p>
       ) : notSubmitted.length === 0 ? (
         <p className="rounded-xl border border-dashed border-teal-300 bg-teal-50 p-6 text-sm text-teal-800">

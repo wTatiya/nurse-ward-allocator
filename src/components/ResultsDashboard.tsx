@@ -70,7 +70,7 @@ export function ResultsDashboard({
             ภาพรวมแบบเรียลไทม์
           </h2>
           <p className="mt-1 text-sm text-slate-600">
-            อัปเดตอัตโนมัติเมื่อมีการจัดสรร การส่งเลือกตึก หรือการจับสลาก
+            อัปเดตอัตโนมัติเมื่อมีการเลือกตึกแล้ว การส่งเลือกตึก หรือการจับสลาก
           </p>
         </div>
         {round && (
@@ -91,7 +91,7 @@ export function ResultsDashboard({
           accent="teal"
         />
         <StatCard
-          label="จัดสรรแล้ว"
+          label="เลือกตึกแล้ว"
           value={assignments.length}
           hint={`รายการรอ ${waitlist.length} คน`}
         />

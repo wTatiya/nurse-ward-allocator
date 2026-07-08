@@ -159,10 +159,10 @@ export function DepartmentFillCard({
       {expanded && (
         <div className="mt-3 text-sm" onClick={(e) => e.stopPropagation()}>
           <p className="font-medium text-slate-800">
-            ผู้ได้รับจัดสรร ({item.assignedPeople.length})
+            ผู้เลือกตึกแล้ว ({item.assignedPeople.length})
           </p>
           {item.assignedPeople.length === 0 ? (
-            <p className="mt-2 text-slate-600">ยังไม่มีผู้ได้รับจัดสรร</p>
+            <p className="mt-2 text-slate-600">ยังไม่มีผู้เลือกตึกแล้ว</p>
           ) : (
             <ol className="mt-2 list-decimal space-y-1 pl-5 text-slate-700">
               {item.assignedPeople.map((person) => (

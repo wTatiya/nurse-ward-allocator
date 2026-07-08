@@ -39,7 +39,7 @@ function stepBadgeClass(result: PersonalOutcome['steps'][number]['result']) {
 function stepBadgeLabel(result: PersonalOutcome['steps'][number]['result']) {
   switch (result) {
     case 'assigned_direct':
-      return 'ได้รับจัดสรร'
+      return 'เลือกตึกแล้ว'
     case 'won_lottery':
       return 'ชนะการจับสลาก'
     case 'lost_lottery':
@@ -72,8 +72,8 @@ export function OutcomeExplanation({
   if (outcome.status === 'pending') {
     return (
       <p className="mt-4 text-sm text-slate-600">
-        ยังไม่ประกาศผลการจัดสรร หลังผู้ดูแลระบบรันการจัดสรรแล้ว
-        ส่วนนี้จะแสดงคำอธิบายทีละขั้นตอนว่าทำไมคุณได้รับจัดสรรหรืออยู่ในรายการรอ
+        ยังไม่ประกาศผลการเลือกตึกแล้ว หลังผู้ดูแลระบบรันการเลือกตึก
+        ส่วนนี้จะแสดงคำอธิบายทีละขั้นตอนว่าทำไมคุณเลือกตึกแล้วหรืออยู่ในรายการรอ
       </p>
     )
   }
@@ -81,7 +81,7 @@ export function OutcomeExplanation({
   if (outcome.status === 'none') {
     return (
       <p className="mt-4 text-sm text-slate-600">
-        ไม่พบผลการจัดสรรของคุณในรอบนี้
+        ไม่พบผลการเลือกตึกแล้วของคุณในรอบนี้
       </p>
     )
   }
@@ -89,15 +89,15 @@ export function OutcomeExplanation({
   return (
     <div className="mt-6 space-y-4">
       <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
-        <p className="font-medium text-slate-900">วิธีการจัดสรรในรอบนี้</p>
+        <p className="font-medium text-slate-900">วิธีการเลือกตึกในรอบนี้</p>
         <ol className="mt-2 list-decimal space-y-1 pl-5">
           <li>ระบบประมวลผลอันดับ 1 ของทุกคนก่อน</li>
           <li>
-            หากมีผู้ต้องการแผนกมากกว่าจำนวนตำแหน่ง ระบบจะจับสลากแบบสุ่มอย่างเป็นธรรม
+            หากมีผู้ต้องการตึกมากกว่าจำนวนตำแหน่ง ระบบจะจับสลากแบบสุ่มอย่างเป็นธรรม
           </li>
-          <li>ผู้ที่ยังไม่ได้รับจัดสรรจะไปที่อันดับ 2 แล้วจึงอันดับ 3</li>
+          <li>ผู้ที่ยังไม่ได้เลือกตึกแล้วจะไปที่อันดับ 2 แล้วจึงอันดับ 3</li>
           <li>
-            ผู้ที่ยังไม่ได้รับจัดสรรจะเข้ารายการรอ (ผู้ที่ส่งก่อนจะได้ลำดับสูงกว่า)
+            ผู้ที่ยังไม่ได้เลือกตึกแล้วจะเข้ารายการรอ (ผู้ที่ส่งก่อนจะได้ลำดับสูงกว่า)
           </li>
         </ol>
       </div>
@@ -148,7 +148,7 @@ export function OutcomeExplanation({
 
       {outcome.status === 'assigned' && outcome.matchedTier && (
         <p className="text-sm text-teal-800">
-          ผลสุดท้าย: จัดสรรไปที่ {outcome.assignedDepartmentLabel} ผ่าน
+          ผลสุดท้าย: เลือกตึกแล้วที่ {outcome.assignedDepartmentLabel} ผ่าน
           {formatTier(outcome.matchedTier)}
         </p>
       )}

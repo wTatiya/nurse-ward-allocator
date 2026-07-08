@@ -79,12 +79,12 @@ export function LoginPage() {
     <div className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-4">
       <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
         <h1 className="text-2xl font-semibold text-slate-900">
-          ระบบจัดสรรหอผู้ป่วย
+          ระบบเลือกตึกหอผู้ป่วย
         </h1>
         <p className="mt-2 text-sm text-slate-600">
           {mode === 'staff'
             ? 'เจ้าหน้าที่: เข้าสู่ระบบด้วยรหัสพยาบาล 7 หลัก'
-            : 'ผู้เข้ารับการจัดสรร: เลือกชื่อ-นามสกุลของคุณจากรายการ'}
+            : 'ผู้เข้ารับการเลือกตึกแล้ว: เลือกชื่อ-นามสกุลของคุณจากรายการ'}
         </p>
 
         <div className="mt-6 flex rounded-lg border border-slate-200 p-1">
@@ -100,7 +100,7 @@ export function LoginPage() {
                 : 'text-slate-600 hover:bg-slate-50'
             }`}
           >
-            ผู้เข้ารับการจัดสรร
+            ผู้เข้ารับการเลือกตึกแล้ว
           </button>
           <button
             type="button"
@@ -187,7 +187,7 @@ export function LoginPage() {
                 {optionsLoading ? (
                   <option value="">กำลังโหลดรายชื่อ...</option>
                 ) : participantOptions.length === 0 ? (
-                  <option value="">ยังไม่มีบัญชีผู้เข้ารับการจัดสรร</option>
+                  <option value="">ยังไม่มีบัญชีผู้เข้ารับการเลือกตึกแล้ว</option>
                 ) : (
                   participantOptions.map((option) => (
                     <option key={option.login_slug} value={option.login_slug}>
@@ -241,7 +241,7 @@ export function LoginPage() {
 
         <p className="mt-6 text-center text-xs text-slate-500">
           {mode === 'participant'
-            ? 'ผู้เข้ารับการจัดสรรไม่ต้องใช้รหัสพยาบาล 7 หลัก'
+            ? 'ผู้เข้ารับการเลือกตึกแล้วไม่ต้องใช้รหัสพยาบาล 7 หลัก'
             : 'บัญชีเจ้าหน้าที่ถูกสร้างไว้ล่วงหน้าโดยฝ่ายบริหาร'}
         </p>
       </div>

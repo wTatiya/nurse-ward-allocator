@@ -48,7 +48,7 @@ export function AdminRoundsPage() {
     }
 
     setName('')
-    setMessage('สร้างรอบจัดสรรแล้ว')
+    setMessage('สร้างรอบเลือกตึกแล้ว')
     await loadRounds()
   }
 
@@ -93,7 +93,7 @@ export function AdminRoundsPage() {
     }
 
     setMessage(
-      `จัดสรรเสร็จสิ้น: ได้รับจัดสรร ${data.assigned} คน, รายการรอ ${data.waitlisted} คน, จับสลาก ${data.lotteries} ครั้ง`,
+      `เลือกตึกแล้วเสร็จสิ้น: เลือกตึกแล้ว ${data.assigned} คน, รายการรอ ${data.waitlisted} คน, จับสลาก ${data.lotteries} ครั้ง`,
     )
     await loadRounds()
   }
@@ -101,9 +101,9 @@ export function AdminRoundsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold text-slate-900">รอบจัดสรร</h1>
+        <h1 className="text-2xl font-semibold text-slate-900">รอบเลือกตึก</h1>
         <p className="mt-1 text-sm text-slate-600">
-          สร้างรอบ เปิดรับการเลือกตึกเมื่อพร้อม ปิดรับเมื่อครบ แล้วรันการจัดสรร
+          สร้างรอบ เปิดรับการเลือกตึกเมื่อพร้อม ปิดรับเมื่อครบ แล้วรันการเลือกตึก
         </p>
       </div>
 
@@ -183,8 +183,8 @@ export function AdminRoundsPage() {
                     className="rounded-lg bg-amber-600 px-3 py-2 text-sm text-white disabled:bg-slate-300"
                   >
                     {runningId === round.id
-                      ? 'กำลังจัดสรร...'
-                      : 'รันการจัดสรร'}
+                      ? 'กำลังเลือกตึกแล้ว...'
+                      : 'รันการเลือกตึก'}
                   </button>
                 )}
               </div>

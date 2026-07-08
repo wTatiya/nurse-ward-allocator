@@ -37,8 +37,12 @@ export function AdminResultsPage() {
     null,
   )
 
-  const assignments = useRealtimeAssignments(selectedRoundId || null)
-  const waitlist = useRealtimeWaitlist(selectedRoundId || null)
+  const { assignments, refetch: refetchAssignments } = useRealtimeAssignments(
+    selectedRoundId || null,
+  )
+  const { waitlist, refetch: refetchWaitlist } = useRealtimeWaitlist(
+    selectedRoundId || null,
+  )
   const lotteryEvents = useRealtimeLotteryEvents(selectedRoundId || null)
   const preferences = useRealtimePreferences(selectedRoundId || null)
   const round = useRealtimeRound(selectedRoundId || null)
@@ -75,6 +79,10 @@ export function AdminResultsPage() {
   useEffect(() => {
     setExpandedDepartmentId(null)
   }, [selectedRoundId])
+
+  const refreshAfterManualAssign = async () => {
+    await Promise.all([refetchAssignments(), refetchWaitlist()])
+  }
 
   const nurseNames = useMemo(
     () => Object.fromEntries(profiles.map((profile) => [profile.id, profile.full_name])),
@@ -130,7 +138,7 @@ export function AdminResultsPage() {
 
   const exportAssignments = () => {
     const rows = [
-      ['พยาบาล', 'แผนก', 'อันดับที่จัดสรร', 'วันที่จัดสรร'],
+      ['พยาบาล', 'ตึก', 'อันดับที่เลือกตึกแล้ว', 'วันที่เลือกตึกแล้ว'],
       ...assignments.map((assignment) => [
         nurseNames[assignment.nurse_id] ?? assignment.nurse_id,
         departments.find((d) => d.id === assignment.department_id)?.code ?? '',
@@ -159,8 +167,8 @@ export function AdminResultsPage() {
           <h1 className="text-2xl font-semibold text-slate-900">ผลลัพธ์</h1>
           <p className="mt-1 text-sm text-slate-600">
             {canEdit
-              ? 'ตารางผลการจัดสรรแบบเรียลไทม์ บันทึกการจับสลาก และส่งออก CSV'
-              : 'ตารางผลการจัดสรรแบบเรียลไทม์ (ดูอย่างเดียว)'}
+              ? 'ตารางผลการเลือกตึกแล้วแบบเรียลไทม์ บันทึกการจับสลาก และส่งออก CSV'
+              : 'ตารางผลการเลือกตึกแล้วแบบเรียลไทม์ (ดูอย่างเดียว)'}
           </p>
         </div>
         <div className="flex gap-2">
@@ -169,7 +177,7 @@ export function AdminResultsPage() {
             onClick={exportAssignments}
             className="rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-700"
           >
-            ส่งออกผลจัดสรร
+            ส่งออกผลเลือกตึกแล้ว
           </button>
           <button
             type="button"
@@ -183,7 +191,7 @@ export function AdminResultsPage() {
 
       <label className="block max-w-md">
         <span className="mb-1 block text-sm font-medium text-slate-700">
-          รอบจัดสรร
+          รอบเลือกตึก
         </span>
         <select
           value={selectedRoundId}
@@ -201,7 +209,7 @@ export function AdminResultsPage() {
       <section className="space-y-3">
         <h2 className="text-lg font-semibold text-slate-900">ตำแหน่งที่เติมแล้ว</h2>
         <p className="text-sm text-slate-600">
-          แผนกที่เกินหรือยังว่างอยู่ด้านบน · แผนกครบพอดีอยู่ด้านล่าง (เรียง A–Z)
+          ตึกที่เกินหรือยังว่างอยู่ด้านบน · ตึกครบพอดีอยู่ด้านล่าง (เรียง A–Z)
         </p>
         <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
           {departmentFill.map((item) => (
@@ -229,7 +237,7 @@ export function AdminResultsPage() {
       />
 
       <section className="space-y-3">
-        <h2 className="text-lg font-semibold text-slate-900">ผลการจัดสรร</h2>
+        <h2 className="text-lg font-semibold text-slate-900">ผลการเลือกตึกแล้ว</h2>
         <ResultsTable
           assignments={assignments}
           departments={departments}
@@ -246,11 +254,12 @@ export function AdminResultsPage() {
           departments={departments}
           nurseNames={nurseNames}
           canEdit={canEdit}
+          onAssigned={refreshAfterManualAssign}
         />
 
         <div className="pt-2">
           <h3 className="text-base font-semibold text-slate-900">
-            รายชื่อที่จัดสรรแล้ว
+            รายชื่อที่เลือกตึกแล้ว
           </h3>
           <div className="mt-3">
             <SettledAssignmentsTable
@@ -258,6 +267,7 @@ export function AdminResultsPage() {
               departments={departments}
               nurseNames={nurseNames}
               canEdit={canEdit}
+              onReassigned={refetchAssignments}
             />
           </div>
         </div>

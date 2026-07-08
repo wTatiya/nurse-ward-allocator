@@ -42,7 +42,7 @@ function departmentLabel(
   const department = departments.find((item) => item.id === departmentId)
   return department
     ? `${department.code} — ${department.name_th}`
-    : 'ไม่ทราบแผนก'
+    : 'ไม่ทราบตึก'
 }
 
 function departmentCapacity(
@@ -211,12 +211,12 @@ export function outcomeStepMessage(step: OutcomeStep): string {
 
   switch (step.result) {
     case 'assigned_direct':
-      return `คุณได้รับจัดสรรที่แผนกนี้จากความประสงค์${tierLabel} ผู้ที่ต้องการแผนกนี้ในขั้นตอนนี้ได้รับครบทุกคน (ไม่ต้องจับสลาก)`
+      return `คุณเลือกตึกแล้วที่ตึกนี้จากความประสงค์${tierLabel} ผู้ที่ต้องการตึกนี้ในขั้นตอนนี้ได้รับครบทุกคน (ไม่ต้องจับสลาก)`
     case 'won_lottery':
       return `คุณชนะการจับสลากสำหรับความประสงค์${tierLabel} (มีผู้สมัคร ${step.lottery?.applicants ?? 0} คน แข่งขัน ${step.lottery?.slots ?? 0} ตำแหน่ง)`
     case 'lost_lottery':
       return `คุณเข้าร่วมการจับสลากสำหรับความประสงค์${tierLabel} แต่จับสลากไม่ได้ (มีผู้สมัคร ${step.lottery?.applicants ?? 0} คน แข่งขัน ${step.lottery?.slots ?? 0} ตำแหน่ง)`
     case 'department_full':
-      return `ตำแหน่งครบ ${step.capacity} ตำแหน่งแล้วเมื่อระบบประมวลผลความประสงค์${tierLabel} ของคุณ จึงไม่สามารถจัดสรรได้ที่แผนกนี้`
+      return `ตำแหน่งครบ ${step.capacity} ตำแหน่งแล้วเมื่อระบบประมวลผลความประสงค์${tierLabel} ของคุณ จึงไม่สามารถเลือกตึกแล้วได้ที่ตึกนี้`
   }
 }

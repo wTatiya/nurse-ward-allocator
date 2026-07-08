@@ -1,9 +1,11 @@
 import { useState } from 'react'
+import { assignFromWaitlist } from '../lib/manualAssignment'
 import {
-  assignFromWaitlist,
-  capacityWarningLabel,
-  projectedCapacityStatus,
-} from '../lib/manualAssignment'
+  countAfterWaitlistAssign,
+  getCapacityStatus,
+  waitlistProjectionBadgeLabel,
+} from '../lib/assignmentCapacity'
+import { visibleWaitlistEntries } from '../lib/waitlistDisplay'
 import type { Assignment, Department, WaitlistEntry } from '../types/database'
 
 interface WaitlistAssignTableProps {
@@ -13,6 +15,7 @@ interface WaitlistAssignTableProps {
   departments: Department[]
   nurseNames: Record<string, string>
   canEdit?: boolean
+  onAssigned?: () => Promise<void>
 }
 
 export function WaitlistAssignTable({
@@ -22,6 +25,7 @@ export function WaitlistAssignTable({
   departments,
   nurseNames,
   canEdit = false,
+  onAssigned,
 }: WaitlistAssignTableProps) {
   const [busyId, setBusyId] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -32,6 +36,8 @@ export function WaitlistAssignTable({
   const activeDepartments = departments
     .filter((department) => department.is_active)
     .sort((a, b) => a.code.localeCompare(b.code, 'th'))
+
+  const displayWaitlist = visibleWaitlistEntries(waitlist, assignments)
 
   const handleAssign = async (entry: WaitlistEntry) => {
     const departmentId = pendingDepartment[entry.id]
@@ -53,6 +59,8 @@ export function WaitlistAssignTable({
       return
     }
 
+    await onAssigned?.()
+
     setPendingDepartment((current) => {
       const next = { ...current }
       delete next[entry.id]
@@ -60,10 +68,10 @@ export function WaitlistAssignTable({
     })
   }
 
-  if (waitlist.length === 0) {
+  if (displayWaitlist.length === 0) {
     return (
       <p className="rounded-xl border border-dashed border-slate-300 bg-white p-6 text-sm text-slate-500">
-        ไม่มีผู้เข้ารับการจัดสรรในรายการรอ
+        ไม่มีผู้เข้ารับการเลือกตึกแล้วในรายการรอ
       </p>
     )
   }
@@ -72,11 +80,12 @@ export function WaitlistAssignTable({
     <div className="space-y-3">
       {canEdit ? (
         <p className="text-sm text-slate-600">
-          เลือกแผนกจากรายการด้านหลังชื่อเพื่อจัดสรรด้วยตนเอง (เหมาะกับการไกล่เกลี่ยแบบออฟไลน์)
+          เลือกตึกจากรายการด้านหลังชื่อเพื่อเลือกตึกแล้วด้วยตนเอง (เหมาะกับการไกล่เกลี่ยแบบออฟไลน์)
+          · ป้ายสถานะคำนวณ<strong className="font-medium">รวมพยาบาลคนนี้</strong>แล้ว
         </p>
       ) : (
         <p className="text-sm text-slate-600">
-          รายการรอจัดสรร (ดูอย่างเดียว — แก้ไขได้เฉพาะผู้ดูแลระบบ)
+          รายการรอเลือกตึก (ดูอย่างเดียว — แก้ไขได้เฉพาะผู้ดูแลระบบ)
         </p>
       )}
       {error && (
@@ -96,29 +105,30 @@ export function WaitlistAssignTable({
               </th>
               {canEdit && (
                 <th className="px-4 py-3 text-left font-medium text-slate-600">
-                  จัดไปแผนก
+                  จัดไปตึก
                 </th>
               )}
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
-            {waitlist.map((entry) => {
+            {displayWaitlist.map((entry) => {
               const selectedDepartmentId = pendingDepartment[entry.id] ?? ''
               const selectedDepartment = activeDepartments.find(
                 (department) => department.id === selectedDepartmentId,
               )
-              const projectedStatus = selectedDepartmentId
-                ? projectedCapacityStatus(
+              const projectedAssigned = selectedDepartmentId
+                ? countAfterWaitlistAssign(
                     selectedDepartmentId,
+                    entry.nurse_id,
                     assignments,
-                    departments,
-                    1,
+                  )
+                : 0
+              const projectedStatus = selectedDepartment
+                ? getCapacityStatus(
+                    projectedAssigned,
+                    selectedDepartment.capacity,
                   )
                 : null
-              const projectedAssigned =
-                assignments.filter(
-                  (item) => item.department_id === selectedDepartmentId,
-                ).length + (selectedDepartmentId ? 1 : 0)
 
               return (
                 <tr key={entry.id}>
@@ -140,7 +150,7 @@ export function WaitlistAssignTable({
                           }
                           className="min-w-[12rem] rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm"
                         >
-                          <option value="">เลือกแผนก...</option>
+                          <option value="">เลือกตึก...</option>
                           {activeDepartments.map((department) => (
                             <option key={department.id} value={department.id}>
                               {department.code} — {department.name_th}
@@ -165,10 +175,10 @@ export function WaitlistAssignTable({
                                   : 'bg-green-100 text-green-800'
                             }`}
                           >
-                            {capacityWarningLabel(
+                            {waitlistProjectionBadgeLabel(
                               projectedAssigned,
                               selectedDepartment.capacity,
-                            ) ?? 'ครบพอดี'}
+                            )}
                           </span>
                         )}
                       </div>

@@ -85,19 +85,19 @@ export function DashboardPage() {
       <div>
         <h1 className="text-2xl font-semibold text-slate-900">ภาพรวม</h1>
         <p className="mt-1 text-sm text-slate-600">
-          ภาพรวมการจัดสรรแบบอ่านอย่างเดียวสำหรับแผนกที่คุณดูได้
+          ภาพรวมการเลือกตึกแล้วแบบอ่านอย่างเดียวสำหรับตึกที่คุณดูได้
         </p>
       </div>
 
       {rounds.length === 0 ? (
         <p className="rounded-xl border border-dashed border-slate-300 bg-white p-6 text-sm text-slate-500">
-          ยังไม่มีรอบจัดสรร
+          ยังไม่มีรอบเลือกตึก
         </p>
       ) : (
         <>
           <label className="block max-w-md">
             <span className="mb-1 block text-sm font-medium text-slate-700">
-              รอบจัดสรร
+              รอบเลือกตึก
             </span>
             <select
               value={selectedRoundId}
@@ -123,7 +123,7 @@ export function DashboardPage() {
 
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-              <p className="text-xs text-slate-500">แผนกที่มองเห็น</p>
+              <p className="text-xs text-slate-500">ตึกที่มองเห็น</p>
               <p className="mt-1 text-2xl font-semibold text-slate-900">
                 {stats.length}
               </p>
@@ -156,7 +156,7 @@ export function DashboardPage() {
 
           {stats.length === 0 ? (
             <p className="rounded-xl border border-dashed border-slate-300 bg-white p-6 text-sm text-slate-500">
-              ไม่มีแผนกในขอบเขตของคุณสำหรับรอบนี้
+              ไม่มีตึกในขอบเขตของคุณสำหรับรอบนี้
             </p>
           ) : (
             <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
@@ -167,13 +167,13 @@ export function DashboardPage() {
                       รหัส
                     </th>
                     <th className="px-4 py-3 text-left font-medium text-slate-600">
-                      แผนก
+                      ตึก
                     </th>
                     <th className="px-4 py-3 text-left font-medium text-slate-600">
                       จำนวนตำแหน่ง
                     </th>
                     <th className="px-4 py-3 text-left font-medium text-slate-600">
-                      จัดสรรแล้ว
+                      เลือกตึกแล้ว
                     </th>
                     <th className="px-4 py-3 text-left font-medium text-slate-600">
                       ความประสงค์

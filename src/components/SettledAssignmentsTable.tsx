@@ -11,6 +11,7 @@ interface SettledAssignmentsTableProps {
   departments: Department[]
   nurseNames: Record<string, string>
   canEdit?: boolean
+  onReassigned?: () => Promise<void>
 }
 
 export function SettledAssignmentsTable({
@@ -18,6 +19,7 @@ export function SettledAssignmentsTable({
   departments,
   nurseNames,
   canEdit = false,
+  onReassigned,
 }: SettledAssignmentsTableProps) {
   const [busyAssignmentId, setBusyAssignmentId] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -61,13 +63,18 @@ export function SettledAssignmentsTable({
     })
 
     setBusyAssignmentId(null)
-    if (message) setError(message)
+    if (message) {
+      setError(message)
+      return
+    }
+
+    await onReassigned?.()
   }
 
   if (groups.length === 0) {
     return (
       <p className="rounded-xl border border-dashed border-slate-300 bg-white p-6 text-sm text-slate-500">
-        ยังไม่มีผู้ได้รับจัดสรรในรอบนี้
+        ยังไม่มีผู้เลือกตึกแล้วในรอบนี้
       </p>
     )
   }
@@ -76,8 +83,8 @@ export function SettledAssignmentsTable({
     <div className="space-y-4">
       <p className="text-sm text-slate-600">
         {canEdit
-          ? 'รายชื่อที่จัดสรรแล้ว จัดกลุ่มตามแผนก (A–Z) · เปลี่ยนแผนกได้เมื่อมีการสลับตกลงกัน'
-          : 'รายชื่อที่จัดสรรแล้ว จัดกลุ่มตามแผนก (A–Z) · ดูอย่างเดียว'}
+          ? 'รายชื่อที่เลือกตึกแล้ว จัดกลุ่มตามตึก (A–Z) · เปลี่ยนตึกได้เมื่อมีการสลับตกลงกัน'
+          : 'รายชื่อที่เลือกตึกแล้ว จัดกลุ่มตามตึก (A–Z) · ดูอย่างเดียว'}
       </p>
       {error && (
         <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
@@ -131,7 +138,7 @@ export function SettledAssignmentsTable({
                     พยาบาล
                   </th>
                   <th className="px-4 py-2 text-left font-medium text-slate-600">
-                    แผนก
+                    ตึก
                   </th>
                 </tr>
               </thead>

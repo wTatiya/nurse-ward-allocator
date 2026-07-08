@@ -47,14 +47,17 @@ export async function assignFromWaitlist(input: {
 }): Promise<string | null> {
   const { roundId, waitlistEntryId, nurseId, departmentId } = input
 
-  const { error: insertError } = await supabase.from('assignments').insert({
-    round_id: roundId,
-    nurse_id: nurseId,
-    department_id: departmentId,
-    matched_tier: 3,
-  })
+  const { error: upsertError } = await supabase.from('assignments').upsert(
+    {
+      round_id: roundId,
+      nurse_id: nurseId,
+      department_id: departmentId,
+      matched_tier: 3,
+    },
+    { onConflict: 'round_id,nurse_id' },
+  )
 
-  if (insertError) return insertError.message
+  if (upsertError) return upsertError.message
 
   const { error: deleteError } = await supabase
     .from('waitlist')

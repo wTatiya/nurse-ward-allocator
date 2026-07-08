@@ -59,19 +59,19 @@ export function PreferencesPage() {
       <div>
         <h1 className="text-2xl font-semibold text-slate-900">เลือกตึก</h1>
         <p className="mt-1 text-sm text-slate-600">
-          จัดอันดับแผนกที่ต้องการ 3 อันดับสำหรับรอบจัดสรรที่เปิดอยู่
+          จัดอันดับตึกที่ต้องการ 3 อันดับสำหรับรอบเลือกตึกที่เปิดอยู่
         </p>
       </div>
 
       {rounds.length === 0 ? (
         <p className="rounded-xl border border-dashed border-slate-300 bg-white p-6 text-sm text-slate-500">
-          ยังไม่มีรอบจัดสรรที่เปิดรับ กรุณากลับมาตรวจสอบเมื่อมีตึกที่เปิดรับ
+          ยังไม่มีรอบเลือกตึกที่เปิดรับ กรุณากลับมาตรวจสอบเมื่อมีตึกที่เปิดรับ
         </p>
       ) : (
         <>
           <label className="block max-w-md">
             <span className="mb-1 block text-sm font-medium text-slate-700">
-              รอบจัดสรร
+              รอบเลือกตึก
             </span>
             <select
               value={selectedRoundId}

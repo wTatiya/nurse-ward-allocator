@@ -4,7 +4,7 @@ import { formatRoleLabel, isAdmin, isParticipant, isStaffViewer } from '../lib/r
 
 const participantLinks = [
   { to: '/preferences', label: 'เลือกตึก' },
-  { to: '/my-result', label: 'ผลการจัดสรร' },
+  { to: '/my-result', label: 'ผลการเลือกตึกแล้ว' },
 ]
 
 const staffLinks = [
@@ -14,7 +14,7 @@ const staffLinks = [
 
 const adminLinks = [
   { to: '/admin/departments', label: 'แผนก' },
-  { to: '/admin/rounds', label: 'รอบจัดสรร' },
+  { to: '/admin/rounds', label: 'รอบเลือกตึก' },
   { to: '/admin/people', label: 'ยังไม่เลือกตึก' },
   { to: '/admin/results', label: 'ผลลัพธ์' },
 ]
@@ -37,7 +37,7 @@ export function Layout() {
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4">
           <div>
             <p className="text-sm font-medium text-teal-700">
-              ระบบจัดสรรหอผู้ป่วย
+              ระบบเลือกตึกหอผู้ป่วย
             </p>
             <p className="text-xs text-slate-500">
               {profile?.nurse_id

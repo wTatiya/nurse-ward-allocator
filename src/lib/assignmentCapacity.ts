@@ -36,3 +36,24 @@ export function projectedCapacityStatus(
     extra
   return getCapacityStatus(assigned, department.capacity)
 }
+
+/** Count in a ward after placing this waitlisted nurse (includes them once). */
+export function countAfterWaitlistAssign(
+  departmentId: string,
+  nurseId: string,
+  assignments: { department_id: string; nurse_id: string }[],
+): number {
+  const othersInWard = assignments.filter(
+    (item) => item.department_id === departmentId && item.nurse_id !== nurseId,
+  ).length
+  return othersInWard + 1
+}
+
+/** Badge text for waitlist row — makes clear the count includes this nurse. */
+export function waitlistProjectionBadgeLabel(
+  assignedAfter: number,
+  capacity: number,
+): string {
+  const warning = capacityWarningLabel(assignedAfter, capacity)
+  return warning ? `รวมคนนี้ — ${warning}` : 'รวมคนนี้ — ครบพอดี'
+}
