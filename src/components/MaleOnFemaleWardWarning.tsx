@@ -23,16 +23,9 @@ export function MaleOnFemaleWardWarning({
           !
         </div>
         <div className="min-w-0 flex-1 space-y-3">
-          <div>
-            <h2 className="text-xl font-bold tracking-tight text-red-900">
-              คำเตือนสำคัญ — พยาบาลชายถูกจัดไปตึกหญิงเท่านั้น
-            </h2>
-            <p className="mt-2 text-sm leading-relaxed text-red-800">
-              ตึกเหล่านี้เป็นตึกผู้ป่วยหญิง (สูติกรรม / ทารกแรกเกิด / อายุรกรรมหญิง
-              เป็นต้น) ผู้ป่วยอาจไม่สบายใจหากมีพยาบาลชายประจำตึก
-              กรุณาจัดใหม่ไปตึกอื่นทันที
-            </p>
-          </div>
+          <h2 className="text-xl font-bold tracking-tight text-red-900">
+            คำเตือน— มีพยาบาลชายถูกจัดไปตึกหญิง
+          </h2>
 
           <ul className="space-y-2">
             {violations.map((item) => (
