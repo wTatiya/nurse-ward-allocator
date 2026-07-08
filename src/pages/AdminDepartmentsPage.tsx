@@ -10,6 +10,9 @@ export function AdminDepartmentsPage() {
   const [error, setError] = useState<string | null>(null)
   const [message, setMessage] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
+  const [showResetConfirm, setShowResetConfirm] = useState(false)
+  const [resettingAll, setResettingAll] = useState(false)
+  const [resetError, setResetError] = useState<string | null>(null)
 
   const loadDepartments = async () => {
     const { data } = await supabase
@@ -74,14 +77,91 @@ export function AdminDepartmentsPage() {
     await loadDepartments()
   }
 
+  const handleResetAll = async () => {
+    if (departments.length === 0) return
+
+    setResetError(null)
+    setMessage(null)
+    setResettingAll(true)
+
+    const { error: resetAllError } = await supabase
+      .from('departments')
+      .update({
+        capacity: 0,
+        is_active: false,
+      })
+      .in(
+        'id',
+        departments.map((department) => department.id),
+      )
+
+    setResettingAll(false)
+    setShowResetConfirm(false)
+
+    if (resetAllError) {
+      setResetError(resetAllError.message)
+      return
+    }
+
+    resetForm()
+    setMessage('รีเซ็ตแผนกทั้งหมดแล้ว — จำนวนตำแหน่งเป็น 0 และปิดใช้งานทุกแผนก')
+    await loadDepartments()
+  }
+
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold text-slate-900">แผนก</h1>
-        <p className="mt-1 text-sm text-slate-600">
-          แก้ไขจำนวนตำแหน่งและสถานะการใช้งานของแผนก รหัสและชื่อภาษาไทยถูกตั้งค่าไว้ล่วงหน้า
-        </p>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold text-slate-900">แผนก</h1>
+          <p className="mt-1 text-sm text-slate-600">
+            แก้ไขจำนวนตำแหน่งและสถานะการใช้งานของแผนก รหัสและชื่อภาษาไทยถูกตั้งค่าไว้ล่วงหน้า
+          </p>
+        </div>
+        {!showResetConfirm ? (
+          <button
+            type="button"
+            onClick={() => {
+              setShowResetConfirm(true)
+              setResetError(null)
+              setMessage(null)
+            }}
+            disabled={departments.length === 0 || resettingAll}
+            className="shrink-0 rounded-lg border border-red-300 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-50 disabled:opacity-50"
+          >
+            รีเซ็ตแผนกทั้งหมด
+          </button>
+        ) : (
+          <div className="shrink-0 rounded-lg border border-red-200 bg-red-50 p-4 sm:max-w-sm">
+            <p className="text-sm text-red-900">
+              ตั้งจำนวนตำแหน่งทุกแผนกเป็น 0 และปิดใช้งานทุกแผนก ใช่หรือไม่?
+            </p>
+            <div className="mt-3 flex gap-2">
+              <button
+                type="button"
+                onClick={() => void handleResetAll()}
+                disabled={resettingAll}
+                className="rounded-lg bg-red-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-red-800 disabled:opacity-50"
+              >
+                ยืนยันรีเซ็ต
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowResetConfirm(false)}
+                disabled={resettingAll}
+                className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm text-slate-700 disabled:opacity-50"
+              >
+                ยกเลิก
+              </button>
+            </div>
+          </div>
+        )}
       </div>
+
+      {resetError && (
+        <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+          {resetError}
+        </p>
+      )}
 
       {message && (
         <p className="rounded-lg bg-teal-50 px-3 py-2 text-sm text-teal-800">
