@@ -4,6 +4,12 @@ import { downloadCsv, formatRoundStatus, formatTier } from '../lib/utils'
 import { ResultsTable } from '../components/ResultsTable'
 import { ResultsDashboard } from '../components/ResultsDashboard'
 import { DepartmentFillCard } from '../components/DepartmentFillCard'
+import { WaitlistAssignTable } from '../components/WaitlistAssignTable'
+import { SettledAssignmentsTable } from '../components/SettledAssignmentsTable'
+import {
+  capacityWarningLabel,
+  getCapacityStatus,
+} from '../lib/manualAssignment'
 import {
   useRealtimeAssignments,
   useRealtimeLotteryEvents,
@@ -78,7 +84,8 @@ export function AdminResultsPage() {
         const count = assignments.filter(
           (item) => item.department_id === department.id,
         ).length
-        const remaining = Math.max(department.capacity - count, 0)
+        const remaining = department.capacity - count
+        const capacityStatus = getCapacityStatus(count, department.capacity)
         const assignedPeople = assignments
           .filter((item) => item.department_id === department.id)
           .map((item) => ({
@@ -93,20 +100,28 @@ export function AdminResultsPage() {
           label: `${department.code} — ${department.name_th}`,
           assigned: count,
           capacity: department.capacity,
-          remaining,
-          isFull: remaining === 0,
+          remaining: Math.max(remaining, 0),
+          capacityStatus,
+          warningLabel: capacityWarningLabel(count, department.capacity),
           assignedNames,
           assignedPeople,
         }
       })
 
+    const groupOrder = (status: ReturnType<typeof getCapacityStatus>) => {
+      if (status === 'overflow') return 0
+      if (status === 'vacancy') return 1
+      return 2
+    }
+
     const byCode = (a: { code: string }, b: { code: string }) =>
       a.code.localeCompare(b.code, 'th')
 
-    const notFull = items.filter((item) => !item.isFull).sort(byCode)
-    const full = items.filter((item) => item.isFull).sort(byCode)
-
-    return [...notFull, ...full]
+    return [...items].sort(
+      (a, b) =>
+        groupOrder(a.capacityStatus) - groupOrder(b.capacityStatus) ||
+        byCode(a, b),
+    )
   }, [assignments, departments, nurseNames])
 
   const exportAssignments = () => {
@@ -180,7 +195,7 @@ export function AdminResultsPage() {
       <section className="space-y-3">
         <h2 className="text-lg font-semibold text-slate-900">ตำแหน่งที่เติมแล้ว</h2>
         <p className="text-sm text-slate-600">
-          แผนกที่ยังมีที่ว่างอยู่ด้านบน (เรียง A–Z) · แผนกเต็มแล้วอยู่ด้านล่าง (เรียง A–Z)
+          แผนกที่เกินหรือยังว่างอยู่ด้านบน · แผนกครบพอดีอยู่ด้านล่าง (เรียง A–Z)
         </p>
         <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
           {departmentFill.map((item) => (
@@ -218,36 +233,26 @@ export function AdminResultsPage() {
 
       <section className="space-y-3">
         <h2 className="text-lg font-semibold text-slate-900">รายการรอ</h2>
-        {waitlist.length === 0 ? (
-          <p className="rounded-xl border border-dashed border-slate-300 bg-white p-6 text-sm text-slate-500">
-            ไม่มีผู้เข้ารับการจัดสรรในรายการรอ
-          </p>
-        ) : (
-          <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-            <table className="min-w-full divide-y divide-slate-200 text-sm">
-              <thead className="bg-slate-50">
-                <tr>
-                  <th className="px-4 py-3 text-left font-medium text-slate-600">
-                    ลำดับ
-                  </th>
-                  <th className="px-4 py-3 text-left font-medium text-slate-600">
-                    พยาบาล
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {waitlist.map((entry) => (
-                  <tr key={entry.id}>
-                    <td className="px-4 py-3">#{entry.position}</td>
-                    <td className="px-4 py-3">
-                      {nurseNames[entry.nurse_id] ?? entry.nurse_id}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        <WaitlistAssignTable
+          roundId={selectedRoundId}
+          waitlist={waitlist}
+          assignments={assignments}
+          departments={departments}
+          nurseNames={nurseNames}
+        />
+
+        <div className="pt-2">
+          <h3 className="text-base font-semibold text-slate-900">
+            รายชื่อที่จัดสรรแล้ว
+          </h3>
+          <div className="mt-3">
+            <SettledAssignmentsTable
+              assignments={assignments}
+              departments={departments}
+              nurseNames={nurseNames}
+            />
           </div>
-        )}
+        </div>
       </section>
 
       <section className="space-y-3">

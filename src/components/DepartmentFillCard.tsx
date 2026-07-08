@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import type { CapacityStatus } from '../lib/manualAssignment'
 
 export interface DepartmentFillItem {
   departmentId: string
@@ -7,7 +8,8 @@ export interface DepartmentFillItem {
   assigned: number
   capacity: number
   remaining: number
-  isFull: boolean
+  capacityStatus: CapacityStatus
+  warningLabel: string | null
   assignedNames: string[]
   assignedPeople: { id: string; name: string }[]
 }
@@ -51,6 +53,20 @@ function CopyNamesButton({ names }: { names: string[] }) {
   )
 }
 
+function cardClasses(status: CapacityStatus, expanded: boolean): string {
+  const base =
+    'w-full rounded-xl border p-4 text-left shadow-sm transition-shadow hover:shadow-md'
+  const ring = expanded ? ' ring-2 ring-teal-400' : ''
+
+  if (status === 'exact') {
+    return `${base} border-green-300 bg-green-50${ring}`
+  }
+  if (status === 'overflow') {
+    return `${base} border-red-400 bg-red-50${ring}`
+  }
+  return `${base} border-red-200 bg-red-50${ring}`
+}
+
 export function DepartmentFillCard({
   item,
   expanded,
@@ -60,48 +76,80 @@ export function DepartmentFillCard({
     <button
       type="button"
       onClick={onToggle}
-      className={`w-full rounded-xl border p-4 text-left shadow-sm transition-shadow hover:shadow-md ${
-        item.isFull
-          ? 'border-green-300 bg-green-50'
-          : 'border-red-200 bg-red-50'
-      } ${expanded ? 'ring-2 ring-teal-400' : ''}`}
+      className={cardClasses(item.capacityStatus, expanded)}
     >
-      <p
-        className={`font-medium ${
-          item.isFull ? 'text-green-900' : 'text-red-900'
-        }`}
-      >
-        {item.label}
-        {item.isFull && (
-          <span className="ml-2 rounded-full bg-green-200 px-2 py-0.5 text-xs font-medium text-green-900">
+      <div className="flex flex-wrap items-center gap-2">
+        <p
+          className={`font-medium ${
+            item.capacityStatus === 'exact'
+              ? 'text-green-900'
+              : item.capacityStatus === 'overflow'
+                ? 'text-red-900'
+                : 'text-red-900'
+          }`}
+        >
+          {item.label}
+        </p>
+        {item.capacityStatus === 'exact' && (
+          <span className="rounded-full bg-green-200 px-2 py-0.5 text-xs font-medium text-green-900">
             เต็ม
           </span>
         )}
-      </p>
+        {item.warningLabel && (
+          <span
+            className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+              item.capacityStatus === 'overflow'
+                ? 'bg-red-200 text-red-900'
+                : 'bg-amber-200 text-amber-900'
+            }`}
+          >
+            {item.warningLabel}
+          </span>
+        )}
+      </div>
       <p
         className={`mt-1 text-sm ${
-          item.isFull ? 'text-green-800' : 'text-red-800'
+          item.capacityStatus === 'exact'
+            ? 'text-green-800'
+            : item.capacityStatus === 'overflow'
+              ? 'text-red-800'
+              : 'text-red-800'
         }`}
       >
         เติมแล้ว {item.assigned} / {item.capacity} ตำแหน่ง
-        {item.isFull ? ' (ครบแล้ว)' : ` (ว่าง ${item.remaining} ตำแหน่ง)`}
+        {item.capacityStatus === 'exact'
+          ? ' (ครบแล้ว)'
+          : item.capacityStatus === 'overflow'
+            ? ` (เกิน ${item.assigned - item.capacity} ตำแหน่ง)`
+            : ` (ว่าง ${item.remaining} ตำแหน่ง)`}
       </p>
       <p className="mt-1 text-xs text-slate-500">
         {expanded ? 'คลิกเพื่อซ่อนรายชื่อ' : 'คลิกเพื่อดูรายชื่อ'}
       </p>
       <div
         className={`mt-2 h-2 overflow-hidden rounded-full ${
-          item.isFull ? 'bg-green-100' : 'bg-red-100'
+          item.capacityStatus === 'exact'
+            ? 'bg-green-100'
+            : item.capacityStatus === 'overflow'
+              ? 'bg-red-100'
+              : 'bg-red-100'
         }`}
       >
         <div
           className={`h-full rounded-full transition-all duration-500 ${
-            item.isFull ? 'bg-green-600' : 'bg-red-400'
+            item.capacityStatus === 'exact'
+              ? 'bg-green-600'
+              : item.capacityStatus === 'overflow'
+                ? 'bg-red-600'
+                : 'bg-red-400'
           }`}
           style={{
             width: `${
               item.capacity > 0
-                ? Math.round((item.assigned / item.capacity) * 100)
+                ? Math.min(
+                    Math.round((item.assigned / item.capacity) * 100),
+                    100,
+                  )
                 : 0
             }%`,
           }}
