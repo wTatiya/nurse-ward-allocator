@@ -38,6 +38,13 @@ export function AdminDepartmentsPage() {
     setError(null)
   }
 
+  const handleActiveChange = (checked: boolean) => {
+    setIsActive(checked)
+    if (!checked) {
+      setCapacity(0)
+    }
+  }
+
   const handleSave = async () => {
     if (!editingId) return
 
@@ -45,10 +52,12 @@ export function AdminDepartmentsPage() {
     setMessage(null)
     setSaving(true)
 
+    const finalCapacity = isActive ? Number(capacity) : 0
+
     const { error: saveError } = await supabase
       .from('departments')
       .update({
-        capacity: Number(capacity),
+        capacity: finalCapacity,
         is_active: isActive,
       })
       .eq('id', editingId)
@@ -120,10 +129,11 @@ export function AdminDepartmentsPage() {
                         type="number"
                         min={0}
                         value={capacity}
+                        disabled={!isActive}
                         onChange={(event) =>
                           setCapacity(Number(event.target.value))
                         }
-                        className="w-20 rounded-lg border border-slate-300 px-2 py-1 text-sm"
+                        className="w-20 rounded-lg border border-slate-300 px-2 py-1 text-sm disabled:bg-slate-100 disabled:text-slate-500"
                         aria-label={`จำนวนตำแหน่ง ${department.code}`}
                       />
                     ) : (
@@ -137,7 +147,7 @@ export function AdminDepartmentsPage() {
                           type="checkbox"
                           checked={isActive}
                           onChange={(event) =>
-                            setIsActive(event.target.checked)
+                            handleActiveChange(event.target.checked)
                           }
                         />
                         เปิดใช้งาน
