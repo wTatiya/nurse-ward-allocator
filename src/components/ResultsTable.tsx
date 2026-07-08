@@ -5,12 +5,15 @@ interface ResultsTableProps {
   assignments: Assignment[]
   departments: Department[]
   nurseNames?: Record<string, string>
+  /** Profile IDs that should show a male-on-female-ward warning. */
+  warnedNurseIds?: Set<string>
 }
 
 export function ResultsTable({
   assignments,
   departments,
   nurseNames = {},
+  warnedNurseIds,
 }: ResultsTableProps) {
   const departmentMap = Object.fromEntries(
     departments.map((department) => [
@@ -44,18 +47,33 @@ export function ResultsTable({
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-100">
-          {assignments.map((assignment) => (
-            <tr key={assignment.id}>
-              <td className="px-4 py-3">
-                {nurseNames[assignment.nurse_id] ?? assignment.nurse_id}
-              </td>
-              <td className="px-4 py-3">
-                {departmentMap[assignment.department_id] ??
-                  assignment.department_id}
-              </td>
-              <td className="px-4 py-3">{formatTier(assignment.matched_tier)}</td>
-            </tr>
-          ))}
+          {assignments.map((assignment) => {
+            const isWarned = warnedNurseIds?.has(assignment.nurse_id) ?? false
+            return (
+              <tr
+                key={assignment.id}
+                className={isWarned ? 'bg-red-50' : undefined}
+              >
+                <td className="px-4 py-3">
+                  <span className={isWarned ? 'font-semibold text-red-900' : undefined}>
+                    {nurseNames[assignment.nurse_id] ?? assignment.nurse_id}
+                  </span>
+                  {isWarned ? (
+                    <span className="mt-1 block text-xs font-medium text-red-700">
+                      คำเตือน: พยาบาลชายบนตึกหญิงเท่านั้น — ต้องจัดใหม่
+                    </span>
+                  ) : null}
+                </td>
+                <td
+                  className={`px-4 py-3 ${isWarned ? 'font-medium text-red-900' : ''}`}
+                >
+                  {departmentMap[assignment.department_id] ??
+                    assignment.department_id}
+                </td>
+                <td className="px-4 py-3">{formatTier(assignment.matched_tier)}</td>
+              </tr>
+            )
+          })}
         </tbody>
       </table>
     </div>

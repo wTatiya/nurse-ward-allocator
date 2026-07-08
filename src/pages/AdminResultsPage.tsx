@@ -12,6 +12,8 @@ import {
   capacityWarningLabel,
   getCapacityStatus,
 } from '../lib/manualAssignment'
+import { findMaleOnFemaleWardViolations } from '../lib/genderWardPolicy'
+import { MaleOnFemaleWardWarning } from '../components/MaleOnFemaleWardWarning'
 import {
   useRealtimeAssignments,
   useRealtimeLotteryEvents,
@@ -88,6 +90,21 @@ export function AdminResultsPage() {
   const personLabels = useMemo(
     () => buildPersonLabels(profiles),
     [profiles],
+  )
+
+  const maleOnFemaleViolations = useMemo(
+    () =>
+      findMaleOnFemaleWardViolations({
+        profiles,
+        departments,
+        assignments,
+      }),
+    [profiles, departments, assignments],
+  )
+
+  const maleOnFemaleViolationProfileIds = useMemo(
+    () => new Set(maleOnFemaleViolations.map((item) => item.profileId)),
+    [maleOnFemaleViolations],
   )
 
   const departmentFill = useMemo(() => {
@@ -202,6 +219,8 @@ export function AdminResultsPage() {
         </select>
       </label>
 
+      <MaleOnFemaleWardWarning violations={maleOnFemaleViolations} />
+
       <section className="space-y-3">
         <h2 className="text-lg font-semibold text-slate-900">ตำแหน่งที่เติมแล้ว</h2>
         <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
@@ -235,6 +254,7 @@ export function AdminResultsPage() {
           assignments={assignments}
           departments={departments}
           nurseNames={personLabels}
+          warnedNurseIds={maleOnFemaleViolationProfileIds}
         />
       </section>
 
