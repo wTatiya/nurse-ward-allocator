@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '../lib/supabase'
-import { downloadCsv, formatRoundStatus, formatTier } from '../lib/utils'
+import { downloadCsv, formatRoundStatus, formatTier, buildPersonLabels } from '../lib/utils'
 import { useAuth } from '../hooks/useAuth'
 import { isAdmin } from '../lib/roles'
 import { ResultsTable } from '../components/ResultsTable'
@@ -84,8 +84,8 @@ export function AdminResultsPage() {
     await Promise.all([refetchAssignments(), refetchWaitlist()])
   }
 
-  const nurseNames = useMemo(
-    () => Object.fromEntries(profiles.map((profile) => [profile.id, profile.full_name])),
+  const personLabels = useMemo(
+    () => buildPersonLabels(profiles),
     [profiles],
   )
 
@@ -102,7 +102,7 @@ export function AdminResultsPage() {
           .filter((item) => item.department_id === department.id)
           .map((item) => ({
             id: item.nurse_id,
-            name: nurseNames[item.nurse_id] ?? item.nurse_id,
+            name: personLabels[item.nurse_id] ?? item.nurse_id,
           }))
           .sort((a, b) => a.name.localeCompare(b.name, 'th'))
         const assignedNames = assignedPeople.map((person) => person.name)
@@ -135,13 +135,13 @@ export function AdminResultsPage() {
         groupOrder(a.capacityStatus) - groupOrder(b.capacityStatus) ||
         byCode(a, b),
     )
-  }, [assignments, departments, nurseNames])
+  }, [assignments, departments, personLabels])
 
   const exportAssignments = () => {
     const rows = [
       ['พยาบาล', 'ตึก', 'วันที่เลือกตึกแล้ว'],
       ...assignments.map((assignment) => [
-        nurseNames[assignment.nurse_id] ?? assignment.nurse_id,
+        personLabels[assignment.nurse_id] ?? assignment.nurse_id,
         departments.find((d) => d.id === assignment.department_id)?.code ?? '',
         assignment.assigned_at,
       ]),
@@ -154,7 +154,7 @@ export function AdminResultsPage() {
       ['ลำดับ', 'พยาบาล'],
       ...waitlist.map((entry) => [
         String(entry.position),
-        nurseNames[entry.nurse_id] ?? entry.nurse_id,
+        personLabels[entry.nurse_id] ?? entry.nurse_id,
       ]),
     ]
     downloadCsv('waitlist.csv', rows)
@@ -233,7 +233,7 @@ export function AdminResultsPage() {
         <ResultsTable
           assignments={assignments}
           departments={departments}
-          nurseNames={nurseNames}
+          nurseNames={personLabels}
         />
       </section>
 
@@ -244,7 +244,7 @@ export function AdminResultsPage() {
           waitlist={waitlist}
           assignments={assignments}
           departments={departments}
-          nurseNames={nurseNames}
+          nurseNames={personLabels}
           canEdit={canEdit}
           onAssigned={refreshAfterManualAssign}
         />
@@ -257,7 +257,7 @@ export function AdminResultsPage() {
             <SettledAssignmentsTable
               assignments={assignments}
               departments={departments}
-              nurseNames={nurseNames}
+              nurseNames={personLabels}
               canEdit={canEdit}
               onReassigned={refetchAssignments}
             />
@@ -294,14 +294,14 @@ export function AdminResultsPage() {
                 <p className="mt-2 text-slate-700">
                   ได้รับเลือก:{' '}
                   {event.winner_ids
-                    .map((id) => nurseNames[id] ?? id)
+                    .map((id) => personLabels[id] ?? id)
                     .join(', ')}
                 </p>
                 <p className="mt-1 text-slate-700">
                   จับสลากไม่ได้:{' '}
                   {event.applicant_ids
                     .filter((id) => !event.winner_ids.includes(id))
-                    .map((id) => nurseNames[id] ?? id)
+                    .map((id) => personLabels[id] ?? id)
                     .join(', ') || '—'}
                 </p>
                 <p className="mt-1 break-all text-xs text-slate-500">

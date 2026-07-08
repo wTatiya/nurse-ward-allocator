@@ -1,7 +1,19 @@
 import type { PreferenceFormData } from '../types/database'
+import { formatPersonLabel } from './nurseIdAuth'
 import { formatRoundStatus, formatTier } from './locale/th'
 
-export { formatRoundStatus, formatTier }
+export { formatRoundStatus, formatTier, formatPersonLabel }
+
+export function buildPersonLabels(
+  profiles: Array<{ id: string; full_name: string; nurse_id: string | null }>,
+): Record<string, string> {
+  return Object.fromEntries(
+    profiles.map((profile) => [
+      profile.id,
+      formatPersonLabel(profile.full_name, profile.nurse_id),
+    ]),
+  )
+}
 
 export function validatePreferences(
   data: PreferenceFormData,

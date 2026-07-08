@@ -32,6 +32,34 @@ export function validatePasswordInput(password: string): string | null {
   return null
 }
 
+/** Temporary login IDs — not real employee numbers; hide in public name lists. */
+export const TEMPORARY_PARTICIPANT_NURSE_IDS = ['0000001', '0000002'] as const
+
+export function isTemporaryParticipantNurseId(
+  nurseId: string | null | undefined,
+): boolean {
+  const id = nurseId?.trim()
+  if (!id) return false
+  return (TEMPORARY_PARTICIPANT_NURSE_IDS as readonly string[]).includes(id)
+}
+
+/** Label for tables: real IDs only; em dash for missing or temporary. */
+export function formatNurseIdColumn(nurseId: string | null | undefined): string {
+  const id = nurseId?.trim()
+  if (!id || isTemporaryParticipantNurseId(id)) return '—'
+  return id
+}
+
+/** Full name with real 7-digit ID; temporary IDs show name only. */
+export function formatPersonLabel(
+  fullName: string,
+  nurseId: string | null | undefined,
+): string {
+  const id = nurseId?.trim()
+  if (!id || isTemporaryParticipantNurseId(id)) return fullName
+  return `${fullName} (${id})`
+}
+
 /** Default password for most staff equals nurse ID; admin may use a longer password. */
 export function nurseIdToPassword(nurseId: string): string {
   return nurseId.trim()

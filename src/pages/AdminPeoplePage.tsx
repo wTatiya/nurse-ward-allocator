@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '../lib/supabase'
+import { formatNurseIdColumn } from '../lib/nurseIdAuth'
 import { downloadCsv, formatRoundStatus } from '../lib/utils'
 import { useRealtimePreferences } from '../hooks/useRealtimeAssignments'
 import type { AssignmentRound, Profile } from '../types/database'
@@ -22,6 +23,7 @@ export function AdminPeoplePage() {
           .from('profiles')
           .select('*')
           .eq('role', 'PARTICIPANT')
+          .not('nurse_id', 'is', null)
           .order('full_name'),
       ])
 
@@ -55,7 +57,7 @@ export function AdminPeoplePage() {
   const exportNotSubmitted = () => {
     const rows = [
       ['ชื่อ-นามสกุล', 'รหัส 7 หลัก'],
-      ...notSubmitted.map((p) => [p.full_name, p.nurse_id ?? '']),
+      ...notSubmitted.map((p) => [p.full_name, formatNurseIdColumn(p.nurse_id)]),
     ]
     downloadCsv('not-submitted.csv', rows)
   }
@@ -70,13 +72,7 @@ export function AdminPeoplePage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold text-slate-900">
-            ผู้ที่ยังไม่เลือกตึก
-          </h1>
-          <p className="mt-1 text-sm text-slate-600">
-            รายชื่อผู้เข้ารับการเลือกตึกแล้วที่ยังไม่ส่งความประสงค์ในรอบที่เลือก
-            (อัปเดตแบบเรียลไทม์)
-          </p>
+          <h1 className="text-2xl font-semibold text-slate-900">กำลังเลือก</h1>
         </div>
         <button
           type="button"
@@ -121,7 +117,7 @@ export function AdminPeoplePage() {
             </p>
           </div>
           <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 shadow-sm">
-            <p className="text-xs text-amber-800">ยังไม่เลือกตึก</p>
+            <p className="text-xs text-amber-800">ยังไม่ส่งความประสงค์</p>
             <p className="mt-1 text-2xl font-semibold text-amber-900">
               {notSubmitted.length}
             </p>
@@ -132,10 +128,6 @@ export function AdminPeoplePage() {
       {participants.length === 0 ? (
         <p className="rounded-xl border border-dashed border-slate-300 bg-white p-6 text-sm text-slate-500">
           ยังไม่มีบัญชีผู้เข้ารับการเลือกตึกแล้ว
-        </p>
-      ) : notSubmitted.length === 0 ? (
-        <p className="rounded-xl border border-dashed border-teal-300 bg-teal-50 p-6 text-sm text-teal-800">
-          ทุกคนส่งเลือกตึกครบแล้วในรอบนี้
         </p>
       ) : (
         <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
@@ -154,17 +146,29 @@ export function AdminPeoplePage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {notSubmitted.map((person, index) => (
-                <tr key={person.id}>
-                  <td className="px-4 py-3 text-slate-500">{index + 1}</td>
-                  <td className="px-4 py-3 font-medium text-slate-900">
-                    {person.full_name}
-                  </td>
-                  <td className="px-4 py-3 font-mono text-xs text-slate-600">
-                    {person.nurse_id ?? '—'}
-                  </td>
-                </tr>
-              ))}
+              {participants.map((person, index) => {
+                const hasSubmitted = submittedIds.has(person.id)
+                return (
+                  <tr key={person.id}>
+                    <td className="px-4 py-3 text-slate-500">{index + 1}</td>
+                    <td className="px-4 py-3 font-medium text-slate-900">
+                      {person.full_name}
+                      {hasSubmitted && (
+                        <span
+                          className="ml-2 text-teal-600"
+                          aria-label="ส่งความประสงค์แล้ว"
+                          title="ส่งความประสงค์แล้ว"
+                        >
+                          ✓
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 font-mono text-xs text-slate-600">
+                      {formatNurseIdColumn(person.nurse_id)}
+                    </td>
+                  </tr>
+                )
+              })}
             </tbody>
           </table>
         </div>

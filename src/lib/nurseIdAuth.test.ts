@@ -5,6 +5,8 @@ import {
   nurseIdToPassword,
   validateNurseIdInput,
   validatePasswordInput,
+  formatPersonLabel,
+  formatNurseIdColumn,
 } from './nurseIdAuth'
 
 describe('nurseIdAuth', () => {
@@ -23,6 +25,17 @@ describe('nurseIdAuth', () => {
 
   it('uses nurse ID as default password', () => {
     expect(nurseIdToPassword(' 1234567 ')).toBe('1234567')
+  })
+
+  it('hides temporary participant IDs in display labels', () => {
+    expect(formatPersonLabel('ต้นตระกูล พึ่งแย้ม', '0000001')).toBe(
+      'ต้นตระกูล พึ่งแย้ม',
+    )
+    expect(formatPersonLabel('กัลยกร จันทร์ผ่อง', '5690589')).toBe(
+      'กัลยกร จันทร์ผ่อง (5690589)',
+    )
+    expect(formatNurseIdColumn('0000002')).toBe('—')
+    expect(formatNurseIdColumn('5690590')).toBe('5690590')
   })
 
   it('validates nurse ID input', () => {

@@ -15,7 +15,7 @@ const staffLinks = [
 const adminLinks = [
   { to: '/admin/departments', label: 'แผนก' },
   { to: '/admin/rounds', label: 'รอบเลือกตึก' },
-  { to: '/admin/people', label: 'ยังไม่เลือกตึก' },
+  { to: '/admin/people', label: 'กำลังเลือก' },
   { to: '/admin/results', label: 'ผลลัพธ์' },
 ]
 
