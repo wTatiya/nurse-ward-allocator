@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './hooks/useAuth'
 import { Layout } from './components/Layout'
+import { StickyAppFooter } from './components/StickyAppFooter'
 import { StickyGitHubLink } from './components/StickyGitHubLink'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { defaultRouteForRole } from './lib/roles'
@@ -61,6 +62,7 @@ function App() {
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
+          <StickyAppFooter />
           <StickyGitHubLink />
         </>
       </BrowserRouter>

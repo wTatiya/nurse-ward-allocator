@@ -28,7 +28,7 @@ export function LoginPage() {
   const disabled = loading || nurseId.length !== 7 || password.length < 7
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-4">
+    <div className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-4 pb-12">
       <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
         <h1 className="text-2xl font-semibold text-slate-900">
           ระบบเลือกตึกหอผู้ป่วย
