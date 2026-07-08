@@ -108,9 +108,6 @@ export function MyResultPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold text-slate-900">ผลการเลือกตึกแล้ว</h1>
-        <p className="mt-1 text-sm text-slate-600">
-          ดูผลการเลือกตึกแล้วและคำอธิบายทีละขั้นตอนว่าการจับสลากทำงานอย่างไรสำหรับความประสงค์ของคุณ
-        </p>
       </div>
 
       {rounds.length === 0 ? (

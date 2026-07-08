@@ -7,9 +7,6 @@ export interface LotteryMethodStep {
   sourceFile?: string
 }
 
-export const LOTTERY_METHOD_NOTE =
-  'การจับสลากทำงานบนเซิร์ฟเวอร์ (Edge Function) — โค้ดด้านล่างมาจากระบบจริง ไม่ใช่ในเบราว์เซอร์ของผู้ใช้'
-
 export const LOTTERY_METHOD_STEPS: LotteryMethodStep[] = [
   {
     text: 'เมื่อผู้สมัครมากกว่าตำแหน่งว่าง ระบบจะจับสลาก',

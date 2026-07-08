@@ -81,11 +81,6 @@ export function LoginPage() {
         <h1 className="text-2xl font-semibold text-slate-900">
           ระบบเลือกตึกหอผู้ป่วย
         </h1>
-        <p className="mt-2 text-sm text-slate-600">
-          {mode === 'staff'
-            ? 'เจ้าหน้าที่: เข้าสู่ระบบด้วยรหัสพยาบาล 7 หลัก'
-            : 'ผู้เข้ารับการเลือกตึกแล้ว: เลือกชื่อ-นามสกุลของคุณจากรายการ'}
-        </p>
 
         <div className="mt-6 flex rounded-lg border border-slate-200 p-1">
           <button
@@ -122,7 +117,7 @@ export function LoginPage() {
           <form onSubmit={handleStaffSubmit} className="mt-6 space-y-4">
             <label className="block">
               <span className="mb-1 block text-sm font-medium text-slate-700">
-                รหัสพยาบาล
+                รหัสเจ้าหน้าที่ 7 หลัก
               </span>
               <input
                 type="text"
@@ -152,9 +147,6 @@ export function LoginPage() {
                 onChange={(event) => setPassword(event.target.value)}
                 className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
               />
-              <span className="mt-1 block text-xs text-slate-500">
-                สำหรับเจ้าหน้าที่ส่วนใหญ่ รหัสผ่านจะเหมือนกับรหัสพยาบาล
-              </span>
             </label>
 
             {error && (
@@ -196,9 +188,6 @@ export function LoginPage() {
                   ))
                 )}
               </select>
-              <span className="mt-1 block text-xs text-slate-500">
-                เลือกชื่อที่ตรงกับของคุณ
-              </span>
             </label>
 
             <label className="block">
@@ -213,9 +202,6 @@ export function LoginPage() {
                 onChange={(event) => setPassword(event.target.value)}
                 className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
               />
-              <span className="mt-1 block text-xs text-slate-500">
-                ใช้รหัสผ่านชั่วคราวที่ผู้ประสานงานแจ้งให้
-              </span>
             </label>
 
             {optionsError && (
@@ -238,12 +224,6 @@ export function LoginPage() {
             </button>
           </form>
         )}
-
-        <p className="mt-6 text-center text-xs text-slate-500">
-          {mode === 'participant'
-            ? 'ผู้เข้ารับการเลือกตึกแล้วไม่ต้องใช้รหัสพยาบาล 7 หลัก'
-            : 'บัญชีเจ้าหน้าที่ถูกสร้างไว้ล่วงหน้าโดยฝ่ายบริหาร'}
-        </p>
       </div>
     </div>
   )
