@@ -146,11 +146,7 @@ export function PreferenceForm({ round, existing, onSaved }: PreferenceFormProps
         disabled={!isOpen || saving}
         className="rounded-lg bg-teal-700 px-4 py-2 text-sm font-medium text-white hover:bg-teal-800 disabled:cursor-not-allowed disabled:bg-slate-300"
       >
-        {saving
-          ? 'กำลังบันทึก...'
-          : existing
-            ? 'อัปเดตความประสงค์'
-            : 'ส่งความประสงค์'}
+        {saving ? 'กำลังบันทึก...' : 'ยืนยัน'}
       </button>
 
       {!isOpen && (

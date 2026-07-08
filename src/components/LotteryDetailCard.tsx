@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { formatTier } from '../lib/utils'
 import {
+  LOTTERY_METHOD_INTRO,
   LOTTERY_METHOD_STEPS,
   formatParticipantName,
 } from '../lib/lotteryDisplay'
@@ -105,7 +106,8 @@ export function LotteryDetailCard({
 export function LotteryMethodExplanation() {
   return (
     <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
-      <p className="font-medium text-slate-900">วิธีการจับสลาก (แบบสุ่มอย่างเป็นธรรม)</p>
+      <p className="font-medium text-slate-900">วิธีการจับสลาก</p>
+      <p className="mt-2">{LOTTERY_METHOD_INTRO}</p>
       <ol className="mt-2 list-decimal space-y-1 pl-5">
         {LOTTERY_METHOD_STEPS.map((step) => (
           <li key={step}>{step}</li>
