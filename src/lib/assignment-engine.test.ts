@@ -64,7 +64,7 @@ describe('runAssignmentEngine', () => {
     expect(tiers).toEqual([1, 2])
   })
 
-  it('places unassigned nurses on waitlist in submission order', () => {
+  it('places unassigned nurses on waitlist without submission-time priority', () => {
     const result = runAssignmentEngine(
       [{ id: 'icu', capacity: 0 }],
       [

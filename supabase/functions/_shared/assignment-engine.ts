@@ -117,9 +117,7 @@ export function runAssignmentEngine(
 
   const waitlist = preferences
     .filter((p) => !assigned.has(p.nurseId))
-    .sort((a, b) =>
-      (a.submittedAt ?? '').localeCompare(b.submittedAt ?? ''),
-    )
+    .sort((a, b) => a.nurseId.localeCompare(b.nurseId))
     .map((p) => p.nurseId)
 
   return { assignments, waitlist, lotteryEvents }
