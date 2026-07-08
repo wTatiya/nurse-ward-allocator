@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './hooks/useAuth'
 import { Layout } from './components/Layout'
+import { StickyGitHubLink } from './components/StickyGitHubLink'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { defaultRouteForRole } from './lib/roles'
 import { useAuth } from './hooks/useAuth'
@@ -29,36 +30,39 @@ function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route element={<ProtectedRoute />}>
-            <Route element={<Layout />}>
-              <Route index element={<HomeRedirect />} />
-              <Route element={<ProtectedRoute kind="staff" />}>
-                <Route path="dashboard" element={<DashboardPage />} />
-                <Route path="results" element={<AdminResultsPage />} />
-              </Route>
-              <Route element={<ProtectedRoute kind="participant" />}>
-                <Route path="preferences" element={<PreferencesPage />} />
-                <Route path="my-result" element={<MyResultPage />} />
-              </Route>
-              <Route element={<ProtectedRoute kind="admin" />}>
-                <Route
-                  path="admin/departments"
-                  element={<AdminDepartmentsPage />}
-                />
-                <Route path="admin/rounds" element={<AdminRoundsPage />} />
-                <Route path="admin/results" element={<AdminResultsPage />} />
-                <Route path="admin/people" element={<AdminPeoplePage />} />
-                <Route
-                  path="admin/wards"
-                  element={<Navigate to="/admin/departments" replace />}
-                />
+        <>
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route element={<ProtectedRoute />}>
+              <Route element={<Layout />}>
+                <Route index element={<HomeRedirect />} />
+                <Route element={<ProtectedRoute kind="staff" />}>
+                  <Route path="dashboard" element={<DashboardPage />} />
+                  <Route path="results" element={<AdminResultsPage />} />
+                </Route>
+                <Route element={<ProtectedRoute kind="participant" />}>
+                  <Route path="preferences" element={<PreferencesPage />} />
+                  <Route path="my-result" element={<MyResultPage />} />
+                </Route>
+                <Route element={<ProtectedRoute kind="admin" />}>
+                  <Route
+                    path="admin/departments"
+                    element={<AdminDepartmentsPage />}
+                  />
+                  <Route path="admin/rounds" element={<AdminRoundsPage />} />
+                  <Route path="admin/results" element={<AdminResultsPage />} />
+                  <Route path="admin/people" element={<AdminPeoplePage />} />
+                  <Route
+                    path="admin/wards"
+                    element={<Navigate to="/admin/departments" replace />}
+                  />
+                </Route>
               </Route>
             </Route>
-          </Route>
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+          <StickyGitHubLink />
+        </>
       </BrowserRouter>
     </AuthProvider>
   )
