@@ -18,6 +18,7 @@ export function AdminPeoplePage() {
         supabase
           .from('assignment_rounds')
           .select('*')
+          .is('archived_at', null)
           .order('created_at', { ascending: false }),
         supabase
           .from('profiles')

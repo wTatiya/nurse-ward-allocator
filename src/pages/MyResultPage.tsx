@@ -37,6 +37,7 @@ export function MyResultPage() {
         supabase
           .from('assignment_rounds')
           .select('*')
+          .is('archived_at', null)
           .in('status', ['closed', 'running', 'completed'])
           .order('created_at', { ascending: false }),
         supabase.from('departments').select('*').order('code'),

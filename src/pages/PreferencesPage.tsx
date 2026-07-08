@@ -13,6 +13,7 @@ export function PreferencesPage() {
     const { data } = await supabase
       .from('assignment_rounds')
       .select('*')
+      .is('archived_at', null)
       .in('status', ['open', 'closed', 'completed'])
       .order('created_at', { ascending: false })
 

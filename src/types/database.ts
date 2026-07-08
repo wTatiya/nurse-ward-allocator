@@ -40,6 +40,7 @@ export interface AssignmentRound {
   name: string
   status: RoundStatus
   submission_deadline: string | null
+  archived_at: string | null
   created_at: string
 }
 

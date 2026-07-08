@@ -15,6 +15,7 @@ export function DashboardPage() {
       const { data, error: roundError } = await supabase
         .from('assignment_rounds')
         .select('*')
+        .is('archived_at', null)
         .order('created_at', { ascending: false })
 
       if (roundError) {

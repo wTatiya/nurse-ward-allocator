@@ -59,6 +59,7 @@ export function AdminResultsPage() {
           supabase
             .from('assignment_rounds')
             .select('*')
+            .is('archived_at', null)
             .order('created_at', { ascending: false }),
           supabase.from('departments').select('*').order('code'),
           supabase.from('profiles').select('*'),
