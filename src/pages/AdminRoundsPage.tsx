@@ -1,5 +1,9 @@
 import { useEffect, useState } from 'react'
-import { supabase } from '../lib/supabase'
+import {
+  ensureValidSession,
+  getEdgeFunctionErrorMessage,
+  supabase,
+} from '../lib/supabase'
 import { formatRoundStatus } from '../lib/utils'
 import type { AssignmentRound, RoundStatus } from '../types/database'
 
@@ -118,15 +122,27 @@ export function AdminRoundsPage() {
     setMessage(null)
     setRunningId(round.id)
 
+    const session = await ensureValidSession()
+    if (!session) {
+      setRunningId(null)
+      setError('เซสชันหมดอายุแล้ว กรุณาออกจากระบบแล้วเข้าสู่ระบบใหม่')
+      return
+    }
+
     const { data, error: invokeError } = await supabase.functions.invoke(
       'run-assignment',
-      { body: { roundId: round.id } },
+      {
+        body: { roundId: round.id },
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      },
     )
 
     setRunningId(null)
 
     if (invokeError) {
-      setError(invokeError.message)
+      setError(getEdgeFunctionErrorMessage(invokeError))
       return
     }
 
