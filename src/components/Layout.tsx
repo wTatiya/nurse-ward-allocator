@@ -1,4 +1,5 @@
 import { Link, Outlet, useLocation } from 'react-router-dom'
+import { AppFooter } from './AppFooter'
 import { useAuth } from '../hooks/useAuth'
 import { formatRoleLabel, isAdmin, isParticipant, isStaffViewer } from '../lib/roles'
 
@@ -13,7 +14,7 @@ const staffLinks = [
 ]
 
 const adminLinks = [
-  { to: '/admin/departments', label: 'แผนก' },
+  { to: '/admin/departments', label: 'ตึก' },
   { to: '/admin/rounds', label: 'รอบเลือกตึก' },
   { to: '/admin/people', label: 'กำลังเลือก' },
   { to: '/admin/results', label: 'ผลลัพธ์' },
@@ -32,7 +33,7 @@ export function Layout() {
         : []
 
   return (
-    <div className="min-h-screen pb-12">
+    <div className="flex min-h-screen flex-col">
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4">
           <div>
@@ -70,9 +71,10 @@ export function Layout() {
           </nav>
         </div>
       </header>
-      <main className="mx-auto max-w-6xl px-4 py-8">
+      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
         <Outlet />
       </main>
+      <AppFooter />
     </div>
   )
 }

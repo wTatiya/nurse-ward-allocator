@@ -7,7 +7,7 @@ export function StickyGitHubLink() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="GitHub repository"
-      className="fixed bottom-14 right-4 z-50 flex h-10 w-10 items-center justify-center rounded-full bg-white text-slate-600 shadow-md ring-1 ring-slate-200 transition hover:bg-slate-50 hover:text-slate-900"
+      className="fixed bottom-4 right-4 z-50 flex h-10 w-10 items-center justify-center rounded-full bg-white text-slate-600 shadow-md ring-1 ring-slate-200 transition hover:bg-slate-50 hover:text-slate-900"
     >
       <svg
         viewBox="0 0 24 24"

@@ -21,14 +21,14 @@ export function validatePreferences(
   const { choice1, choice2, choice3 } = data
 
   if (!choice1 || !choice2 || !choice3) {
-    return 'กรุณาเลือกแผนกครบทั้ง 3 อันดับ'
+    return 'กรุณาเลือกตึกครบทั้ง 3 อันดับ'
   }
 
   const choices = [choice1, choice2, choice3]
   const unique = new Set(choices)
 
   if (unique.size !== 3) {
-    return 'แต่ละอันดับต้องเป็นแผนกที่ไม่ซ้ำกัน'
+    return 'แต่ละอันดับต้องเป็นตึกที่ไม่ซ้ำกัน'
   }
 
   return null

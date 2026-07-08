@@ -101,7 +101,7 @@ export function PreferenceForm({ round, existing, onSaved }: PreferenceFormProps
       <div>
         <h2 className="text-lg font-semibold text-slate-900">{round.name}</h2>
         <p className="mt-1 text-sm text-slate-600">
-          กรุณาเลือกแผนก 3 อันดับที่ไม่ซ้ำกัน การส่งความประสงค์จะเปิดอยู่จนกว่าผู้ดูแลระบบจะปิดรอบ
+          กรุณาเลือกตึก 3 อันดับที่ไม่ซ้ำกัน การส่งความประสงค์จะเปิดอยู่จนกว่าผู้ดูแลระบบจะปิดรอบ
         </p>
       </div>
 

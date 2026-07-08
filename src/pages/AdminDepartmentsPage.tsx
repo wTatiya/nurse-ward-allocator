@@ -104,7 +104,7 @@ export function AdminDepartmentsPage() {
     }
 
     resetForm()
-    setMessage('รีเซ็ตแผนกทั้งหมดแล้ว — จำนวนตำแหน่งเป็น 0 และปิดใช้งานทุกแผนก')
+    setMessage('รีเซ็ตตึกทั้งหมดแล้ว — จำนวนตำแหน่งเป็น 0 และปิดใช้งานทุกตึก')
     await loadDepartments()
   }
 
@@ -112,9 +112,9 @@ export function AdminDepartmentsPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-slate-900">แผนก</h1>
+          <h1 className="text-2xl font-semibold text-slate-900">ตึก</h1>
           <p className="mt-1 text-sm text-slate-600">
-            แก้ไขจำนวนตำแหน่งและสถานะการใช้งานของแผนก รหัสและชื่อภาษาไทยถูกตั้งค่าไว้ล่วงหน้า
+            แก้ไขจำนวนตำแหน่งและสถานะการใช้งานของตึก รหัสและชื่อภาษาไทยถูกตั้งค่าไว้ล่วงหน้า
           </p>
         </div>
         {!showResetConfirm ? (
@@ -128,12 +128,12 @@ export function AdminDepartmentsPage() {
             disabled={departments.length === 0 || resettingAll}
             className="shrink-0 rounded-lg border border-red-300 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-50 disabled:opacity-50"
           >
-            รีเซ็ตแผนกทั้งหมด
+            รีเซ็ตตึกทั้งหมด
           </button>
         ) : (
           <div className="shrink-0 rounded-lg border border-red-200 bg-red-50 p-4 sm:max-w-sm">
             <p className="text-sm text-red-900">
-              ตั้งจำนวนตำแหน่งทุกแผนกเป็น 0 และปิดใช้งานทุกแผนก ใช่หรือไม่?
+              ตั้งจำนวนตำแหน่งทุกตึกเป็น 0 และปิดใช้งานทุกตึก ใช่หรือไม่?
             </p>
             <div className="mt-3 flex gap-2">
               <button
@@ -177,7 +177,7 @@ export function AdminDepartmentsPage() {
                 รหัส
               </th>
               <th className="px-4 py-3 text-left font-medium text-slate-600">
-                ชื่อแผนก
+                ชื่อตึก
               </th>
               <th className="px-4 py-3 text-left font-medium text-slate-600">
                 จำนวนตำแหน่ง
