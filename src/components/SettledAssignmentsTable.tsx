@@ -81,11 +81,6 @@ export function SettledAssignmentsTable({
 
   return (
     <div className="space-y-4">
-      <p className="text-sm text-slate-600">
-        {canEdit
-          ? 'รายชื่อที่เลือกตึกแล้ว จัดกลุ่มตามตึก (A–Z) · เปลี่ยนตึกได้เมื่อมีการสลับตกลงกัน'
-          : 'รายชื่อที่เลือกตึกแล้ว จัดกลุ่มตามตึก (A–Z) · ดูอย่างเดียว'}
-      </p>
       {error && (
         <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
           {error}

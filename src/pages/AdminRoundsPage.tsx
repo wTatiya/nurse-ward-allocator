@@ -161,9 +161,6 @@ export function AdminRoundsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold text-slate-900">รอบเลือกตึก</h1>
-        <p className="mt-1 text-sm text-slate-600">
-          สร้างรอบ เปิดรับการเลือกตึกเมื่อพร้อม ปิดรับเมื่อครบ แล้วรันการเลือกตึก
-        </p>
       </div>
 
       <form

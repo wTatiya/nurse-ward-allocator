@@ -113,9 +113,6 @@ export function AdminDepartmentsPage() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h1 className="text-2xl font-semibold text-slate-900">ตึก</h1>
-          <p className="mt-1 text-sm text-slate-600">
-            แก้ไขจำนวนตำแหน่งและสถานะการใช้งานของตึก รหัสและชื่อภาษาไทยถูกตั้งค่าไว้ล่วงหน้า
-          </p>
         </div>
         {!showResetConfirm ? (
           <button
