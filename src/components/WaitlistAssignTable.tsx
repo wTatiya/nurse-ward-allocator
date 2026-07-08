@@ -12,6 +12,7 @@ interface WaitlistAssignTableProps {
   assignments: Assignment[]
   departments: Department[]
   nurseNames: Record<string, string>
+  canEdit?: boolean
 }
 
 export function WaitlistAssignTable({
@@ -20,6 +21,7 @@ export function WaitlistAssignTable({
   assignments,
   departments,
   nurseNames,
+  canEdit = false,
 }: WaitlistAssignTableProps) {
   const [busyId, setBusyId] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -68,9 +70,15 @@ export function WaitlistAssignTable({
 
   return (
     <div className="space-y-3">
-      <p className="text-sm text-slate-600">
-        เลือกแผนกจากรายการด้านหลังชื่อเพื่อจัดสรรด้วยตนเอง (เหมาะกับการไกล่เกลี่ยแบบออฟไลน์)
-      </p>
+      {canEdit ? (
+        <p className="text-sm text-slate-600">
+          เลือกแผนกจากรายการด้านหลังชื่อเพื่อจัดสรรด้วยตนเอง (เหมาะกับการไกล่เกลี่ยแบบออฟไลน์)
+        </p>
+      ) : (
+        <p className="text-sm text-slate-600">
+          รายการรอจัดสรร (ดูอย่างเดียว — แก้ไขได้เฉพาะผู้ดูแลระบบ)
+        </p>
+      )}
       {error && (
         <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
           {error}
@@ -86,9 +94,11 @@ export function WaitlistAssignTable({
               <th className="px-4 py-3 text-left font-medium text-slate-600">
                 พยาบาล
               </th>
-              <th className="px-4 py-3 text-left font-medium text-slate-600">
-                จัดไปแผนก
-              </th>
+              {canEdit && (
+                <th className="px-4 py-3 text-left font-medium text-slate-600">
+                  จัดไปแผนก
+                </th>
+              )}
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
@@ -116,52 +126,54 @@ export function WaitlistAssignTable({
                   <td className="px-4 py-3">
                     {nurseNames[entry.nurse_id] ?? entry.nurse_id}
                   </td>
-                  <td className="px-4 py-3">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <select
-                        value={selectedDepartmentId}
-                        disabled={busyId === entry.id}
-                        onChange={(event) =>
-                          setPendingDepartment((current) => ({
-                            ...current,
-                            [entry.id]: event.target.value,
-                          }))
-                        }
-                        className="min-w-[12rem] rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm"
-                      >
-                        <option value="">เลือกแผนก...</option>
-                        {activeDepartments.map((department) => (
-                          <option key={department.id} value={department.id}>
-                            {department.code} — {department.name_th}
-                          </option>
-                        ))}
-                      </select>
-                      <button
-                        type="button"
-                        disabled={!selectedDepartmentId || busyId === entry.id}
-                        onClick={() => void handleAssign(entry)}
-                        className="rounded-lg bg-teal-700 px-3 py-1.5 text-xs font-medium text-white hover:bg-teal-800 disabled:bg-slate-300"
-                      >
-                        {busyId === entry.id ? 'กำลังบันทึก...' : 'ยืนยัน'}
-                      </button>
-                      {selectedDepartment && projectedStatus && (
-                        <span
-                          className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-                            projectedStatus === 'overflow'
-                              ? 'bg-red-100 text-red-800'
-                              : projectedStatus === 'vacancy'
-                                ? 'bg-amber-100 text-amber-800'
-                                : 'bg-green-100 text-green-800'
-                          }`}
+                  {canEdit && (
+                    <td className="px-4 py-3">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <select
+                          value={selectedDepartmentId}
+                          disabled={busyId === entry.id}
+                          onChange={(event) =>
+                            setPendingDepartment((current) => ({
+                              ...current,
+                              [entry.id]: event.target.value,
+                            }))
+                          }
+                          className="min-w-[12rem] rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm"
                         >
-                          {capacityWarningLabel(
-                            projectedAssigned,
-                            selectedDepartment.capacity,
-                          ) ?? 'ครบพอดี'}
-                        </span>
-                      )}
-                    </div>
-                  </td>
+                          <option value="">เลือกแผนก...</option>
+                          {activeDepartments.map((department) => (
+                            <option key={department.id} value={department.id}>
+                              {department.code} — {department.name_th}
+                            </option>
+                          ))}
+                        </select>
+                        <button
+                          type="button"
+                          disabled={!selectedDepartmentId || busyId === entry.id}
+                          onClick={() => void handleAssign(entry)}
+                          className="rounded-lg bg-teal-700 px-3 py-1.5 text-xs font-medium text-white hover:bg-teal-800 disabled:bg-slate-300"
+                        >
+                          {busyId === entry.id ? 'กำลังบันทึก...' : 'ยืนยัน'}
+                        </button>
+                        {selectedDepartment && projectedStatus && (
+                          <span
+                            className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                              projectedStatus === 'overflow'
+                                ? 'bg-red-100 text-red-800'
+                                : projectedStatus === 'vacancy'
+                                  ? 'bg-amber-100 text-amber-800'
+                                  : 'bg-green-100 text-green-800'
+                            }`}
+                          >
+                            {capacityWarningLabel(
+                              projectedAssigned,
+                              selectedDepartment.capacity,
+                            ) ?? 'ครบพอดี'}
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                  )}
                 </tr>
               )
             })}

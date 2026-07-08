@@ -10,12 +10,14 @@ interface SettledAssignmentsTableProps {
   assignments: Assignment[]
   departments: Department[]
   nurseNames: Record<string, string>
+  canEdit?: boolean
 }
 
 export function SettledAssignmentsTable({
   assignments,
   departments,
   nurseNames,
+  canEdit = false,
 }: SettledAssignmentsTableProps) {
   const [busyAssignmentId, setBusyAssignmentId] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -73,7 +75,9 @@ export function SettledAssignmentsTable({
   return (
     <div className="space-y-4">
       <p className="text-sm text-slate-600">
-        รายชื่อที่จัดสรรแล้ว จัดกลุ่มตามแผนก (A–Z) · เปลี่ยนแผนกได้เมื่อมีการสลับตกลงกัน
+        {canEdit
+          ? 'รายชื่อที่จัดสรรแล้ว จัดกลุ่มตามแผนก (A–Z) · เปลี่ยนแผนกได้เมื่อมีการสลับตกลงกัน'
+          : 'รายชื่อที่จัดสรรแล้ว จัดกลุ่มตามแผนก (A–Z) · ดูอย่างเดียว'}
       </p>
       {error && (
         <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
@@ -157,45 +161,54 @@ export function SettledAssignmentsTable({
                     <tr key={person.assignmentId}>
                       <td className="px-4 py-3">{person.name}</td>
                       <td className="px-4 py-3">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <select
-                            value={assignment.department_id}
-                            disabled={busyAssignmentId === assignment.id}
-                            onChange={(event) =>
-                              void handleReassign(
-                                assignment,
-                                event.target.value,
-                              )
-                            }
-                            className="min-w-[12rem] rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm"
-                          >
-                            {activeDepartments.map((department) => {
-                              const optionStatus = statusIfMoved(department.id)
-                              const suffix =
-                                department.id === assignment.department_id
-                                  ? ''
-                                  : optionStatus === 'overflow'
-                                    ? ' ⚠ เกิน'
-                                    : optionStatus === 'vacancy'
-                                      ? ' · ว่าง'
-                                      : ' · ครบ'
+                        {canEdit ? (
+                          <div className="flex flex-wrap items-center gap-2">
+                            <select
+                              value={assignment.department_id}
+                              disabled={busyAssignmentId === assignment.id}
+                              onChange={(event) =>
+                                void handleReassign(
+                                  assignment,
+                                  event.target.value,
+                                )
+                              }
+                              className="min-w-[12rem] rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm"
+                            >
+                              {activeDepartments.map((department) => {
+                                const optionStatus = statusIfMoved(department.id)
+                                const suffix =
+                                  department.id === assignment.department_id
+                                    ? ''
+                                    : optionStatus === 'overflow'
+                                      ? ' ⚠ เกิน'
+                                      : optionStatus === 'vacancy'
+                                        ? ' · ว่าง'
+                                        : ' · ครบ'
 
-                              return (
-                                <option key={department.id} value={department.id}>
-                                  {department.code} — {department.name_th}
-                                  {department.id !== assignment.department_id
-                                    ? suffix
-                                    : ''}
-                                </option>
-                              )
-                            })}
-                          </select>
-                          {busyAssignmentId === assignment.id && (
-                            <span className="text-xs text-slate-500">
-                              กำลังบันทึก...
-                            </span>
-                          )}
-                        </div>
+                                return (
+                                  <option
+                                    key={department.id}
+                                    value={department.id}
+                                  >
+                                    {department.code} — {department.name_th}
+                                    {department.id !== assignment.department_id
+                                      ? suffix
+                                      : ''}
+                                  </option>
+                                )
+                              })}
+                            </select>
+                            {busyAssignmentId === assignment.id && (
+                              <span className="text-xs text-slate-500">
+                                กำลังบันทึก...
+                              </span>
+                            )}
+                          </div>
+                        ) : (
+                          <span className="text-slate-700">
+                            {group.department.code} — {group.department.name_th}
+                          </span>
+                        )}
                       </td>
                     </tr>
                   )

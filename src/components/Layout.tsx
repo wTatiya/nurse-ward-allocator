@@ -7,7 +7,10 @@ const participantLinks = [
   { to: '/my-result', label: 'ผลการจัดสรร' },
 ]
 
-const staffLinks = [{ to: '/dashboard', label: 'ภาพรวม' }]
+const staffLinks = [
+  { to: '/dashboard', label: 'ภาพรวม' },
+  { to: '/results', label: 'ผลลัพธ์' },
+]
 
 const adminLinks = [
   { to: '/admin/departments', label: 'แผนก' },

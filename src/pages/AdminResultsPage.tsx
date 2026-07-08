@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { downloadCsv, formatRoundStatus, formatTier } from '../lib/utils'
+import { useAuth } from '../hooks/useAuth'
+import { isAdmin } from '../lib/roles'
 import { ResultsTable } from '../components/ResultsTable'
 import { ResultsDashboard } from '../components/ResultsDashboard'
 import { DepartmentFillCard } from '../components/DepartmentFillCard'
@@ -25,6 +27,8 @@ import type {
 } from '../types/database'
 
 export function AdminResultsPage() {
+  const { role } = useAuth()
+  const canEdit = isAdmin(role)
   const [rounds, setRounds] = useState<AssignmentRound[]>([])
   const [selectedRoundId, setSelectedRoundId] = useState('')
   const [departments, setDepartments] = useState<Department[]>([])
@@ -154,7 +158,9 @@ export function AdminResultsPage() {
         <div>
           <h1 className="text-2xl font-semibold text-slate-900">ผลลัพธ์</h1>
           <p className="mt-1 text-sm text-slate-600">
-            ตารางผลการจัดสรรแบบเรียลไทม์ บันทึกการจับสลาก และส่งออก CSV
+            {canEdit
+              ? 'ตารางผลการจัดสรรแบบเรียลไทม์ บันทึกการจับสลาก และส่งออก CSV'
+              : 'ตารางผลการจัดสรรแบบเรียลไทม์ (ดูอย่างเดียว)'}
           </p>
         </div>
         <div className="flex gap-2">
@@ -239,6 +245,7 @@ export function AdminResultsPage() {
           assignments={assignments}
           departments={departments}
           nurseNames={nurseNames}
+          canEdit={canEdit}
         />
 
         <div className="pt-2">
@@ -250,6 +257,7 @@ export function AdminResultsPage() {
               assignments={assignments}
               departments={departments}
               nurseNames={nurseNames}
+              canEdit={canEdit}
             />
           </div>
         </div>

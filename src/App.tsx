@@ -36,6 +36,7 @@ function App() {
               <Route index element={<HomeRedirect />} />
               <Route element={<ProtectedRoute kind="staff" />}>
                 <Route path="dashboard" element={<DashboardPage />} />
+                <Route path="results" element={<AdminResultsPage />} />
               </Route>
               <Route element={<ProtectedRoute kind="participant" />}>
                 <Route path="preferences" element={<PreferencesPage />} />
