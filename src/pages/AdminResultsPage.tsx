@@ -138,11 +138,10 @@ export function AdminResultsPage() {
 
   const exportAssignments = () => {
     const rows = [
-      ['พยาบาล', 'ตึก', 'อันดับที่เลือกตึกแล้ว', 'วันที่เลือกตึกแล้ว'],
+      ['พยาบาล', 'ตึก', 'วันที่เลือกตึกแล้ว'],
       ...assignments.map((assignment) => [
         nurseNames[assignment.nurse_id] ?? assignment.nurse_id,
         departments.find((d) => d.id === assignment.department_id)?.code ?? '',
-        formatTier(assignment.matched_tier),
         assignment.assigned_at,
       ]),
     ]
