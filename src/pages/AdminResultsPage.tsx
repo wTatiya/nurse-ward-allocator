@@ -165,11 +165,6 @@ export function AdminResultsPage() {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold text-slate-900">ผลลัพธ์</h1>
-          <p className="mt-1 text-sm text-slate-600">
-            {canEdit
-              ? 'ตารางผลการเลือกตึกแล้วแบบเรียลไทม์ บันทึกการจับสลาก และส่งออก CSV'
-              : 'ตารางผลการเลือกตึกแล้วแบบเรียลไทม์ (ดูอย่างเดียว)'}
-          </p>
         </div>
         <div className="flex gap-2">
           <button
@@ -208,9 +203,6 @@ export function AdminResultsPage() {
 
       <section className="space-y-3">
         <h2 className="text-lg font-semibold text-slate-900">ตำแหน่งที่เติมแล้ว</h2>
-        <p className="text-sm text-slate-600">
-          ตึกที่เกินหรือยังว่างอยู่ด้านบน · ตึกครบพอดีอยู่ด้านล่าง (เรียง A–Z)
-        </p>
         <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
           {departmentFill.map((item) => (
             <DepartmentFillCard

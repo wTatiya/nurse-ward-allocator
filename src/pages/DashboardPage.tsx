@@ -84,9 +84,6 @@ export function DashboardPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold text-slate-900">ภาพรวม</h1>
-        <p className="mt-1 text-sm text-slate-600">
-          ภาพรวมการเลือกตึกแล้วแบบอ่านอย่างเดียวสำหรับตึกที่คุณดูได้
-        </p>
       </div>
 
       {rounds.length === 0 ? (

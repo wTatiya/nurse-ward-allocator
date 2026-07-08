@@ -69,9 +69,6 @@ export function ResultsDashboard({
           <h2 className="text-lg font-semibold text-slate-900">
             ภาพรวมแบบเรียลไทม์
           </h2>
-          <p className="mt-1 text-sm text-slate-600">
-            อัปเดตอัตโนมัติเมื่อมีการเลือกตึกแล้ว การส่งเลือกตึก หรือการจับสลาก
-          </p>
         </div>
         {round && (
           <div className="rounded-lg bg-white px-3 py-2 text-sm shadow-sm ring-1 ring-slate-200">
