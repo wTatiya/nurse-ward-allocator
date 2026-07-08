@@ -1,6 +1,6 @@
 # Cursor skills — nurse-ward-allocator
 
-Consolidated **2026-07-07**. Index: `AGENTS.md` · Inventory: `common/cursor-inventory/INVENTORY.md`.
+Consolidated **2026-07-08**. Index: `AGENTS.md` · Inventory: `common/cursor-inventory/INVENTORY.md`.
 
 ## Categories (46 skills)
 

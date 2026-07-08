@@ -3,8 +3,8 @@
 Before scoring, confirm:
 
 - [ ] Scope boundaries written (included/excluded paths)
-- [ ] Stack detected (React/Firebase, Node API, etc.)
-- [ ] Entry points mapped (routes, Cloud Functions, Firestore rules, auth gates)
+- [ ] Stack detected (React/Supabase, Edge Functions, Postgres RLS, etc.)
+- [ ] Entry points mapped (routes, Edge Functions, RLS policies, auth gates)
 - [ ] Dependencies scanned (`package.json`, `functions/package.json`) for slopsquatting candidates
 - [ ] No audit of secrets pasted in chat — flag location only
 - [ ] Tests noted — absence affects Robustness score, not Security alone

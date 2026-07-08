@@ -12,37 +12,37 @@ Mission: bridge user intent to safe execution; Phase 0 routes via `contextual-sk
 1. Read `AGENTS.md`
 2. Read `.cursor/rules/**/*.mdc` (see `.cursor/rules/README.md`)
 3. Load matching `.cursor/skills/**/SKILL.md`
-4. Inventory subagents from `.cursor/agents/*.{md,mdc}` (expect **18** files)
+4. Inventory subagents from `.cursor/agents/*.{md,mdc}` (expect **18** active files)
 5. Plan dependencies before coding
 
-## Agent registry (2026-07-07)
+## Agent registry (2026-07-08)
 
-| File | Route as |
-|------|----------|
-| `contextual-orchestrator.md` | Entry (this agent) |
-| `frontend-developer.md` | React/UI |
-| `typescript-pro-agents.md` | Types, tsconfig |
-| `senior-backend.md` | Edge Functions, server logic |
-| `fullstack-developer.md` | Supabase + UI features |
-| `api-integration-specialist.md` | Supabase client, external APIs |
-| `senior-architect.md` | System design |
-| `database-architect.md` | Postgres schema, RLS, migrations |
-| `senior-qa.md` | Test strategy; **diff mode** for test gaps |
-| `root-cause-investigator.md` | Bugs, RCA |
-| `trust-error-recovery.md` | Error UX, undo flows |
-| `rewind-engineer.md` | Git history restore |
-| `specialist-tdd-implementer.mdc` | Strict TDD |
-| `specialist-pr-reviewer.mdc` | PR/MR review |
-| `specialist-security-reviewer.mdc` | Security / RLS review |
-| `specialist-codebase-scout.mdc` | Blast radius, conventions |
-| `specialist-integration-test-generator.mdc` | Integration tests from spec |
-| `specialist-architecture-guard.mdc` | Architecture violations in diffs |
+| File | Task `subagent_type` | Route as |
+|------|----------------------|----------|
+| `contextual-orchestrator.md` | `contextual-orchestrator` | Entry (this agent) |
+| `frontend-developer.md` | `frontend-developer` | React/UI |
+| `typescript-pro-agents.md` | `typescript-pro-agents` | Types, tsconfig |
+| `senior-backend.md` | `senior-backend` | Edge Functions, server logic |
+| `fullstack-developer.md` | `fullstack-developer` | Supabase + UI features |
+| `api-integration-specialist.md` | `api-integration-specialist` | Supabase client, external APIs |
+| `senior-architect.md` | `senior-architect` | System design |
+| `database-architect.md` | `database-architect` | Postgres schema, RLS, migrations |
+| `senior-qa.md` | `senior-qa` | Test strategy; **diff mode** for test gaps |
+| `root-cause-investigator.md` | `root-cause-investigator` | Bugs, RCA |
+| `trust-error-recovery.md` | `trust-error-recovery` | Error UX, undo flows |
+| `rewind-engineer.md` | `rewind-engineer` | Git history restore |
+| `specialist-tdd-implementer.mdc` | `tdd-implementer` | Strict TDD |
+| `specialist-pr-reviewer.mdc` | `pr-reviewer` | PR/MR review |
+| `specialist-security-reviewer.mdc` | `security-reviewer` | Security / RLS review |
+| `specialist-codebase-scout.mdc` | `codebase-scout` | Blast radius, conventions |
+| `specialist-integration-test-generator.mdc` | `integration-test-generator` | Integration tests from spec |
+| `specialist-architecture-guard.mdc` | `architecture-guard` | Architecture violations in diffs |
 
 Built-in: `explore` for broad discovery.
 
-## Removed agents (do not route)
+## Removed agents (deleted 2026-07-08 — do not route)
 
-Jira, Confluence, Zephyr, mobile reverser, logic hacker, ASPM correlator, PR comment batch, AC verifier, test-gap-finder (use `senior-qa` diff mode).
+Jira analyst, Confluence searcher, Zephyr scanner, TC creator, AC verifier, PR comment batch, logic hacker, mobile reverser, ASPM correlator, test-gap-finder (use `senior-qa` diff mode instead).
 
 ## Routing tree
 
@@ -54,11 +54,13 @@ Request
 ├─ Supabase/RLS/migration → database-architect + supabase-editing rule
 ├─ Assignment/lottery → senior-backend + _shared tests first
 ├─ UI → frontend-developer (+ trust-error-recovery for errors)
+├─ Agent config audit → common-skills-audit + cursor-inventory
+├─ App production readiness → vibe-code-auditor
 └─ Default → layer-appropriate implementer
 ```
 
 ## Handoff rules
 
-- Pass file paths, constraints, `npm test` / `npm run build`
+- Pass file paths, constraints, `npm test`
 - Supabase: note RLS + `nurse` vs `admin` impact
 - Assignment: server-side lottery only; preserve audit logs

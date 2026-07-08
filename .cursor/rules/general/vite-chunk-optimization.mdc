@@ -1,5 +1,5 @@
 ---
-description: Enforces Vite build optimization, chunk size prevention, and dynamic import architecture for React 19 and Firebase.
+description: Enforces Vite build optimization, chunk size prevention, and dynamic import architecture for React and Supabase.
 globs: ["vite.config.ts", "src/App.tsx", "src/routes/**/*.{ts,tsx}", "src/router/**/*.{ts,tsx}"]
 alwaysApply: false
 ---
@@ -8,7 +8,7 @@ alwaysApply: false
 
 ## Context
 
-Stack: React 19, TypeScript, Vite, Tailwind CSS, Firebase.
+Stack: React, TypeScript, Vite, Tailwind CSS, Supabase.
 Objective: Prevent Rollup warning "Some chunks are larger than 600 kB after minification."
 
 ## 1. Preventive Architecture (React 19)
@@ -16,7 +16,7 @@ Objective: Prevent Rollup warning "Some chunks are larger than 600 kB after mini
 When generating or refactoring React components, routing, or heavy library imports, strictly enforce code-splitting:
 
 - Route-level components MUST be dynamically imported using React 19 `lazy()` and wrapped in `<Suspense>`.
-- Firebase modules (Auth, Firestore, Functions) MUST be imported only where needed, avoiding global synchronous imports of the entire Firebase SDK.
+- `@supabase/supabase-js` MUST be imported only where needed, avoiding global synchronous imports of heavy client modules.
 - Large third-party libraries (e.g., rich text editors, charts, maps) MUST use dynamic `import()` localized to the consuming component.
 
 ### Pattern: Route Splitting
@@ -55,8 +55,8 @@ export default defineConfig({
             if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
               return 'vendor-react';
             }
-            if (id.includes('firebase')) {
-              return 'vendor-firebase';
+            if (id.includes('@supabase')) {
+              return 'vendor-supabase';
             }
             if (id.includes('@tailwindcss') || id.includes('postcss')) {
               return 'vendor-styles';

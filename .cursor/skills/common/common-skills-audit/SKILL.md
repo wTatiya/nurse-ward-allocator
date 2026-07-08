@@ -29,7 +29,7 @@ Audit the agent configuration layer (not application code). Produce evidence-bac
 4. **Detect broken links** — commands → skills, rules → skills, agents → skills, deprecated IDs in docs.
 5. **Sync check** — project-only skills listed in README must not be in `ags sync` overwrite set; registry excludes must match intent.
 6. **Report** — use [references/output-format.md](references/output-format.md). Apply deletions only when user requests consolidation.
-7. **Post-consolidation verify** — re-run inventory; confirm counts match orchestrator + AGENTS.md.
+7. **Post-consolidation verify** — re-run inventory; confirm counts match orchestrator + AGENTS.md (18 subagents, 46 skills, 20 rules).
 
 ## Recovery note
 
@@ -43,7 +43,7 @@ Restore `_INDEX.md` keyword rows for meta skills if missing (see checklist).
 | --- | --- |
 | Duplicate rule at root + `general/` | Keep `general/`; delete root duplicate |
 | Agent merged into mode (e.g. test gaps → `senior-qa`) | Delete specialist file; update orchestrator + AGENTS |
-| Enterprise-only agent (Jira, Zephyr, mobile reverser) | Delete; document in RULES_INVENTORY / README |
+| Enterprise-only agent (Jira, Zephyr, mobile reverser, logic hacker, ASPM) | Delete file; document in RULES_INVENTORY / orchestrator removed list |
 | Skill not relevant to web + Supabase stack | Add to `.skillsrc` exclude; delete from disk |
 | Orphan slash command (NiData TickTick) | Remove or repoint command |
 

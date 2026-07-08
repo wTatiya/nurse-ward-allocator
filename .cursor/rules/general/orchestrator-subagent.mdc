@@ -47,16 +47,13 @@ Use `contextual-orchestrator` as the default orchestration layer for each new re
 - Skill routing is Phase 0 inside `contextual-orchestrator` (former `contextual-skill-router` agent merged).
 - For multi-step work, orchestrate with:
   - `explore` / `codebase-scout` -> discovery
-  - `database-architect` / `firestore-rules-regression-guard` -> schema/rules/data
+  - `database-architect` + `project/supabase-editing` -> schema/RLS/migrations
   - `senior-backend` / `api-integration-specialist` -> backend/API
   - `frontend-developer` / `typescript-pro-agents` -> UI and typing
   - `senior-qa` -> tests, validation, diff test-gap review
   - `security-reviewer` -> security review (compliance mode when audit requested)
   - `root-cause-investigator` -> debugging and RCA
-  - `senior-data-platform` / `analytics-engineer` -> data/ML/telemetry
-  - Specialist `specialist-*.mdc` agents for PR/ticket/security red-team workflows (see `.cursor/agents/contextual-orchestrator.md` registry)
-  - `senior-data-platform` for ML/pipelines (not `senior-data-scientist` / `senior-data-engineer`)
-  - `thai-inclusive-uiux-orchestrator` for full Thai UX audits (coordinates four lens agents)
+  - Specialist `specialist-*.mdc` agents for PR/review workflows (see `.cursor/agents/contextual-orchestrator.md` registry)
 
 ## Safety defaults
 

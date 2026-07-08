@@ -27,6 +27,12 @@ Read-only production-readiness audit for **application code** (not `.cursor/` co
 5. **Report** — [references/output-format.md](references/output-format.md) only
 6. **Do not rewrite code** unless user explicitly asks to fix findings
 
+## Project default scope (nurse-ward-allocator)
+
+- `src/` — React client, hooks, Supabase client usage
+- `supabase/migrations/` — Postgres schema and RLS
+- `supabase/functions/` — Edge Functions (assignment lottery must stay server-side)
+
 ## Escalation
 
 | Finding depth | Load |

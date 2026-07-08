@@ -1,12 +1,12 @@
 ---
-description: Repository coding — React/Vite/TS/Firebase patterns and safe changes; debugging defers to debugging-protocol-pointer + common/common-debugging skill
+description: Repository coding — React/Vite/TS/Supabase patterns and safe changes; debugging defers to debugging-protocol-pointer + common/common-debugging skill
 alwaysApply: true
 ---
 
 # Repository Coding + Debugging Best Practices
 
 Purpose: Ensure code written for this project follows safe, maintainable
-patterns for a React + Vite + TypeScript + Firebase + Firestore application.
+patterns for a React + Vite + TypeScript + Supabase application.
 
 This rule applies to all code generation, debugging, and refactoring.
 
@@ -19,8 +19,7 @@ This repository uses:
 - React
 - Vite
 - TypeScript
-- Firebase / Firestore
-- Cloud Functions
+- Supabase (Postgres, Auth, Realtime, Edge Functions)
 - Vitest (unit testing)
 - Playwright (end-to-end tests)
 
@@ -56,7 +55,7 @@ Before writing code:
 
 Examples:
 
-- use existing Firestore helpers
+- use existing Supabase client helpers
 - follow existing React component patterns
 - reuse utility functions when possible
 
@@ -104,9 +103,9 @@ unless no other option exists.
 
 ---
 
-# Firestore Best Practices
+# Supabase Best Practices
 
-Firestore mistakes can break production data.
+Postgres schema and RLS mistakes can break production data.
 
 Always follow these rules.
 
@@ -114,9 +113,9 @@ Always follow these rules.
 
 Before modifying:
 
-- document structure
-- field names
-- Firestore rules
+- table structure
+- column names
+- RLS policies
 - indexes
 
 STOP and ask the user to confirm.
@@ -125,16 +124,16 @@ STOP and ask the user to confirm.
 
 ## Avoid Excessive Queries
 
-Firestore costs money and has performance limits.
+Supabase queries count against plan limits and add latency.
 
 Avoid:
 
 - repeated queries inside loops
-- unnecessary document reads
+- unnecessary row reads
 
 Prefer:
 
-- batch reads
+- batched selects
 - caching results when possible
 
 ---
@@ -162,14 +161,6 @@ npm run test
 If the user cannot run commands, explain how to verify the behavior manually.
 
 ---
-
-## Firestore Rules Tests
-
-If modifying Firestore rules:
-
-```
-npm run test:rules
-```
 
 ---
 
@@ -205,12 +196,12 @@ Remove temporary debug logs unless the user asks to keep them.
 
 # Performance Awareness
 
-React + Firestore apps can slow down easily.
+React + Supabase apps can slow down easily.
 
 Avoid:
 
 - unnecessary re-renders
-- repeated Firestore reads
+- repeated Supabase reads
 - heavy computations in components
 
 Prefer:
@@ -226,8 +217,8 @@ Prefer:
 Before modifying these systems, ask the user to confirm:
 
 - authentication
-- Firestore rules
-- Cloud Functions
+- Postgres schema / RLS policies
+- Edge Functions
 - deployment configuration
 
 Never delete files or large code blocks without explicit permission.
