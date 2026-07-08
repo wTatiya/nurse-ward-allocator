@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { formatTier } from '../lib/utils'
 import {
-  LOTTERY_METHOD_INTRO,
+  LOTTERY_METHOD_NOTE,
   LOTTERY_METHOD_STEPS,
   formatParticipantName,
 } from '../lib/lotteryDisplay'
@@ -103,14 +103,41 @@ export function LotteryDetailCard({
   )
 }
 
+function LotteryMethodCodeBlock({
+  code,
+  sourceFile,
+}: {
+  code: string
+  sourceFile: string
+}) {
+  return (
+    <div className="mt-2 overflow-hidden rounded-md border border-slate-200 bg-white">
+      <p className="border-b border-slate-200 px-3 py-1.5 font-mono text-xs text-slate-500">
+        {sourceFile}
+      </p>
+      <pre className="overflow-x-auto p-3 font-mono text-xs leading-relaxed text-slate-800">
+        <code>{code}</code>
+      </pre>
+    </div>
+  )
+}
+
 export function LotteryMethodExplanation() {
   return (
     <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
       <p className="font-medium text-slate-900">วิธีการจับสลาก</p>
-      <p className="mt-2">{LOTTERY_METHOD_INTRO}</p>
-      <ol className="mt-2 list-decimal space-y-1 pl-5">
+      <p className="mt-2 text-slate-600">{LOTTERY_METHOD_NOTE}</p>
+      <ol className="mt-3 list-decimal space-y-4 pl-5">
         {LOTTERY_METHOD_STEPS.map((step) => (
-          <li key={step}>{step}</li>
+          <li key={step.text}>
+            <span>{step.text}</span>
+            {step.code && step.sourceFile && (
+              <LotteryMethodCodeBlock
+                code={step.code}
+                sourceFile={step.sourceFile}
+              />
+            )}
+          </li>
         ))}
       </ol>
     </div>
