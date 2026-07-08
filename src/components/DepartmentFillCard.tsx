@@ -1,9 +1,18 @@
 import { useState } from 'react'
 import type { CapacityStatus } from '../lib/manualAssignment'
 
+export function formatDepartmentNamesCopyText(
+  nameTh: string,
+  names: string[],
+): string {
+  if (names.length === 0) return nameTh
+  return `${nameTh}\n${names.join('\n')}`
+}
+
 export interface DepartmentFillItem {
   departmentId: string
   code: string
+  nameTh: string
   label: string
   assigned: number
   capacity: number
@@ -20,7 +29,13 @@ interface DepartmentFillCardProps {
   onToggle: () => void
 }
 
-function CopyNamesButton({ names }: { names: string[] }) {
+function CopyNamesButton({
+  nameTh,
+  names,
+}: {
+  nameTh: string
+  names: string[]
+}) {
   const [copied, setCopied] = useState(false)
   const [copyError, setCopyError] = useState<string | null>(null)
 
@@ -28,7 +43,9 @@ function CopyNamesButton({ names }: { names: string[] }) {
     event.stopPropagation()
     setCopyError(null)
     try {
-      await navigator.clipboard.writeText(names.join('\n'))
+      await navigator.clipboard.writeText(
+        formatDepartmentNamesCopyText(nameTh, names),
+      )
       setCopied(true)
       window.setTimeout(() => setCopied(false), 2000)
     } catch {
@@ -170,7 +187,7 @@ export function DepartmentFillCard({
               ))}
             </ol>
           )}
-          <CopyNamesButton names={item.assignedNames} />
+          <CopyNamesButton nameTh={item.nameTh} names={item.assignedNames} />
         </div>
       )}
     </button>

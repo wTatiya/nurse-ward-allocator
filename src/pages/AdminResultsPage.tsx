@@ -109,6 +109,7 @@ export function AdminResultsPage() {
         return {
           departmentId: department.id,
           code: department.code,
+          nameTh: department.name_th,
           label: `${department.code} — ${department.name_th}`,
           assigned: count,
           capacity: department.capacity,

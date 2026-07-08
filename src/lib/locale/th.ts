@@ -7,10 +7,10 @@ export function formatTier(tier: 1 | 2 | 3): string {
 
 const ROUND_STATUS_LABELS: Record<RoundStatus, string> = {
   draft: 'ร่าง',
-  open: 'ตึกที่เปิดรับ',
-  closed: 'ปิดรับความประสงค์',
-  running: 'กำลังเลือกตึกแล้ว',
-  completed: 'เสร็จสิ้น',
+  open: 'เปิดรับ',
+  closed: 'ปิดรับ',
+  running: 'กำลังดำเนินการ',
+  completed: 'เสร็จสิ้นรอบ',
 }
 
 export function formatRoundStatus(status: string): string {
