@@ -30,3 +30,11 @@
 - [ ] `contextual-orchestrator.md` agent table current
 - [ ] `contextual-skill-router/SKILL.md` escalation map current
 - [ ] Consolidation date bumped when changes land
+
+## Post-flight
+
+- [ ] Inventory regenerated
+- [ ] Deprecated paths removed
+- [ ] AGENTS.md / orchestrator / RULES_INVENTORY updated
+- [ ] Post-sync: project-only meta skills restored if missing
+- [ ] Post-sync: duplicate root `agent-skill-standard-rule.mdc` deleted

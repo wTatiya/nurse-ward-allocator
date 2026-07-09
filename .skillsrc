@@ -21,9 +21,15 @@ skills:
       - common-exploit-verification
       - common-store-changelog
       - common-llm-security
-# Project-only skills (NOT synced — keep in repo):
+# Project-only skills (NOT synced — keep in repo; restore from git if missing after sync):
 # contextual-skill-router, vite-manual-chunks, web-performance-optimization,
 # webapp-testing, common/cursor-inventory, common/common-skills-audit, common/vibe-code-auditor
+#
+# Post-sync checklist (2026-07-09):
+# 1. git checkout HEAD -- .cursor/skills/common/{common-skills-audit,cursor-inventory,vibe-code-auditor}
+# 2. Delete .cursor/rules/agent-skill-standard-rule.mdc if duplicate of general/
+# 3. node .cursor/skills/common/cursor-inventory/scripts/inventory.mjs
+# 4. Verify AGENTS.md router + project-only table intact
 custom_overrides: []
 workflows: false
 mcp:

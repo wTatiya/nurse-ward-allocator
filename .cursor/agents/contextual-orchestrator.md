@@ -15,7 +15,7 @@ Mission: bridge user intent to safe execution; Phase 0 routes via `contextual-sk
 4. Inventory subagents from `.cursor/agents/*.{md,mdc}` (expect **18** active files)
 5. Plan dependencies before coding
 
-## Agent registry (2026-07-08)
+## Agent registry (2026-07-09)
 
 | File | Task `subagent_type` | Route as |
 |------|----------------------|----------|
@@ -64,3 +64,13 @@ Request
 - Pass file paths, constraints, `npm test`
 - Supabase: note RLS + `nurse` vs `admin` impact
 - Assignment: server-side lottery only; preserve audit logs
+
+## Post-sync recovery (2026-07-09)
+
+If `ags sync` ran and agent config looks broken:
+
+1. Restore project-only skills from git: `common-skills-audit`, `cursor-inventory`, `vibe-code-auditor`
+2. Delete duplicate `.cursor/rules/agent-skill-standard-rule.mdc` if reappeared (keep `general/` copy)
+3. Re-run `node .cursor/skills/common/cursor-inventory/scripts/inventory.mjs`
+4. Restore `AGENTS.md` router rows + project-only table if truncated
+5. Expected counts: **46 skills**, **18 subagents**, **20 rules**, **3 slash commands**

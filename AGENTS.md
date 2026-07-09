@@ -2,7 +2,7 @@
 
 > Nurse Ward Allocator agent index. **Rules:** `.cursor/rules/**/*.mdc` · **Skills:** `.cursor/skills/**/SKILL.md` · **Subagents:** `.cursor/agents/`
 
-Consolidated **2026-07-08** for React + Vite + TypeScript + Supabase. Inventory: `.cursor/skills/common/cursor-inventory/INVENTORY.md` (regenerate via `/cursor-inventory`).
+Consolidated **2026-07-09** for React + Vite + TypeScript + Supabase. Inventory: `.cursor/skills/common/cursor-inventory/INVENTORY.md` (regenerate via `/cursor-inventory`).
 
 <!-- SKILLS_INDEX_START -->
 ## Agent Skills Index
@@ -27,7 +27,7 @@ If the `agent-skills-standard` MCP server is registered in your runtime (check y
 
 > [!IMPORTANT] **Sub-agents don't inherit this `AGENTS.md` — they do inherit the MCP.** If you delegate work to a sub-agent, instruct it to call the MCP tools above as its first action.
 
-> [!NOTE] To enable MCP-managed installs in this project, run `ags mcp enable` (or edit `.skillsrc`). The MCP works fine if you registered it manually too.
+> [!TIP] **This project has the MCP server enabled in `.skillsrc`** — `sync` keeps your runtime configs in step. Run `ags mcp status` to verify per-agent installation.
 
 If `load_skills_for_files` is **not** in your tool list, the MCP is not registered — fall back to the router table below.
 
@@ -47,7 +47,7 @@ Each `_INDEX.md` has two sections - follow both:
 
 | File type | Read category index |
 | --------- | ------------------- |
-| `*.ts`, `*.tsx` | `<SKILLS>/react/_INDEX.md`, `<SKILLS>/typescript/_INDEX.md` |
+| `*.ts`, `*.tsx` | `<SKILLS>/react/_INDEX.md`, `<SKILLS>/typescript/_INDEX.md`, `<SKILLS>/common/_INDEX.md` |
 | `*.jsx`, `*.test.tsx`, `*.spec.tsx` | `<SKILLS>/react/_INDEX.md` |
 | `*.spec.ts`, `*.test.ts` | `<SKILLS>/common/_INDEX.md` |
 | Any file (keyword match) | `<SKILLS>/common/_INDEX.md` |
@@ -110,4 +110,10 @@ Routing: `.cursor/agents/contextual-orchestrator.md` · Skills: `.cursor/skills/
 
 ## After `ags sync`
 
-Registry sync overwrites `common/`, `react/`, `typescript/` only. Re-verify project-only skills exist (`common-skills-audit`, `cursor-inventory`, `vibe-code-auditor`, `contextual-skill-router`). Restore from git if missing.
+Registry sync overwrites `common/`, `react/`, `typescript/` only. **Always re-verify after sync:**
+
+1. Project-only skills still on disk: `common-skills-audit`, `cursor-inventory`, `vibe-code-auditor`, `contextual-skill-router`, `vite-manual-chunks`, `web-performance-optimization`, `webapp-testing`
+2. `_INDEX.md` project-only keyword rows intact (`common/_INDEX.md` bottom section)
+3. No duplicate rule at `.cursor/rules/agent-skill-standard-rule.mdc` (canonical: `general/agent-skill-standard-rule.mdc`)
+4. Run `/cursor-inventory` — expect **46 skills**, **3 commands**, **18 subagents**, **20 rules**
+5. If meta skills missing: `git checkout HEAD -- .cursor/skills/common/common-skills-audit .cursor/skills/common/cursor-inventory .cursor/skills/common/vibe-code-auditor`

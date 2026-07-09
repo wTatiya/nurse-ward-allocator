@@ -1,6 +1,6 @@
 # Cursor rules inventory
 
-Canonical editor rules in `.cursor/rules/**/*.mdc`. Consolidated **2026-07-08**.
+Canonical editor rules in `.cursor/rules/**/*.mdc`. Consolidated **2026-07-09**.
 
 | File | alwaysApply | globs (summary) |
 | --- | --- | --- |

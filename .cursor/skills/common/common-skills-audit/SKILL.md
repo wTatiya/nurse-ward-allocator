@@ -29,7 +29,8 @@ Audit the agent configuration layer (not application code). Produce evidence-bac
 4. **Detect broken links** — commands → skills, rules → skills, agents → skills, deprecated IDs in docs.
 5. **Sync check** — project-only skills listed in README must not be in `ags sync` overwrite set; registry excludes must match intent.
 6. **Report** — use [references/output-format.md](references/output-format.md). Apply deletions only when user requests consolidation.
-7. **Post-consolidation verify** — re-run inventory; confirm counts match orchestrator + AGENTS.md (18 subagents, 46 skills, 20 rules).
+7. **Post-consolidation verify** — re-run inventory; confirm counts match orchestrator + AGENTS.md (**46 skills**, **3 commands**, **18 subagents**, **20 rules**).
+8. **Post-sync drift** — if `ags sync` truncated `_INDEX.md` or deleted project-only meta skills, restore from git before reporting clean.
 
 ## Recovery note
 
