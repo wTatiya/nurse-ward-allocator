@@ -117,3 +117,54 @@ Registry sync overwrites `common/`, `react/`, `typescript/` only. **Always re-ve
 3. No duplicate rule at `.cursor/rules/agent-skill-standard-rule.mdc` (canonical: `general/agent-skill-standard-rule.mdc`)
 4. Run `/cursor-inventory` — expect **46 skills**, **3 commands**, **18 subagents**, **20 rules**
 5. If meta skills missing: `git checkout HEAD -- .cursor/skills/common/common-skills-audit .cursor/skills/common/cursor-inventory .cursor/skills/common/vibe-code-auditor`
+
+## Cursor Cloud specific instructions
+
+Standard scripts live in `package.json` (`dev`, `build`, `lint`, `test`); the update
+script already runs `npm install`. The notes below cover only non-obvious setup
+needed to run the app **end-to-end**, since it requires a local Supabase backend.
+
+### Services
+- **Frontend (Vite SPA)** — `npm run dev` (add `-- --host 0.0.0.0` if you need
+  the dev server reachable from outside localhost). Reads `VITE_SUPABASE_URL` /
+  `VITE_SUPABASE_ANON_KEY` from a git-ignored `.env` (see below).
+- **Supabase local stack** (Postgres + Auth + PostgREST + Realtime + Edge runtime)
+  — started with `supabase start`. Requires Docker. The `run-assignment` Edge
+  Function is served automatically by `supabase start`; you do NOT need a separate
+  `supabase functions serve`.
+
+### Backend startup (Docker + Supabase CLI are pre-installed in the snapshot)
+1. Start the Docker daemon if it isn't running, then relax the socket perms:
+   `sudo bash -c 'nohup dockerd >/var/log/dockerd.log 2>&1 &'` then
+   `sudo chmod 666 /var/run/docker.sock`. Docker uses the `fuse-overlayfs`
+   storage driver (configured in `/etc/docker/daemon.json`) and `iptables-legacy`.
+2. `supabase start` (from repo root). Prints the local `API URL`, `anon key`,
+   and `service_role key`. It applies all `supabase/migrations/**` and then runs
+   `supabase/seed.sql`.
+3. Create `.env` in the repo root (git-ignored) from the printed values:
+   `VITE_SUPABASE_URL=http://127.0.0.1:54321` and `VITE_SUPABASE_ANON_KEY=<anon key>`.
+4. Seed app data (order matters), passing the printed service_role key:
+   `SUPABASE_URL=http://127.0.0.1:54321 SUPABASE_SERVICE_ROLE_KEY=<service_role> \`
+   then `node scripts/seed-staff.mjs && node scripts/seed-participants.mjs && node scripts/seed-demo-round.mjs`.
+5. `npm run dev` and open the app.
+
+### Gotchas
+- **Table grants (`supabase/seed.sql`):** Newer Supabase Postgres does NOT grant
+  CRUD to `anon`/`authenticated`/`service_role` on new tables by default — only
+  `TRUNCATE/REFERENCES/TRIGGER`. The migrations assume the older default, so
+  without grants every PostgREST call fails with `permission denied for table ...`.
+  `supabase/seed.sql` restores the grants and runs automatically on `supabase start`
+  (fresh DB) and `supabase db reset`. It is local-only (never run by `supabase db push`
+  or hosted deploys). If you add a brand-new table in a migration and hit
+  `permission denied`, re-run the grants (or `supabase db reset`).
+- **Login:** 7-digit nurse ID = username; for most accounts password = the ID.
+  Seeded demo credentials: admin `5650414` / `1102002871008`; any participant
+  uses its 7-digit ID as both fields (e.g. `5690564` / `5690564`). Nurse IDs map to
+  internal emails `<id>@nurse.ward-allocator.local` (see `src/lib/nurseIdAuth.ts`).
+- **Core flow:** participant submits 3 ranked wards on `/preferences`; admin on
+  `/admin/rounds` closes the round then clicks "รันการเลือกตึก" to invoke the
+  `run-assignment` Edge Function (writes assignments/waitlist/lottery_events).
+- **`.env` is git-ignored** and not persisted by commits; recreate it after a fresh
+  clone. Re-run the seed scripts after any `supabase db reset` (reset wipes app data
+  but re-applies grants via `seed.sql`).
+- UI is Thai-language; success banners are teal, errors are red.
