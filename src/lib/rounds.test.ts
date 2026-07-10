@@ -3,6 +3,7 @@ import type { AssignmentRound } from '../types/database'
 import {
   canArchiveRound,
   isRoundArchived,
+  isRoundResultsPublished,
   splitRoundsByArchive,
 } from './rounds'
 
@@ -34,6 +35,12 @@ describe('rounds helpers', () => {
     expect(
       canArchiveRound(round({ archived_at: '2026-01-02T00:00:00Z' })),
     ).toBe(false)
+  })
+
+  it('detects when round results are published', () => {
+    expect(isRoundResultsPublished(round())).toBe(true)
+    expect(isRoundResultsPublished(round({ status: 'running' }))).toBe(false)
+    expect(isRoundResultsPublished(null)).toBe(false)
   })
 
   it('splits active and archived rounds', () => {

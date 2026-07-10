@@ -38,3 +38,4 @@
 - [ ] AGENTS.md / orchestrator / RULES_INVENTORY updated
 - [ ] Post-sync: project-only meta skills restored if missing
 - [ ] Post-sync: duplicate root `agent-skill-standard-rule.mdc` deleted
+- [ ] Post-sync: enterprise specialists deleted if reappeared

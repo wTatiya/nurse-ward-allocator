@@ -33,6 +33,8 @@ Read-only production-readiness audit for **application code** (not `.cursor/` co
 - `supabase/migrations/` — Postgres schema and RLS
 - `supabase/functions/` — Edge Functions (assignment lottery must stay server-side)
 
+Last stack audit baseline: **2026-07-10** (tier-priority + manual assignment changes).
+
 ## Escalation
 
 | Finding depth | Load |

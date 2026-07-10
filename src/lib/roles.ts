@@ -24,7 +24,7 @@ export function isParticipant(role: UserRole | null | undefined): boolean {
 export function defaultRouteForRole(role: UserRole | null | undefined): string {
   if (isAdmin(role)) return '/admin/rounds'
   if (isParticipant(role)) return '/preferences'
-  if (isStaffViewer(role)) return '/dashboard'
+  if (isStaffViewer(role)) return '/results'
   return '/login'
 }
 

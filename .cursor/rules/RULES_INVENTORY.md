@@ -1,6 +1,6 @@
 # Cursor rules inventory
 
-Canonical editor rules in `.cursor/rules/**/*.mdc`. Consolidated **2026-07-09**.
+Canonical editor rules in `.cursor/rules/**/*.mdc`. Consolidated **2026-07-10**.
 
 | File | alwaysApply | globs (summary) |
 | --- | --- | --- |
@@ -29,7 +29,7 @@ Canonical editor rules in `.cursor/rules/**/*.mdc`. Consolidated **2026-07-09**.
 
 | Path | Reason |
 | --- | --- |
-| `.cursor/rules/agent-skill-standard-rule.mdc` | Duplicate of `general/` — **deleted 2026-07-08** |
+| `.cursor/rules/agent-skill-standard-rule.mdc` | Duplicate of `general/` — **deleted 2026-07-10** (re-delete after `ags sync` if it reappears) |
 | `general/quarterly-work-log.mdc` | Manager work logs — not project scope |
 | NiData `nidata/*`, Firestore rules | Wrong stack / domain |
 

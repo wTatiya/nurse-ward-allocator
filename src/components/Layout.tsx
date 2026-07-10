@@ -9,8 +9,8 @@ const participantLinks = [
 ]
 
 const staffLinks = [
-  { to: '/dashboard', label: 'ภาพรวม' },
   { to: '/results', label: 'ผลลัพธ์' },
+  { to: '/dashboard', label: 'ภาพรวม' },
 ]
 
 const adminLinks = [

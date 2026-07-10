@@ -52,7 +52,7 @@ Meta-skill only: decide what to load; do not solve tasks directly.
 - `senior-qa` (diff test-gap mode), `integration-test-generator`, `tdd-implementer` — quality
 - `root-cause-investigator`, `trust-error-recovery`, `rewind-engineer` — debug/UX/utilities
 
-Do **not** route to removed enterprise agents (Jira, Zephyr, mobile reverser, test-gap-finder).
+Do **not** route to removed enterprise agents: `specialist-jira-analyst`, `specialist-confluence-searcher`, `specialist-zephyr-scanner`, `specialist-tc-creator`, `specialist-ac-verifier`, `specialist-pr-commenter-batch`, `specialist-logic-hacker`, `specialist-mobile-reverser`, `specialist-aspm-correlator`, `specialist-test-gap-finder`. Use `senior-qa` diff mode for test-gap review.
 
 Full registry: `.cursor/agents/contextual-orchestrator.md`.
 

@@ -1,58 +1,73 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { OutcomeExplanation } from '../components/OutcomeExplanation'
+import {
+  WAITLIST_CONTACT_STAFF_ACTION,
+  WAITLIST_OUTCOME_REASON,
+} from '../lib/personalOutcome'
 import { supabase } from '../lib/supabase'
 import { formatRoundStatus, formatTier } from '../lib/utils'
 import {
   useRealtimeAssignments,
   useRealtimeLotteryEvents,
   useRealtimeRound,
+  useRealtimeRoundsList,
   useRealtimeWaitlist,
 } from '../hooks/useRealtimeAssignments'
 import type {
-  Assignment,
-  AssignmentRound,
   Department,
   Preference,
-  WaitlistEntry,
+  RoundStatus,
 } from '../types/database'
 
+const RESULT_ROUND_STATUSES: RoundStatus[] = ['closed', 'running', 'completed']
+
 export function MyResultPage() {
-  const [rounds, setRounds] = useState<AssignmentRound[]>([])
   const [selectedRoundId, setSelectedRoundId] = useState('')
   const [departments, setDepartments] = useState<Department[]>([])
   const [userId, setUserId] = useState<string | null>(null)
   const [preference, setPreference] = useState<Preference | null>(null)
-  const [myAssignment, setMyAssignment] = useState<Assignment | null>(null)
-  const [waitlistEntry, setWaitlistEntry] = useState<WaitlistEntry | null>(null)
   const [nurseNames, setNurseNames] = useState<Record<string, string>>({})
 
+  const { rounds } = useRealtimeRoundsList(RESULT_ROUND_STATUSES)
   const round = useRealtimeRound(selectedRoundId || null)
-  const { assignments } = useRealtimeAssignments(selectedRoundId || null)
-  const { waitlist } = useRealtimeWaitlist(selectedRoundId || null)
+  const { assignments, refetch: refetchAssignments } = useRealtimeAssignments(
+    selectedRoundId || null,
+  )
+  const { waitlist, refetch: refetchWaitlist } = useRealtimeWaitlist(
+    selectedRoundId || null,
+  )
   const lotteryEvents = useRealtimeLotteryEvents(selectedRoundId || null)
 
-  useEffect(() => {
-    const load = async () => {
-      const [{ data: roundData }, { data: departmentData }] = await Promise.all([
-        supabase
-          .from('assignment_rounds')
-          .select('*')
-          .is('archived_at', null)
-          .in('status', ['closed', 'running', 'completed'])
-          .order('created_at', { ascending: false }),
-        supabase.from('departments').select('*').order('code'),
-      ])
+  const myAssignment = useMemo(
+    () =>
+      userId
+        ? (assignments.find((item) => item.nurse_id === userId) ?? null)
+        : null,
+    [assignments, userId],
+  )
 
-      const nextRounds = (roundData as AssignmentRound[]) ?? []
-      setRounds(nextRounds)
-      setDepartments((departmentData as Department[]) ?? [])
-      if (!selectedRoundId && nextRounds[0]) {
-        setSelectedRoundId(nextRounds[0].id)
-      }
+  const waitlistEntry = useMemo(
+    () =>
+      userId
+        ? (waitlist.find((item) => item.nurse_id === userId) ?? null)
+        : null,
+    [waitlist, userId],
+  )
+
+  useEffect(() => {
+    if (!selectedRoundId && rounds[0]) {
+      setSelectedRoundId(rounds[0].id)
+    }
+  }, [rounds, selectedRoundId])
+
+  useEffect(() => {
+    const loadDepartments = async () => {
+      const { data } = await supabase.from('departments').select('*').order('code')
+      setDepartments((data as Department[]) ?? [])
     }
 
-    void load()
-  }, [selectedRoundId])
+    void loadDepartments()
+  }, [])
 
   useEffect(() => {
     const loadNames = async () => {
@@ -75,8 +90,6 @@ export function MyResultPage() {
       if (!user || !selectedRoundId) {
         setUserId(null)
         setPreference(null)
-        setMyAssignment(null)
-        setWaitlistEntry(null)
         return
       }
 
@@ -90,16 +103,41 @@ export function MyResultPage() {
         .maybeSingle()
 
       setPreference((preferenceData as Preference) ?? null)
-      setMyAssignment(
-        assignments.find((item) => item.nurse_id === user.id) ?? null,
-      )
-      setWaitlistEntry(
-        waitlist.find((item) => item.nurse_id === user.id) ?? null,
-      )
     }
 
     void resolve()
-  }, [assignments, waitlist, selectedRoundId])
+  }, [selectedRoundId])
+
+  useEffect(() => {
+    if (!selectedRoundId || !round?.status) return
+
+    if (round.status === 'running' || round.status === 'completed') {
+      void refetchAssignments()
+      void refetchWaitlist()
+    }
+  }, [round?.status, refetchAssignments, refetchWaitlist, selectedRoundId])
+
+  useEffect(() => {
+    if (!selectedRoundId || !round?.status) return
+    if (round.status !== 'closed' && round.status !== 'running') return
+    if (myAssignment || waitlistEntry) return
+
+    const interval = window.setInterval(() => {
+      void refetchAssignments()
+      void refetchWaitlist()
+    }, 3000)
+
+    return () => {
+      window.clearInterval(interval)
+    }
+  }, [
+    myAssignment,
+    refetchAssignments,
+    refetchWaitlist,
+    round?.status,
+    selectedRoundId,
+    waitlistEntry,
+  ])
 
   const assignedDepartment = myAssignment
     ? departments.find((d) => d.id === myAssignment.department_id)
@@ -156,11 +194,9 @@ export function MyResultPage() {
               </div>
             ) : waitlistEntry ? (
               <div className="mt-4 rounded-lg bg-amber-50 p-4">
-                <p className="text-sm text-amber-800">
-                  คุณอยู่ในรายการรอ
-                </p>
-                <p className="text-xl font-semibold text-amber-900">
-                  ลำดับที่ #{waitlistEntry.position}
+                <p className="text-sm text-amber-800">{WAITLIST_OUTCOME_REASON}</p>
+                <p className="mt-2 text-xl font-semibold text-amber-900">
+                  {WAITLIST_CONTACT_STAFF_ACTION}
                 </p>
               </div>
             ) : (

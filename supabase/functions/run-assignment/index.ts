@@ -138,10 +138,6 @@ Deno.serve(async (req) => {
         .eq("round_id", roundId),
     ]);
 
-    await adminClient.from("assignments").delete().eq("round_id", roundId);
-    await adminClient.from("waitlist").delete().eq("round_id", roundId);
-    await adminClient.from("lottery_events").delete().eq("round_id", roundId);
-
     const random = createSecureRandom();
     const result = runAssignmentEngine(
       (departments ?? []).map((d) => ({ id: d.id, capacity: d.capacity })),
@@ -155,56 +151,40 @@ Deno.serve(async (req) => {
       random,
     );
 
-    if (result.assignments.length > 0) {
-      const { error: assignmentError } = await adminClient
-        .from("assignments")
-        .insert(
-          result.assignments.map((a) => ({
-            round_id: roundId,
-            nurse_id: a.nurseId,
-            department_id: a.wardId,
-            matched_tier: a.matchedTier,
-          })),
-        );
+    const lotteryEvents = await Promise.all(
+      result.lotteryEvents.map(async (event) => ({
+        department_id: event.wardId,
+        tier: event.tier,
+        applicant_ids: event.applicantIds,
+        winner_ids: event.winnerIds,
+        slots: event.slots,
+        seed_hash: await hashSeed([
+          roundId,
+          event.wardId,
+          String(event.tier),
+          ...event.applicantIds,
+        ]),
+      })),
+    );
 
-      if (assignmentError) throw assignmentError;
-    }
-
-    if (result.waitlist.length > 0) {
-      const { error: waitlistError } = await adminClient.from("waitlist").insert(
-        result.waitlist.map((nurseId, index) => ({
-          round_id: roundId,
+    const { error: persistError } = await adminClient.rpc(
+      "replace_round_results",
+      {
+        p_round_id: roundId,
+        p_assignments: result.assignments.map((assignment) => ({
+          nurse_id: assignment.nurseId,
+          department_id: assignment.wardId,
+          matched_tier: assignment.matchedTier,
+        })),
+        p_waitlist: result.waitlist.map((nurseId, index) => ({
           nurse_id: nurseId,
           position: index + 1,
         })),
-      );
+        p_lottery_events: lotteryEvents,
+      },
+    );
 
-      if (waitlistError) throw waitlistError;
-    }
-
-    for (const event of result.lotteryEvents) {
-      const seedHash = await hashSeed([
-        roundId,
-        event.wardId,
-        String(event.tier),
-        ...event.applicantIds,
-        new Date().toISOString(),
-      ]);
-
-      const { error: lotteryError } = await adminClient
-        .from("lottery_events")
-        .insert({
-          round_id: roundId,
-          department_id: event.wardId,
-          tier: event.tier,
-          applicant_ids: event.applicantIds,
-          winner_ids: event.winnerIds,
-          slots: event.slots,
-          seed_hash: seedHash,
-        });
-
-      if (lotteryError) throw lotteryError;
-    }
+    if (persistError) throw persistError;
 
     const { error: completeError } = await adminClient
       .from("assignment_rounds")

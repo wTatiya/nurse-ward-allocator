@@ -5,8 +5,60 @@ import type {
   AssignmentRound,
   LotteryEvent,
   Preference,
+  RoundStatus,
   WaitlistEntry,
 } from '../types/database'
+
+export function statusFilterFromKey(statusesKey: string): RoundStatus[] {
+  if (!statusesKey) return []
+  return statusesKey.split('\0') as RoundStatus[]
+}
+
+export function useRealtimeRoundsList(statuses?: RoundStatus[]) {
+  const [rounds, setRounds] = useState<AssignmentRound[]>([])
+  const statusesKey = statuses?.join('\0') ?? ''
+
+  const refetch = useCallback(async () => {
+    let query = supabase
+      .from('assignment_rounds')
+      .select('*')
+      .is('archived_at', null)
+      .order('created_at', { ascending: false })
+
+    const statusFilter = statusFilterFromKey(statusesKey)
+    if (statusFilter.length > 0) {
+      query = query.in('status', statusFilter)
+    }
+
+    const { data } = await query
+    setRounds((data as AssignmentRound[]) ?? [])
+  }, [statusesKey])
+
+  useEffect(() => {
+    void refetch()
+
+    const channel = supabase
+      .channel('assignment-rounds-list')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'assignment_rounds',
+        },
+        () => {
+          void refetch()
+        },
+      )
+      .subscribe()
+
+    return () => {
+      void supabase.removeChannel(channel)
+    }
+  }, [refetch])
+
+  return { rounds, refetch }
+}
 
 export function useRealtimeRound(roundId: string | null) {
   const [round, setRound] = useState<AssignmentRound | null>(null)

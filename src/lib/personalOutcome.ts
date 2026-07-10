@@ -35,6 +35,16 @@ export interface PersonalOutcome {
   steps: OutcomeStep[]
 }
 
+/** Personal summary for participants on the waitlist. */
+export const WAITLIST_OUTCOME_REASON =
+  'คุณไม่ได้รับตึกจากความประสงค์ทั้ง 3 อันดับ (จับสลากไม่ได้หรือตำแหน่งเต็มในทุกอันดับ)'
+
+/** General rule text in the round process overview. */
+export const WAITLIST_OUTCOME_RULE =
+  'ผู้ที่ไม่ได้รับตึกจากความประสงค์ทั้ง 3 อันดับ (จับสลากไม่ได้หรือตำแหน่งเต็มในทุกอันดับ)'
+
+export const WAITLIST_CONTACT_STAFF_ACTION = 'กรุณาแจ้งผลกับเจ้าหน้าที่'
+
 function departmentLabel(
   departmentId: string,
   departments: Department[],

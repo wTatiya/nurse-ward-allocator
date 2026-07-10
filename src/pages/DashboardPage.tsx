@@ -121,7 +121,7 @@ export function DashboardPage() {
 
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-              <p className="text-xs text-slate-500">ตึกที่มองเห็น</p>
+              <p className="text-xs text-slate-500">จำนวนตึก</p>
               <p className="mt-1 text-2xl font-semibold text-slate-900">
                 {stats.length}
               </p>
@@ -154,7 +154,7 @@ export function DashboardPage() {
 
           {stats.length === 0 ? (
             <p className="rounded-xl border border-dashed border-slate-300 bg-white p-6 text-sm text-slate-500">
-              ไม่มีตึกในขอบเขตของคุณสำหรับรอบนี้
+              ไม่มีข้อมูลตึกสำหรับรอบนี้
             </p>
           ) : (
             <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">

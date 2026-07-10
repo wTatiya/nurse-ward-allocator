@@ -30,11 +30,17 @@ Audit the agent configuration layer (not application code). Produce evidence-bac
 5. **Sync check** — project-only skills listed in README must not be in `ags sync` overwrite set; registry excludes must match intent.
 6. **Report** — use [references/output-format.md](references/output-format.md). Apply deletions only when user requests consolidation.
 7. **Post-consolidation verify** — re-run inventory; confirm counts match orchestrator + AGENTS.md (**46 skills**, **3 commands**, **18 subagents**, **20 rules**).
-8. **Post-sync drift** — if `ags sync` truncated `_INDEX.md` or deleted project-only meta skills, restore from git before reporting clean.
+8. **Post-sync drift** — if `ags sync` truncated `_INDEX.md`, deleted project-only meta skills, or re-added enterprise subagents, restore/delete before reporting clean.
 
 ## Recovery note
 
-If project-only meta skills (`common-skills-audit`, `cursor-inventory`, `vibe-code-auditor`) are missing after `ags sync`, restore from git or copy from a backup — they are **not** in the registry.
+If project-only meta skills (`common-skills-audit`, `cursor-inventory`, `vibe-code-auditor`) are missing after `ags sync`, restore from git:
+
+```bash
+git checkout HEAD -- .cursor/skills/common/common-skills-audit .cursor/skills/common/cursor-inventory .cursor/skills/common/vibe-code-auditor
+```
+
+If enterprise subagents reappear on disk, delete per [references/redundancy-matrix.md](references/redundancy-matrix.md) removed-agents table.
 
 Restore `_INDEX.md` keyword rows for meta skills if missing (see checklist).
 

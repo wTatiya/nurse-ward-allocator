@@ -17,7 +17,7 @@ Fetch provider-neutral PR/MR context and return review-ready metadata only.
 - Prefer installed GitHub/GitLab/ADO MCP when configured.
 - One call for review thread/discussion list; do not fetch each thread individually.
 - If MCP unavailable, ask for PR/MR URL, exported patch, and thread summary.
-- No posting comments; use `specialist-pr-commenter-batch`.
+- No posting comments (review metadata only).
 - No sub-agents.
 
 ## Steps

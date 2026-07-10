@@ -4,6 +4,7 @@ import {
   LOTTERY_METHOD_STEPS,
   formatParticipantName,
 } from '../lib/lotteryDisplay'
+import { formatParticipantWithChoiceRank } from '../lib/preferenceTier'
 import type { LotteryEvent } from '../types/database'
 
 function SeedHashCopyRow({ seedHash }: { seedHash: string }) {
@@ -48,6 +49,24 @@ interface LotteryDetailCardProps {
   departmentLabel: string
   nurseNames: Record<string, string>
   currentUserId: string
+  choiceRankByNurseId?: Map<string, 1 | 2 | 3>
+}
+
+function formatName(
+  nurseId: string,
+  nurseNames: Record<string, string>,
+  currentUserId: string,
+  choiceRankByNurseId?: Map<string, 1 | 2 | 3>,
+): string {
+  if (choiceRankByNurseId) {
+    return formatParticipantWithChoiceRank(
+      nurseId,
+      nurseNames,
+      choiceRankByNurseId.get(nurseId),
+      currentUserId,
+    )
+  }
+  return formatParticipantName(nurseId, nurseNames, currentUserId)
 }
 
 export function LotteryDetailCard({
@@ -55,9 +74,10 @@ export function LotteryDetailCard({
   departmentLabel,
   nurseNames,
   currentUserId,
+  choiceRankByNurseId,
 }: LotteryDetailCardProps) {
-  const notSelectedCount =
-    event.applicant_ids.length - event.winner_ids.length
+  const winnerSet = new Set(event.winner_ids)
+  const notSelectedCount = event.applicant_ids.length - event.winner_ids.length
 
   return (
     <div className="mt-3 rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm">
@@ -76,7 +96,7 @@ export function LotteryDetailCard({
         <ul className="mt-1 list-inside list-disc text-slate-700">
           {event.winner_ids.map((id) => (
             <li key={id}>
-              {formatParticipantName(id, nurseNames, currentUserId)}
+              {formatName(id, nurseNames, currentUserId, choiceRankByNurseId)}
             </li>
           ))}
         </ul>
@@ -88,10 +108,10 @@ export function LotteryDetailCard({
         </p>
         <ul className="mt-1 list-inside list-disc text-slate-700">
           {event.applicant_ids
-            .filter((id) => !event.winner_ids.includes(id))
+            .filter((id) => !winnerSet.has(id))
             .map((id) => (
               <li key={id}>
-                {formatParticipantName(id, nurseNames, currentUserId)}
+                {formatName(id, nurseNames, currentUserId, choiceRankByNurseId)}
               </li>
             ))}
         </ul>

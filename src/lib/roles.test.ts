@@ -26,9 +26,9 @@ describe('roles', () => {
 
   it('routes by role', () => {
     expect(defaultRouteForRole('ADMIN')).toBe('/admin/rounds')
-    expect(defaultRouteForRole('HEAD_WARD_NURSE')).toBe('/dashboard')
-    expect(defaultRouteForRole('SUPERVISOR_NURSE')).toBe('/dashboard')
-    expect(defaultRouteForRole('MANAGER')).toBe('/dashboard')
+    expect(defaultRouteForRole('HEAD_WARD_NURSE')).toBe('/results')
+    expect(defaultRouteForRole('SUPERVISOR_NURSE')).toBe('/results')
+    expect(defaultRouteForRole('MANAGER')).toBe('/results')
     expect(defaultRouteForRole('PARTICIPANT')).toBe('/preferences')
   })
 })

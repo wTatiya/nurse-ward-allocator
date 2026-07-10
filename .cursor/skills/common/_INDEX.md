@@ -38,14 +38,8 @@
 | **common-system-design** | architecture, design, system, scalability, microservice, module boundary, coupling |
 | common-telemetry | token cost, token usage, session telemetry, cost report |
 | common-web-visual-testing | web test, browser test, responsive audit, verify web ui, cross-browser check, web accessibility |
+| **common-skills-audit** | `AGENTS.md`, `.skillsrc`, `.cursor/commands/*.md` | agent config audit, skills audit, consolidate skills, cursor inventory cleanup, sync drift |
+| **cursor-inventory** | `AGENTS.md`, `.cursor/commands/*.md` | skills catalog, subagent list, slash command reference, cursor inventory |
+| **vibe-code-auditor** | `src/**`, `supabase/**` | production readiness, vibe code, prototype audit, ship readiness |
 
 > Load matched skills: `<SKILLS>/common/<skill>/SKILL.md`. Load ALL that match — the tier model already filters irrelevant ones.
-
-## Project-only (manual — not overwritten by `ags sync`)
-
-| Skill | Match when user mentions |
-| ----- | ----------------------- |
-| **common-skills-audit** | skills audit, agent config, consolidate skills, `/common-skills-audit` |
-| **cursor-inventory** | skills catalog, list subagents, `/cursor-inventory` |
-| **vibe-code-auditor** | vibe code, production readiness, prototype audit, `/vibe-code-auditor` |
-| **contextual-skill-router** | skill routing, Phase 0, orchestration (also at `.cursor/skills/contextual-skill-router/`) |

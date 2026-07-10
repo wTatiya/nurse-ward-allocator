@@ -10,6 +10,12 @@ export function canArchiveRound(round: AssignmentRound): boolean {
   return round.status === 'completed' && !isRoundArchived(round)
 }
 
+export function isRoundResultsPublished(
+  round: Pick<AssignmentRound, 'status'> | null | undefined,
+): boolean {
+  return round?.status === 'completed'
+}
+
 export function splitRoundsByArchive(rounds: AssignmentRound[]): {
   active: AssignmentRound[]
   archived: AssignmentRound[]

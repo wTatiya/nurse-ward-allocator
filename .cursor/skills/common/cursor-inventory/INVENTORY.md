@@ -1,6 +1,6 @@
 # Cursor skills and subagents inventory
 
-> Generated 2026-07-09 from `.cursor/`
+> Generated 2026-07-10 from `.cursor/`
 
 ## Skills
 

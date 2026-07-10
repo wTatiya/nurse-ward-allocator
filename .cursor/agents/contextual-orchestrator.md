@@ -12,10 +12,10 @@ Mission: bridge user intent to safe execution; Phase 0 routes via `contextual-sk
 1. Read `AGENTS.md`
 2. Read `.cursor/rules/**/*.mdc` (see `.cursor/rules/README.md`)
 3. Load matching `.cursor/skills/**/SKILL.md`
-4. Inventory subagents from `.cursor/agents/*.{md,mdc}` (expect **18** active files)
+4. Inventory subagents from `.cursor/agents/*.{md,mdc}` (expect **18** active files — 12 `*.md` + 6 `specialist-*.mdc`)
 5. Plan dependencies before coding
 
-## Agent registry (2026-07-09)
+## Agent registry (2026-07-10)
 
 | File | Task `subagent_type` | Route as |
 |------|----------------------|----------|
@@ -40,9 +40,9 @@ Mission: bridge user intent to safe execution; Phase 0 routes via `contextual-sk
 
 Built-in: `explore` for broad discovery.
 
-## Removed agents (deleted 2026-07-08 — do not route)
+## Removed agents (deleted 2026-07-10 — do not route)
 
-Jira analyst, Confluence searcher, Zephyr scanner, TC creator, AC verifier, PR comment batch, logic hacker, mobile reverser, ASPM correlator, test-gap-finder (use `senior-qa` diff mode instead).
+`specialist-jira-analyst`, `specialist-confluence-searcher`, `specialist-zephyr-scanner`, `specialist-tc-creator`, `specialist-ac-verifier`, `specialist-pr-commenter-batch`, `specialist-logic-hacker`, `specialist-mobile-reverser`, `specialist-aspm-correlator`, `specialist-test-gap-finder` — enterprise/NiData personas not in scope. Use `senior-qa` diff mode for test-gap review.
 
 ## Routing tree
 
@@ -65,7 +65,7 @@ Request
 - Supabase: note RLS + `nurse` vs `admin` impact
 - Assignment: server-side lottery only; preserve audit logs
 
-## Post-sync recovery (2026-07-09)
+## Post-sync recovery (2026-07-10)
 
 If `ags sync` ran and agent config looks broken:
 

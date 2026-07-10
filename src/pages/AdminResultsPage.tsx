@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '../lib/supabase'
-import { downloadCsv, formatRoundStatus, formatTier, buildPersonLabels } from '../lib/utils'
+import { downloadCsv, formatRoundStatus, buildPersonLabels } from '../lib/utils'
 import { useAuth } from '../hooks/useAuth'
 import { isAdmin } from '../lib/roles'
 import { ResultsTable } from '../components/ResultsTable'
@@ -21,6 +21,9 @@ import {
   useRealtimeRound,
   useRealtimeWaitlist,
 } from '../hooks/useRealtimeAssignments'
+import { LotteryDetailCard } from '../components/LotteryDetailCard'
+import { buildChoiceRankByNurseIdFromTier } from '../lib/preferenceTier'
+import { isRoundResultsPublished } from '../lib/rounds'
 import type {
   AssignmentRound,
   Department,
@@ -178,47 +181,90 @@ export function AdminResultsPage() {
     downloadCsv('waitlist.csv', rows)
   }
 
+  const resultsReady = isRoundResultsPublished(round)
+
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold text-slate-900">ผลลัพธ์</h1>
         </div>
-        <div className="flex gap-2">
-          <button
-            type="button"
-            onClick={exportAssignments}
-            className="rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-700"
-          >
-            ส่งออกผลเลือกตึกแล้ว
-          </button>
-          <button
-            type="button"
-            onClick={exportWaitlist}
-            className="rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-700"
-          >
-            ส่งออกรายการรอ
-          </button>
-        </div>
+        {resultsReady && (
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={exportAssignments}
+              className="rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-700"
+            >
+              ส่งออกผลเลือกตึกแล้ว
+            </button>
+            <button
+              type="button"
+              onClick={exportWaitlist}
+              className="rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-700"
+            >
+              ส่งออกรายการรอ
+            </button>
+          </div>
+        )}
       </div>
 
-      <label className="block max-w-md">
-        <span className="mb-1 block text-sm font-medium text-slate-700">
-          รอบเลือกตึก
-        </span>
-        <select
-          value={selectedRoundId}
-          onChange={(event) => setSelectedRoundId(event.target.value)}
-          className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
-        >
-          {rounds.map((round) => (
-            <option key={round.id} value={round.id}>
-              {round.name} ({formatRoundStatus(round.status)})
-            </option>
-          ))}
-        </select>
-      </label>
+      {rounds.length === 0 ? (
+        <div className="rounded-xl border border-amber-200 bg-amber-50 p-6">
+          <p className="text-lg font-medium text-amber-900">
+            ยังไม่มีผลการเลือกตึก
+          </p>
+          <p className="mt-2 text-sm text-amber-800">
+            กรุณารอสักครู่ ระบบกำลังดำเนินการอยู่
+            เมื่อผู้ดูแลระบบเปิดรอบและประกาศผลแล้ว หน้านี้จะอัปเดตอัตโนมัติ
+          </p>
+        </div>
+      ) : (
+        <>
+          <label className="block max-w-md">
+            <span className="mb-1 block text-sm font-medium text-slate-700">
+              รอบเลือกตึก
+            </span>
+            <select
+              value={selectedRoundId}
+              onChange={(event) => setSelectedRoundId(event.target.value)}
+              className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
+            >
+              {rounds.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.name} ({formatRoundStatus(item.status)})
+                </option>
+              ))}
+            </select>
+          </label>
 
+          <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+            <p className="text-sm text-slate-500">สถานะรอบ</p>
+            <p className="mt-1 text-lg font-medium text-slate-900">
+              {round?.status
+                ? formatRoundStatus(round.status)
+                : 'กำลังโหลด...'}
+            </p>
+          </div>
+
+          {!resultsReady ? (
+            <div className="rounded-xl border border-amber-200 bg-amber-50 p-6">
+              <p className="text-lg font-medium text-amber-900">
+                ยังไม่ประกาศผลรอบนี้
+              </p>
+              <p className="mt-2 text-sm text-amber-800">
+                กรุณารอสักครู่ ระบบกำลังดำเนินการอยู่
+                {round?.status === 'running'
+                  ? ' (กำลังรันการเลือกตึก)'
+                  : round?.status === 'closed'
+                    ? ' (ปิดรับความประสงค์แล้ว รอประกาศผล)'
+                    : ''}
+                {' '}
+                หน้านี้จะอัปเดตอัตโนมัติเมื่อผลพร้อม
+              </p>
+            </div>
+          ) : (
+            <>
       <MaleOnFemaleWardWarning violations={maleOnFemaleViolations} />
 
       <section className="space-y-3">
@@ -298,41 +344,37 @@ export function AdminResultsPage() {
               แต่ละครั้งที่มีผู้สมัครมากกว่าตำแหน่งว่าง ระบบจะจับสลากแบบสุ่มอย่างเป็นธรรม
               และเก็บ seed hash ไว้สำหรับตรวจสอบ
             </p>
-            {lotteryEvents.map((event: LotteryEvent) => (
-              <div
-                key={event.id}
-                className="rounded-xl border border-slate-200 bg-white p-4 text-sm shadow-sm"
-              >
-                <p className="font-medium text-slate-900">
-                  {departments.find((d) => d.id === event.department_id)?.code ??
-                    event.department_id}{' '}
-                  — {formatTier(event.tier)}
-                </p>
-                <p className="mt-1 text-slate-600">
-                  ตำแหน่ง: {event.slots} | ผู้สมัคร: {event.applicant_ids.length}{' '}
-                  | ได้รับเลือก: {event.winner_ids.length}
-                </p>
-                <p className="mt-2 text-slate-700">
-                  ได้รับเลือก:{' '}
-                  {event.winner_ids
-                    .map((id) => personLabels[id] ?? id)
-                    .join(', ')}
-                </p>
-                <p className="mt-1 text-slate-700">
-                  จับสลากไม่ได้:{' '}
-                  {event.applicant_ids
-                    .filter((id) => !event.winner_ids.includes(id))
-                    .map((id) => personLabels[id] ?? id)
-                    .join(', ') || '—'}
-                </p>
-                <p className="mt-1 break-all text-xs text-slate-500">
-                  Seed hash: {event.seed_hash}
-                </p>
-              </div>
-            ))}
+            {lotteryEvents.map((event: LotteryEvent) => {
+              const department = departments.find(
+                (item) => item.id === event.department_id,
+              )
+              const departmentLabel = department
+                ? `${department.code} — ${department.name_th}`
+                : event.department_id
+
+              const choiceRankByNurseId = buildChoiceRankByNurseIdFromTier(
+                event.applicant_ids,
+                event.tier,
+              )
+
+              return (
+                <LotteryDetailCard
+                  key={event.id}
+                  event={event}
+                  departmentLabel={departmentLabel}
+                  nurseNames={personLabels}
+                  currentUserId=""
+                  choiceRankByNurseId={choiceRankByNurseId}
+                />
+              )
+            })}
           </div>
         )}
       </section>
+            </>
+          )}
+        </>
+      )}
     </div>
   )
 }

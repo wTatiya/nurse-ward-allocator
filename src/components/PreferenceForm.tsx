@@ -18,8 +18,24 @@ export function PreferenceForm({ round, existing, onSaved }: PreferenceFormProps
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
+  const [showConfirmModal, setShowConfirmModal] = useState(false)
+  const [submittedSuccessfully, setSubmittedSuccessfully] = useState(false)
 
   const isOpen = round.status === 'open'
+
+  const dismissConfirmModal = () => {
+    setShowConfirmModal(false)
+  }
+
+  const handleChoiceChange = (
+    setter: (value: string) => void,
+    value: string,
+  ) => {
+    setter(value)
+    setSubmittedSuccessfully(false)
+    setSuccess(null)
+    dismissConfirmModal()
+  }
 
   useEffect(() => {
     const loadDepartments = async () => {
@@ -35,10 +51,23 @@ export function PreferenceForm({ round, existing, onSaved }: PreferenceFormProps
   }, [])
 
   useEffect(() => {
+    dismissConfirmModal()
+    setSubmittedSuccessfully(false)
+    setSuccess(null)
+  }, [round.id])
+
+  useEffect(() => {
     if (existing) {
       setChoice1(existing.choice_1)
       setChoice2(existing.choice_2)
       setChoice3(existing.choice_3)
+    } else {
+      setChoice1('')
+      setChoice2('')
+      setChoice3('')
+      setSubmittedSuccessfully(false)
+      setSuccess(null)
+      dismissConfirmModal()
     }
   }, [existing])
 
@@ -93,6 +122,8 @@ export function PreferenceForm({ round, existing, onSaved }: PreferenceFormProps
         ? 'อัปเดตความประสงค์แล้ว สามารถแก้ไขได้จนกว่ารอบจะปิดรับ'
         : 'ส่งความประสงค์แล้ว สามารถแก้ไขได้จนกว่ารอบจะปิดรับ',
     )
+    setSubmittedSuccessfully(true)
+    setShowConfirmModal(true)
     onSaved()
   }
 
@@ -109,7 +140,7 @@ export function PreferenceForm({ round, existing, onSaved }: PreferenceFormProps
         label="อันดับ 1"
         departments={departments}
         value={choice1}
-        onChange={setChoice1}
+        onChange={(value) => handleChoiceChange(setChoice1, value)}
         disabled={!isOpen}
         exclude={[choice2, choice3]}
       />
@@ -117,7 +148,7 @@ export function PreferenceForm({ round, existing, onSaved }: PreferenceFormProps
         label="อันดับ 2"
         departments={departments}
         value={choice2}
-        onChange={setChoice2}
+        onChange={(value) => handleChoiceChange(setChoice2, value)}
         disabled={!isOpen}
         exclude={[choice1, choice3]}
       />
@@ -125,7 +156,7 @@ export function PreferenceForm({ round, existing, onSaved }: PreferenceFormProps
         label="อันดับ 3"
         departments={departments}
         value={choice3}
-        onChange={setChoice3}
+        onChange={(value) => handleChoiceChange(setChoice3, value)}
         disabled={!isOpen}
         exclude={[choice1, choice2]}
       />
@@ -143,16 +174,59 @@ export function PreferenceForm({ round, existing, onSaved }: PreferenceFormProps
 
       <button
         type="submit"
-        disabled={!isOpen || saving}
-        className="rounded-lg bg-teal-700 px-4 py-2 text-sm font-medium text-white hover:bg-teal-800 disabled:cursor-not-allowed disabled:bg-slate-300"
+        disabled={!isOpen || saving || submittedSuccessfully}
+        className="rounded-lg bg-teal-700 px-4 py-2 text-sm font-medium text-white hover:bg-teal-800 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500"
       >
-        {saving ? 'กำลังบันทึก...' : 'ยืนยัน'}
+        {saving ? 'กำลังบันทึก...' : submittedSuccessfully ? 'ส่งแล้ว' : 'ยืนยัน'}
       </button>
 
       {!isOpen && (
         <p className="text-sm text-amber-700">
           รอบนี้ยังไม่มีตึกที่เปิดรับ
         </p>
+      )}
+
+      {showConfirmModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="preference-confirm-title"
+        >
+          <div className="w-full max-w-md rounded-xl border border-slate-200 bg-white p-6 shadow-lg">
+            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-teal-100 text-teal-700">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                className="h-6 w-6"
+                aria-hidden="true"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+            <h3
+              id="preference-confirm-title"
+              className="text-center text-lg font-semibold text-slate-900"
+            >
+              ส่งความประสงค์เรียบร้อยแล้ว
+            </h3>
+            <p className="mt-2 text-center text-sm text-slate-600">
+              บันทึกตึก 3 อันดับของคุณแล้ว สามารถแก้ไขได้จนกว่ารอบจะปิดรับ
+            </p>
+            <button
+              type="button"
+              onClick={dismissConfirmModal}
+              className="mt-6 w-full rounded-lg bg-teal-700 px-4 py-2 text-sm font-medium text-white hover:bg-teal-800"
+            >
+              ตกลง
+            </button>
+          </div>
+        </div>
       )}
     </form>
   )

@@ -1,6 +1,6 @@
 # Redundancy Matrix — nurse-ward-allocator
 
-> Last verified: **2026-07-09**. Re-run after adding skills, rules, or subagents.
+> Last verified: **2026-07-10**. Re-run after adding skills, rules, or subagents.
 
 ## Project-only skills — never delete via sync
 

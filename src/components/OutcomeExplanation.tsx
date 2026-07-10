@@ -1,4 +1,5 @@
-import { buildPersonalOutcome, outcomeStepMessage, type PersonalOutcome } from '../lib/personalOutcome'
+import { buildPersonalOutcome, outcomeStepMessage, WAITLIST_CONTACT_STAFF_ACTION, WAITLIST_OUTCOME_REASON, WAITLIST_OUTCOME_RULE, type PersonalOutcome } from '../lib/personalOutcome'
+import { buildChoiceRankByNurseIdFromTier } from '../lib/preferenceTier'
 import { formatTier } from '../lib/utils'
 import {
   LotteryDetailCard,
@@ -73,7 +74,7 @@ export function OutcomeExplanation({
     return (
       <p className="mt-4 text-sm text-slate-600">
         ยังไม่ประกาศผลการเลือกตึกแล้ว หลังผู้ดูแลระบบรันการเลือกตึก
-        ส่วนนี้จะแสดงคำอธิบายทีละขั้นตอนว่าทำไมคุณเลือกตึกแล้วหรืออยู่ในรายการรอ
+        ส่วนนี้จะแสดงคำอธิบายทีละขั้นตอนว่าทำไมคุณเลือกตึกแล้วหรือต้องติดต่อเจ้าหน้าที่
       </p>
     )
   }
@@ -97,8 +98,7 @@ export function OutcomeExplanation({
           </li>
           <li>ผู้ที่ยังไม่ได้เลือกตึกแล้วจะไปที่อันดับ 2 แล้วจึงอันดับ 3</li>
           <li>
-            ผู้ที่ยังไม่ได้เลือกตึกแล้วจะเข้ารายการรอ — ลำดับในรายการเป็นเพียงหมายเลขอ้างอิง
-            ไม่เกี่ยวกับเวลาที่ส่งแบบฟอร์ม
+            {WAITLIST_OUTCOME_RULE} {WAITLIST_CONTACT_STAFF_ACTION}
           </li>
         </ol>
       </div>
@@ -109,11 +109,12 @@ export function OutcomeExplanation({
         <h3 className="text-sm font-semibold text-slate-900">เส้นทางของคุณ</h3>
         <ol className="mt-3 space-y-3">
           {outcome.steps.map((step) => {
-            const event = lotteryEvents.find(
-              (item) =>
-                item.tier === step.tier &&
-                item.department_id === step.departmentId,
-            )
+            const choiceRankByNurseId = step.lottery
+              ? buildChoiceRankByNurseIdFromTier(
+                  step.lottery.applicantIds,
+                  step.tier,
+                )
+              : undefined
 
             return (
               <li
@@ -133,12 +134,23 @@ export function OutcomeExplanation({
                 <p className="mt-2 text-sm text-slate-600">
                   {outcomeStepMessage(step)}
                 </p>
-                {event && (
+                {step.lottery && (
                   <LotteryDetailCard
-                    event={event}
+                    event={{
+                      id: '',
+                      round_id: '',
+                      department_id: step.departmentId,
+                      tier: step.tier,
+                      applicant_ids: step.lottery.applicantIds,
+                      winner_ids: step.lottery.winnerIds,
+                      slots: step.lottery.slots,
+                      seed_hash: step.lottery.seedHash,
+                      created_at: '',
+                    }}
                     departmentLabel={step.departmentLabel}
                     nurseNames={nurseNames}
                     currentUserId={userId}
+                    choiceRankByNurseId={choiceRankByNurseId}
                   />
                 )}
               </li>
@@ -154,10 +166,9 @@ export function OutcomeExplanation({
         </p>
       )}
 
-      {outcome.status === 'waitlisted' && outcome.waitlistPosition && (
+      {outcome.status === 'waitlisted' && (
         <p className="text-sm text-amber-800">
-          ผลสุดท้าย: ทั้ง 3 อันดับไม่มีตำแหน่งว่าง
-          คุณอยู่ในรายการรอลำดับที่ #{outcome.waitlistPosition}
+          ผลสุดท้าย: {WAITLIST_OUTCOME_REASON} {WAITLIST_CONTACT_STAFF_ACTION}
         </p>
       )}
     </div>

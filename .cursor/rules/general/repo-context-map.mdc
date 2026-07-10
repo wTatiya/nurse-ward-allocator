@@ -55,7 +55,7 @@ Never mix frontend React code with Edge Function logic. Shared pure logic belong
 
 # Testing Structure
 
-- `supabase/functions/_shared/assignment-engine.test.ts` — assignment engine unit tests
+- `src/lib/assignment-engine.test.ts` — assignment engine unit tests (imports `_shared/assignment-engine`)
 - `src/**/*.test.ts` — frontend tests (Vitest)
 
 When modifying assignment logic, update tests in `_shared/` first.

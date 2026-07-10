@@ -4,7 +4,7 @@ Short editor rules in `*.mdc` under `.cursor/rules/general/` and `.cursor/rules/
 
 Deep procedures: `.cursor/skills/**/SKILL.md` · Index: `AGENTS.md`
 
-**Baseline (2026-07-07):** 46 skills · 18 subagents · 21 rules · 3 slash commands
+**Baseline (2026-07-10):** 46 skills · 18 subagents · 20 rules · 3 slash commands
 
 ## Decision tree
 
