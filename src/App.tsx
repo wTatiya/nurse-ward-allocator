@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './hooks/useAuth'
 import { Layout } from './components/Layout'
@@ -5,14 +6,41 @@ import { StickyGitHubLink } from './components/StickyGitHubLink'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { defaultRouteForRole } from './lib/roles'
 import { useAuth } from './hooks/useAuth'
-import { LoginPage } from './pages/LoginPage'
-import { DashboardPage } from './pages/DashboardPage'
-import { PreferencesPage } from './pages/PreferencesPage'
-import { MyResultPage } from './pages/MyResultPage'
-import { AdminDepartmentsPage } from './pages/AdminDepartmentsPage'
-import { AdminRoundsPage } from './pages/AdminRoundsPage'
-import { AdminResultsPage } from './pages/AdminResultsPage'
-import { AdminPeoplePage } from './pages/AdminPeoplePage'
+
+const LoginPage = lazy(() =>
+  import('./pages/LoginPage').then((m) => ({ default: m.LoginPage })),
+)
+const DashboardPage = lazy(() =>
+  import('./pages/DashboardPage').then((m) => ({ default: m.DashboardPage })),
+)
+const PreferencesPage = lazy(() =>
+  import('./pages/PreferencesPage').then((m) => ({ default: m.PreferencesPage })),
+)
+const MyResultPage = lazy(() =>
+  import('./pages/MyResultPage').then((m) => ({ default: m.MyResultPage })),
+)
+const AdminDepartmentsPage = lazy(() =>
+  import('./pages/AdminDepartmentsPage').then((m) => ({
+    default: m.AdminDepartmentsPage,
+  })),
+)
+const AdminRoundsPage = lazy(() =>
+  import('./pages/AdminRoundsPage').then((m) => ({ default: m.AdminRoundsPage })),
+)
+const AdminResultsPage = lazy(() =>
+  import('./pages/AdminResultsPage').then((m) => ({ default: m.AdminResultsPage })),
+)
+const AdminPeoplePage = lazy(() =>
+  import('./pages/AdminPeoplePage').then((m) => ({ default: m.AdminPeoplePage })),
+)
+
+function RouteLoading() {
+  return (
+    <div className="flex min-h-[40vh] items-center justify-center text-slate-500">
+      กำลังโหลด...
+    </div>
+  )
+}
 
 function HomeRedirect() {
   const { role, loading } = useAuth()
@@ -31,36 +59,38 @@ function App() {
     <AuthProvider>
       <BrowserRouter>
         <>
-          <Routes>
-            <Route path="/login" element={<LoginPage />} />
-            <Route element={<ProtectedRoute />}>
-              <Route element={<Layout />}>
-                <Route index element={<HomeRedirect />} />
-                <Route element={<ProtectedRoute kind="staff" />}>
-                  <Route path="dashboard" element={<DashboardPage />} />
-                  <Route path="results" element={<AdminResultsPage />} />
-                </Route>
-                <Route element={<ProtectedRoute kind="participant" />}>
-                  <Route path="preferences" element={<PreferencesPage />} />
-                  <Route path="my-result" element={<MyResultPage />} />
-                </Route>
-                <Route element={<ProtectedRoute kind="admin" />}>
-                  <Route
-                    path="admin/departments"
-                    element={<AdminDepartmentsPage />}
-                  />
-                  <Route path="admin/rounds" element={<AdminRoundsPage />} />
-                  <Route path="admin/results" element={<AdminResultsPage />} />
-                  <Route path="admin/people" element={<AdminPeoplePage />} />
-                  <Route
-                    path="admin/wards"
-                    element={<Navigate to="/admin/departments" replace />}
-                  />
+          <Suspense fallback={<RouteLoading />}>
+            <Routes>
+              <Route path="/login" element={<LoginPage />} />
+              <Route element={<ProtectedRoute />}>
+                <Route element={<Layout />}>
+                  <Route index element={<HomeRedirect />} />
+                  <Route element={<ProtectedRoute kind="staff" />}>
+                    <Route path="dashboard" element={<DashboardPage />} />
+                    <Route path="results" element={<AdminResultsPage />} />
+                  </Route>
+                  <Route element={<ProtectedRoute kind="participant" />}>
+                    <Route path="preferences" element={<PreferencesPage />} />
+                    <Route path="my-result" element={<MyResultPage />} />
+                  </Route>
+                  <Route element={<ProtectedRoute kind="admin" />}>
+                    <Route
+                      path="admin/departments"
+                      element={<AdminDepartmentsPage />}
+                    />
+                    <Route path="admin/rounds" element={<AdminRoundsPage />} />
+                    <Route path="admin/results" element={<AdminResultsPage />} />
+                    <Route path="admin/people" element={<AdminPeoplePage />} />
+                    <Route
+                      path="admin/wards"
+                      element={<Navigate to="/admin/departments" replace />}
+                    />
+                  </Route>
                 </Route>
               </Route>
-            </Route>
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </Suspense>
           <StickyGitHubLink />
         </>
       </BrowserRouter>
